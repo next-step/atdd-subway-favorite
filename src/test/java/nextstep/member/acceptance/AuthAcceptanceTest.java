@@ -52,4 +52,18 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
+
+    @DisplayName("올바르지 않은 토큰을 사용하는 경우 에러가 발생합니다.")
+    @Test
+    void invalidToken() {
+        // given
+        String invalidAccessToken = "invalid Token";
+        // when
+        // then
+        RestAssured.given().log().all()
+                .auth().oauth2(invalidAccessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value()).extract();
+    }
 }
