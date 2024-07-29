@@ -18,7 +18,7 @@ public class FavoriteApiRequest {
                 .extract().response();
     }
 
-    public static Response 즐겨찾기를_전체_조회한다(final String accessToken) {
+    public static Response 특정회원의_즐겨찾기를_전체_조회한다(final String accessToken) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)

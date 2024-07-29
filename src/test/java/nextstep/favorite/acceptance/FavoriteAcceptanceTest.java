@@ -62,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         void test() {
             즐겨찾기를_생성한다(accessToken, lineFixture.교대역(), lineFixture.양재역());
             즐겨찾기를_생성한다(accessToken, lineFixture.강남역(), lineFixture.남부터미널역());
-            var 조회_결과 = 즐겨찾기를_전체_조회한다(accessToken).jsonPath();
+            var 조회_결과 = 특정회원의_즐겨찾기를_전체_조회한다(accessToken).jsonPath();
 
             assertThat(조회_결과.getLong("[0].source.id")).isEqualTo(lineFixture.교대역());
             assertThat(조회_결과.getLong("[0].target.id")).isEqualTo(lineFixture.양재역());
@@ -86,7 +86,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             Response 삭제_결과 = 즐겨찾기를_삭제한다(accessToken ,즐겨찾기2);
             assertNoContent(삭제_결과.statusCode());
 
-            var 조회_결과 = 즐겨찾기를_전체_조회한다(accessToken).jsonPath();
+            var 조회_결과 = 특정회원의_즐겨찾기를_전체_조회한다(accessToken).jsonPath();
             assertThat(조회_결과.getLong("[0].source.id")).isEqualTo(lineFixture.교대역());
             assertThat(조회_결과.getLong("[0].target.id")).isEqualTo(lineFixture.양재역());
         }

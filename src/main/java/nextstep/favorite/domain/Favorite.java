@@ -25,6 +25,18 @@ public class Favorite {
         this.targetStationId = targetStationId;
     }
 
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Long getSourceStationId() {
+        return sourceStationId;
+    }
+
+    public Long getTargetStationId() {
+        return targetStationId;
+    }
+
     public Long getId() {
         return id;
     }
