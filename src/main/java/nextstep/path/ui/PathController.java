@@ -2,7 +2,7 @@ package nextstep.path.ui;
 
 import nextstep.path.payload.SearchPathRequest;
 import nextstep.path.payload.ShortestPathResponse;
-import nextstep.path.service.PathQueryService;
+import nextstep.path.application.PathQueryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

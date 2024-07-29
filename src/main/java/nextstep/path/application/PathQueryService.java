@@ -1,4 +1,4 @@
-package nextstep.path.service;
+package nextstep.path.application;
 
 import nextstep.exceptions.ErrorMessage;
 import nextstep.line.domain.Line;

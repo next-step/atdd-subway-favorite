@@ -4,8 +4,8 @@ import nextstep.line.payload.AddSectionRequest;
 import nextstep.line.payload.CreateLineRequest;
 import nextstep.line.payload.LineResponse;
 import nextstep.line.payload.UpdateLineRequest;
-import nextstep.line.service.LineCommandService;
-import nextstep.line.service.LineQueryService;
+import nextstep.line.application.LineCommandService;
+import nextstep.line.application.LineQueryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

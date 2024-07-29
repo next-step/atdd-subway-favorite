@@ -1,4 +1,4 @@
-package nextstep.path.service;
+package nextstep.path.application;
 
 public interface PathFinder<VERTEX> {
 

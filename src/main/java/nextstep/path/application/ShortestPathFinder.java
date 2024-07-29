@@ -1,4 +1,4 @@
-package nextstep.path.service;
+package nextstep.path.application;
 
 import nextstep.path.domain.WeightedEdge;
 import org.jgrapht.GraphPath;
