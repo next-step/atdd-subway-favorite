@@ -4,14 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.dto.StationResponse;
-import nextstep.subway.utils.DatabaseSetupTemplate;
+import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,9 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 관련 기능")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Transactional
-public class PathAcceptanceTest {
+public class PathAcceptanceTest extends AcceptanceTest {
     private Long 교대역Id;
     private Long 강남역Id;
     private Long 양재역Id;
@@ -32,9 +28,7 @@ public class PathAcceptanceTest {
     private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
-    void setUp() {
-        TestSetup testSetup = new TestSetup(jdbcTemplate);
-        testSetup.setUpDatabase();
+    void setUpData() {
         교대역Id = 역_생성("교대역").jsonPath().getLong("id");
         강남역Id = 역_생성("강남역").jsonPath().getLong("id");
         양재역Id = 역_생성("양재역").jsonPath().getLong("id");
@@ -78,31 +72,5 @@ public class PathAcceptanceTest {
         assertThat(stations.get(1).getId()).isEqualTo(남부터미널역Id);
         assertThat(stations.get(2).getId()).isEqualTo(양재역Id);
         assertThat(distance).isEqualTo(5L);
-    }
-
-
-    private class TestSetup extends DatabaseSetupTemplate {
-
-        public TestSetup(JdbcTemplate jdbcTemplate) {
-            super(jdbcTemplate);
-        }
-
-        @Override
-        protected void truncateTables() {
-            jdbcTemplate.execute("TRUNCATE TABLE line");
-            jdbcTemplate.execute("TRUNCATE TABLE station");
-            jdbcTemplate.execute("TRUNCATE TABLE section");
-        }
-
-        @Override
-        protected void resetAutoIncrement() {
-            jdbcTemplate.execute("ALTER TABLE station ALTER COLUMN id RESTART WITH 1");
-            jdbcTemplate.execute("ALTER TABLE line ALTER COLUMN id RESTART WITH 1");
-            jdbcTemplate.execute("ALTER TABLE section ALTER COLUMN id RESTART WITH 1");
-        }
-
-        @Override
-        protected void insertInitialData() {
-        }
     }
 }

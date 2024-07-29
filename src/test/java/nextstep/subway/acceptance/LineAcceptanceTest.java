@@ -3,15 +3,11 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.utils.DatabaseSetupTemplate;
+import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +17,7 @@ import static nextstep.subway.acceptance.AcceptanceTestUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Transactional
-public class LineAcceptanceTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class LineAcceptanceTest extends AcceptanceTest {
 
     private Long 신사역Id;
     private Long 논현역Id;
@@ -34,10 +25,7 @@ public class LineAcceptanceTest {
     Map<String, Object> 신분당선_요청_매개변수;
 
     @BeforeEach
-    void setUp() {
-        LineAndStationSetup lineAndStationSetup = new LineAndStationSetup(jdbcTemplate);
-        lineAndStationSetup.setUpDatabase();
-
+    void setUpData() {
         신사역Id = 역_생성("신사역").jsonPath().getLong("id");
         논현역Id = 역_생성("논현역").jsonPath().getLong("id");
         강남역Id = 역_생성("강남역").jsonPath().getLong("id");
@@ -237,28 +225,5 @@ public class LineAcceptanceTest {
                 .when().patch("/lines/" + lineId)
                 .then().log().all()
                 .extract();
-    }
-
-    private class LineAndStationSetup extends DatabaseSetupTemplate {
-
-        public LineAndStationSetup(JdbcTemplate jdbcTemplate) {
-            super(jdbcTemplate);
-        }
-
-        @Override
-        protected void truncateTables() {
-            jdbcTemplate.execute("TRUNCATE TABLE line");
-            jdbcTemplate.execute("TRUNCATE TABLE station");
-        }
-
-        @Override
-        protected void resetAutoIncrement() {
-            jdbcTemplate.execute("ALTER TABLE station ALTER COLUMN id RESTART WITH 1");
-            jdbcTemplate.execute("ALTER TABLE line ALTER COLUMN id RESTART WITH 1");
-        }
-
-        @Override
-        protected void insertInitialData() {
-        }
     }
 }
