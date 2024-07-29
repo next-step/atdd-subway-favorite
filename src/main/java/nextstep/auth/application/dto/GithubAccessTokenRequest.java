@@ -11,13 +11,9 @@ public class GithubAccessTokenRequest {
   private final String clientSecret;
   private final String code;
 
-  private GithubAccessTokenRequest(String clientId, String clientSecret, String code) {
+  public GithubAccessTokenRequest(String clientId, String clientSecret, String code) {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.code = code;
-  }
-
-  public static GithubAccessTokenRequest of(String clientId, String clientSecret, String code) {
-    return new GithubAccessTokenRequest(clientId, clientSecret, code);
   }
 }

@@ -18,6 +18,7 @@ public class TokenService {
 
   public TokenResponse createToken(String email, String password) {
     UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
     if (!userDetails.getPassword().equals(password)) {
       throw new AuthenticationException();
     }
