@@ -42,7 +42,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         @DisplayName("즐겨 찾기를 생성한다")
         @Test
         void test() {
-            accessToken = authFixture.getMemberAccessToken("admin@email.com");
             Response response = 즐겨찾기를_생성한다(accessToken, lineFixture.교대역(), lineFixture.양재역());
             assertCreated(response.statusCode());
         }

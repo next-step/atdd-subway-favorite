@@ -16,14 +16,10 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    public Long createFavorite(final Long memberId, final FavoriteRequest request) {
+        Favorite favorite = new Favorite(memberId, request.getSource(), request.getTarget());
+        Favorite saved = favoriteRepository.save(favorite);
+        return saved.getId();
     }
 
     /**
@@ -38,6 +34,7 @@ public class FavoriteService {
 
     /**
      * TODO: 요구사항 설명에 맞게 수정합니다.
+     *
      * @param id
      */
     public void deleteFavorite(Long id) {
