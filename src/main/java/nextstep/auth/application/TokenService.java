@@ -3,6 +3,7 @@ package nextstep.auth.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.UserDetails;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
@@ -15,21 +16,16 @@ public class TokenService {
   private final JwtTokenProvider jwtTokenProvider;
   private final GithubTokenClient githubTokenClient;
   private final GithubProfileClient githubProfileClient;
+  private final UserDetailsService userDetailsService;
 
   public TokenResponse createToken(String email, String password) {
-    Member member;
-    try {
-      member = memberService.findMemberByEmail(email);
-    } catch (RuntimeException e) {
+    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+    if (!userDetails.getPassword().equals(password)) {
       throw new AuthenticationException();
     }
 
-    if (!member.getPassword().equals(password)) {
-      throw new AuthenticationException();
-    }
-
-    String token = jwtTokenProvider.createToken(member.getEmail());
-
+    String token = jwtTokenProvider.createToken(userDetails.getUsername());
     return new TokenResponse(token);
   }
 

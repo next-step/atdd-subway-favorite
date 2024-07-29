@@ -6,14 +6,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
 
-import nextstep.auth.application.GithubProfileClient;
-import nextstep.auth.application.GithubTokenClient;
-import nextstep.auth.application.JwtTokenProvider;
-import nextstep.auth.application.TokenService;
+import nextstep.auth.application.*;
 import nextstep.auth.application.dto.GithubProfileResponse;
 import nextstep.auth.application.dto.TokenResponse;
 import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.exception.UsernameNotFoundException;
 import nextstep.member.application.MemberService;
+import nextstep.member.domain.CustomUserDetails;
 import nextstep.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +29,7 @@ class TokenServiceTest {
   @Mock private JwtTokenProvider jwtTokenProvider;
   @Mock private GithubTokenClient githubTokenClient;
   @Mock private GithubProfileClient githubProfileClient;
+  @Mock private UserDetailsService userDetailsService;
   @InjectMocks private TokenService tokenService;
 
   @DisplayName("이메일과 비밀번호로 토큰을 생성한다.")
@@ -37,7 +37,8 @@ class TokenServiceTest {
   void createToken() {
     String accessToken = "xxxxxx.yyyyyy.zzzzzz";
     Member member = aMember().build();
-    given(memberService.findMemberByEmail(member.getEmail())).willReturn(member);
+    given(userDetailsService.loadUserByUsername(member.getEmail()))
+        .willReturn(new CustomUserDetails(member.getEmail(), member.getPassword()));
     given(jwtTokenProvider.createToken(member.getEmail())).willReturn(accessToken);
 
     TokenResponse tokenResponse = tokenService.createToken(member.getEmail(), member.getPassword());
@@ -49,9 +50,10 @@ class TokenServiceTest {
   @Test
   void createTokenEmailDoesNotExist() {
     String email = "does_not_exist@example.com";
-    given(memberService.findMemberByEmail(email)).willThrow(new RuntimeException());
+    given(userDetailsService.loadUserByUsername(email))
+        .willThrow(new UsernameNotFoundException(email));
 
-    assertThatExceptionOfType(AuthenticationException.class)
+    assertThatExceptionOfType(UsernameNotFoundException.class)
         .isThrownBy(() -> tokenService.createToken(email, "password"));
   }
 
