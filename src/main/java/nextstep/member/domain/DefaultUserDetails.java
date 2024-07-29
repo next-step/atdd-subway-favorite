@@ -2,11 +2,11 @@ package nextstep.member.domain;
 
 import nextstep.auth.domain.UserDetails;
 
-public class CustomUserDetails implements UserDetails {
+public class DefaultUserDetails implements UserDetails {
   private final String username;
   private final String password;
 
-  public CustomUserDetails(String username, String password) {
+  public DefaultUserDetails(String username, String password) {
     this.username = username;
     this.password = password;
   }
