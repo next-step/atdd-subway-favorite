@@ -36,12 +36,12 @@ public class FavoriteService {
      *
      * @param request
      */
-    public void createFavorite(FavoriteRequest request, LoginMember loginMember) {
+    public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
         pathService.findShortestPath(request.getSource(), request.getTarget());
         Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
 
-        favoriteRepository.save(favorite);
+        return favoriteRepository.save(favorite);
     }
 
     /**

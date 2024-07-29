@@ -20,6 +20,7 @@ import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -33,6 +34,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private long 교대역_id;
     private long 사당역_id;
     private long 강남역_id;
+
+    private String email = "email";
+    private String password = "password";
+    private int age = 20;
+
+    private String accessToken;
 
     @BeforeEach
     void setUp() {
@@ -50,6 +57,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
 
         this.사당역_id = StationAssuredTemplate.createStation(StationFixtures.사당역.getName()).then().extract().jsonPath().getLong("id");
+
+        MemberSteps.회원_생성_요청(email, password, age);
+        this.accessToken = AuthAssuredTemplate.로그인(email, password)
+                .then().extract().jsonPath().getString("accessToken");
     }
 
     /**
@@ -61,14 +72,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void notConnect() {
         // given
-        String email = "email";
-        String password = "password";
-        int age = 20;
-        MemberSteps.회원_생성_요청(email, password, age);
-
-        String accessToken = AuthAssuredTemplate.로그인(email, password)
-                .then().extract().jsonPath().getString("accessToken");
-
         // when
         ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 사당역_id, 양재역_id)
                 .then().extract();
@@ -87,14 +90,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void successFavorite() {
         // given
-        String email = "email";
-        String password = "password";
-        int age = 20;
-        MemberSteps.회원_생성_요청(email, password, age);
-
-        String accessToken = AuthAssuredTemplate.로그인(email, password)
-                .then().extract().jsonPath().getString("accessToken");
-
         FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
         FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
 
@@ -121,14 +116,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void notEnrollFavorite() {
         // given
-        String email = "email";
-        String password = "password";
-        int age = 20;
-        MemberSteps.회원_생성_요청(email, password, age);
-
-        String accessToken = AuthAssuredTemplate.로그인(email, password)
-                .then().extract().jsonPath().getString("accessToken");
-
         FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
         FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
 
@@ -138,6 +125,36 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * given 회원가입 후 로그인을 통해 토큰을 발급받습니다. 이후 즐겨찾기를 2개 등록합니다.
+     * when 2번째 즐겨찾기를 삭제합니다.
+     * then 즐겨찾기를 조회하면 1개의 즐겨찾기만 조회됩니다.
+     */
+    @DisplayName("즐겨찾기를 삭제한 후 조회하면 해당 즐겨찾기는 목록에 존재하지 않습니다.")
+    @Test
+    void deleteFavorite() {
+        // given
+        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
+        String location = FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id)
+                .then().extract().header(HttpHeaders.LOCATION);
+
+        String[] split = location.split("/");
+        String favoriteId = split[split.length - 1];
+
+        // when
+        FavoriteAssuredTemplate.즐겨찾기_석제(accessToken, Long.valueOf(favoriteId));
+
+        // then
+        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_조회(accessToken)
+                .then().log().all().extract();
+
+        Assertions.assertThat(result.body().as(new TypeRef<List<FavoriteResponse>>() {})).hasSize(1)
+                .extracting("source", "target")
+                .containsExactly(
+                        Tuple.tuple(new StationResponse(논현역_id, StationFixtures.논현역.getName()), new StationResponse(양재역_id, StationFixtures.양재역.getName()))
+                );
     }
 }
 
