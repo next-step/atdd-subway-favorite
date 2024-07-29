@@ -42,8 +42,7 @@ public class MemberService {
     }
 
     public MemberResponse findMe(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
-                .map(MemberResponse::of)
-                .orElseThrow(() -> new IllegalArgumentException(MEMBER_NOT_FOUND_MESSAGE));
+        Member member = findMemberByEmail(loginMember.getEmail());
+        return MemberResponse.of(member);
     }
 }

@@ -4,11 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import nextstep.member.domain.Member;
-import nextstep.subway.domain.model.Station;
 
 @Entity
 public class Favorite {
@@ -16,44 +11,32 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "source_station_id")
-    private Station sourceStation;
-
-    @ManyToOne
-    @JoinColumn(name = "target_station_id")
-    private Station targetStation;
-
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long sourceStationId;
+    private Long targetStationId;
+    private Long memberId;
 
     protected Favorite() {
     }
 
-    public Favorite(Station sourceStation, Station targetStation, Member member) {
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
-        this.member = member;
+    public Favorite(Long sourceStationId, Long targetStationId, Long memberId) {
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
+        this.memberId = memberId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Station getSourceStation() {
-        return sourceStation;
+    public Long getSourceStationId() {
+        return sourceStationId;
     }
 
-    public Station getTargetStation() {
-        return targetStation;
+    public Long getTargetStationId() {
+        return targetStationId;
     }
 
-    public Member getMember() {
-        return member;
-    }
-
-    public boolean matchesMemberEmail(String email) {
-        return member.matchesEmail(email);
+    public Long getMemberId() {
+        return memberId;
     }
 }

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.domain.Member;
 
 public class InMemoryFavoriteRepository implements FavoriteRepository {
     private final HashMap<Long, Favorite> favorites = new HashMap<>();
@@ -18,10 +17,10 @@ public class InMemoryFavoriteRepository implements FavoriteRepository {
     }
 
     @Override
-    public List<Favorite> findByMember(Member member) {
+    public List<Favorite> findByMemberId(Long memberId) {
         return favorites.values()
             .stream()
-            .filter(favorite -> favorite.matchesMemberEmail(member.getEmail()))
+            .filter(favorite -> favorite.getMemberId().equals(memberId))
             .collect(Collectors.toList());
     }
 

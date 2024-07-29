@@ -99,10 +99,10 @@ class DefaultFavoriteServiceTest {
             favoriteService.createFavorite(favoriteRequest, loginMember);
 
             // then
-            List<Favorite> favorites = favoriteRepository.findByMember(member);
+            List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
             assertThat(favorites).hasSize(1);
-            assertThat(favorites.get(0).getSourceStation()).isEqualTo(yeoksamStation);
-            assertThat(favorites.get(0).getTargetStation()).isEqualTo(yangjaeStation);
+            assertThat(favorites.get(0).getSourceStationId()).isEqualTo(yeoksamStation.getId());
+            assertThat(favorites.get(0).getTargetStationId()).isEqualTo(yangjaeStation.getId());
         }
 
         @Test
@@ -165,7 +165,7 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨찾기를 성공적으로 조회한다")
         void getFavoritesSuccess() {
             // given
-            Favorite favorite = new Favorite(yeoksamStation, yangjaeStation, member);
+            Favorite favorite = new Favorite(yeoksamStation.getId(), yangjaeStation.getId(), member.getId());
             favoriteRepository.save(favorite);
 
             LoginMember loginMember = new LoginMember("email@example.com");
@@ -199,7 +199,7 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨찾기를 성공적으로 삭제한다")
         void deleteFavoriteSuccess() {
             // given
-            Favorite favorite = new Favorite(yeoksamStation, yangjaeStation, member);
+            Favorite favorite = new Favorite(yeoksamStation.getId(), yangjaeStation.getId(), member.getId());
             favoriteRepository.save(favorite);
             LoginMember loginMember = new LoginMember("email@example.com");
 
@@ -207,7 +207,7 @@ class DefaultFavoriteServiceTest {
             favoriteService.deleteFavorite(favorite.getId(), loginMember);
 
             // then
-            List<Favorite> favorites = favoriteRepository.findByMember(member);
+            List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
             assertThat(favorites).isEmpty();
         }
 
@@ -215,14 +215,15 @@ class DefaultFavoriteServiceTest {
         @DisplayName("즐겨 찾기 삭제 시 회원이 존재하지 않는 경우 예외가 발생한다")
         void deleteFavoriteUnauthorizedMember() {
             // given
-            Favorite favorite = new Favorite(yeoksamStation, yangjaeStation, member);
+            Favorite favorite = new Favorite(yeoksamStation.getId(), yangjaeStation.getId(), member.getId());
             favoriteRepository.save(favorite);
 
             LoginMember unauthorizedMember = new LoginMember("unauthorized@example.com");
 
             // when & then
-            assertThatExceptionOfType(AuthenticationException.class)
-                .isThrownBy(() -> favoriteService.deleteFavorite(favorite.getId(), unauthorizedMember));
+            assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> favoriteService.deleteFavorite(favorite.getId(), unauthorizedMember))
+                .withMessage(MEMBER_NOT_FOUND_MESSAGE);
         }
     }
 }
