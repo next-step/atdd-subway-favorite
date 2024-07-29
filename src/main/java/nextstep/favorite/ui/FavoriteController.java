@@ -1,6 +1,7 @@
 package nextstep.favorite.ui;
 
-import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.FavoriteCommandService;
+import nextstep.favorite.application.FavoriteQueryService;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.favorite.payload.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
@@ -13,27 +14,30 @@ import java.util.List;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteCommandService favoriteCommandService;
 
-    public FavoriteController(FavoriteService favoriteService) {
-        this.favoriteService = favoriteService;
+    private final FavoriteQueryService favoriteQueryService;
+
+    public FavoriteController(final FavoriteCommandService favoriteCommandService, final FavoriteQueryService favoriteQueryService) {
+        this.favoriteCommandService = favoriteCommandService;
+        this.favoriteQueryService = favoriteQueryService;
     }
 
     @PostMapping("/favorites")
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
-        Long id = favoriteService.createFavorite(loginMember.getId(), request);
+        Long id = favoriteCommandService.createFavorite(loginMember.getId(), request);
         return ResponseEntity.created(URI.create("/favorites/" + id)).build();
     }
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember.getId());
+        List<FavoriteResponse> favorites = favoriteQueryService.findFavorites(loginMember.getId());
         return ResponseEntity.ok().body(favorites);
     }
 
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity deleteFavorite(@PathVariable Long id) {
-        favoriteService.deleteFavorite(id);
+        favoriteCommandService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
 }
