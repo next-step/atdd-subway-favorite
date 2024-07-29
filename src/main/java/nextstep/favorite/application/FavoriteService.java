@@ -1,7 +1,7 @@
 package nextstep.favorite.application;
 
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.payload.FavoriteRequest;
+import nextstep.favorite.payload.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.station.domain.Station;

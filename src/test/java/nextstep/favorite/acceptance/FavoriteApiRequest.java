@@ -2,7 +2,7 @@ package nextstep.favorite.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import nextstep.favorite.application.dto.FavoriteRequest;
+import nextstep.favorite.payload.FavoriteRequest;
 import org.springframework.http.MediaType;
 
 public class FavoriteApiRequest {

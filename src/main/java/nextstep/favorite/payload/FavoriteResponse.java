@@ -1,6 +1,5 @@
-package nextstep.favorite.application.dto;
+package nextstep.favorite.payload;
 
-import nextstep.favorite.domain.Favorite;
 import nextstep.station.payload.StationResponse;
 
 public class FavoriteResponse {

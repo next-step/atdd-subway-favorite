@@ -1,8 +1,8 @@
 package nextstep.favorite.ui;
 
 import nextstep.favorite.application.FavoriteService;
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.payload.FavoriteRequest;
+import nextstep.favorite.payload.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.ui.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
