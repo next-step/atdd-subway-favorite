@@ -1,5 +1,6 @@
-package nextstep.acceptance;
+package nextstep.station.acceptance;
 
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static nextstep.acceptance.StationApiRequest.*;
+import static nextstep.station.acceptance.StationApiRequest.*;
 import static nextstep.utils.HttpStatusAssertion.assertCreated;
 import static nextstep.utils.HttpStatusAssertion.assertNoContent;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +19,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     @Override
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
     }
 

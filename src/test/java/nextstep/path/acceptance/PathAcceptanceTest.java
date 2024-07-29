@@ -1,14 +1,15 @@
-package nextstep.acceptance;
+package nextstep.path.acceptance;
 
 import nextstep.line.payload.AddSectionRequest;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.acceptance.LineApiRequest.노선을_생성한다;
-import static nextstep.acceptance.SectionApiRequest.구간을_추가한다;
-import static nextstep.acceptance.StationApiRequest.역을_생성한다;
+import static nextstep.line.acceptance.LineApiRequest.노선을_생성한다;
+import static nextstep.line.acceptance.SectionApiRequest.구간을_추가한다;
+import static nextstep.station.acceptance.StationApiRequest.역을_생성한다;
 import static nextstep.utils.HttpStatusAssertion.assertBadRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,7 +33,7 @@ class PathAcceptanceTest extends AcceptanceTest {
      * 남부터미널역  --- *3호선* (3) ---   양재
      */
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
         교대역 = 역을_생성한다("교대역").jsonPath().getLong("id");
         강남역 = 역을_생성한다("강남역").jsonPath().getLong("id");

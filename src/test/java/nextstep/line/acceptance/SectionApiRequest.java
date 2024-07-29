@@ -1,4 +1,4 @@
-package nextstep.acceptance;
+package nextstep.line.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

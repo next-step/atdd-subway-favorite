@@ -1,18 +1,19 @@
-package nextstep.acceptance;
+package nextstep.line.acceptance;
 
 import io.restassured.path.json.JsonPath;
 import nextstep.line.payload.AddSectionRequest;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static nextstep.acceptance.LineApiRequest.노선을_생성한다;
-import static nextstep.acceptance.LineApiRequest.노선을_조회한다;
-import static nextstep.acceptance.SectionApiRequest.구간을_추가한다;
-import static nextstep.acceptance.SectionApiRequest.노선에서_역을_삭제한다;
-import static nextstep.acceptance.StationApiRequest.역을_생성한다;
+import static nextstep.line.acceptance.SectionApiRequest.구간을_추가한다;
+import static nextstep.line.acceptance.SectionApiRequest.노선에서_역을_삭제한다;
+import static nextstep.station.acceptance.StationApiRequest.역을_생성한다;
+import static nextstep.line.acceptance.LineApiRequest.노선을_생성한다;
+import static nextstep.line.acceptance.LineApiRequest.노선을_조회한다;
 import static nextstep.utils.HttpStatusAssertion.assertBadRequest;
 import static nextstep.utils.HttpStatusAssertion.assertNoContent;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +32,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @Override
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
         최초상행종점역 = 역을_생성한다("최초상행종점역").jsonPath().getLong("id");
         최초하행종점역 = 역을_생성한다("최초하행종점역").jsonPath().getLong("id");

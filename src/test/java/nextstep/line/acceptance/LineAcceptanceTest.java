@@ -1,5 +1,6 @@
-package nextstep.acceptance;
+package nextstep.line.acceptance;
 
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -7,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 
-import static nextstep.acceptance.LineApiRequest.*;
-import static nextstep.acceptance.StationApiRequest.역을_생성한다;
+import static nextstep.line.acceptance.LineApiRequest.*;
+import static nextstep.station.acceptance.StationApiRequest.역을_생성한다;
 import static nextstep.utils.HttpStatusAssertion.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,7 +24,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @Override
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
         강남역 = 역을_생성한다("강남역").jsonPath().getLong("id");
         선릉역 = 역을_생성한다("선릉역").jsonPath().getLong("id");

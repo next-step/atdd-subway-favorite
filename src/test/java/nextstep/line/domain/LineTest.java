@@ -1,7 +1,5 @@
 package nextstep.line.domain;
 
-import nextstep.line.domain.Line;
-import nextstep.line.domain.Section;
 import nextstep.line.exception.InsufficientStationsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
