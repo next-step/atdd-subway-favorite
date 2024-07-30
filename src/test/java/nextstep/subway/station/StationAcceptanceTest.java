@@ -52,8 +52,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
         String firstStationName = "station1";
         String secondStationName = "station2";
 
-        StationAssuredTemplate.createStation(firstStationName);
-        StationAssuredTemplate.createStation(secondStationName);
+        StationAssuredTemplate.createStationWithId(firstStationName);
+        StationAssuredTemplate.createStationWithId(secondStationName);
 
         // when
         List<String> stationList = StationAssuredTemplate.showStations()
@@ -77,11 +77,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
         String firstStationName = "station1";
         String secondStationName = "station2";
 
-        long stationId = StationAssuredTemplate.createStation(firstStationName)
-                .then()
-                .extract().jsonPath().getLong("id");
+        long stationId = StationAssuredTemplate.createStationWithId(firstStationName);
 
-        StationAssuredTemplate.createStation(secondStationName);
+        StationAssuredTemplate.createStationWithId(secondStationName);
         StationAssuredTemplate.deleteStation(stationId);
 
         // when

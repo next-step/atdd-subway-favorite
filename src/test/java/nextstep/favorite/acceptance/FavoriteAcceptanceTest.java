@@ -43,11 +43,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        this.강남역_id = StationAssuredTemplate.createStation(StationFixtures.강남역.getName()).then().extract().jsonPath().getLong("id");
-        this.양재역_id = StationAssuredTemplate.createStation(StationFixtures.양재역.getName()).then().extract().jsonPath().getLong("id");
-        this.논현역_id = StationAssuredTemplate.createStation(StationFixtures.논현역.getName()).then().extract().jsonPath().getLong("id");
-        this.고속터미널역_id = StationAssuredTemplate.createStation(StationFixtures.고속터미널역.getName()).then().extract().jsonPath().getLong("id");
-        this.교대역_id = StationAssuredTemplate.createStation(StationFixtures.교대역.getName()).then().extract().jsonPath().getLong("id");
+        this.강남역_id = StationAssuredTemplate.createStationWithId(StationFixtures.강남역.getName());
+        this.양재역_id = StationAssuredTemplate.createStationWithId(StationFixtures.양재역.getName());
+        this.논현역_id = StationAssuredTemplate.createStationWithId(StationFixtures.논현역.getName());
+        this.고속터미널역_id = StationAssuredTemplate.createStationWithId(StationFixtures.고속터미널역.getName());
+        this.교대역_id = StationAssuredTemplate.createStationWithId(StationFixtures.교대역.getName());
 
         long 신분당선_id = LineAssuredTemplate.createLine(new LineRequest("신분당선", "green", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
         SectionAssuredTemplate.addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
@@ -56,29 +56,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
         SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
 
-        this.사당역_id = StationAssuredTemplate.createStation(StationFixtures.사당역.getName()).then().extract().jsonPath().getLong("id");
+        this.사당역_id = StationAssuredTemplate.createStationWithId(StationFixtures.사당역.getName());
 
         MemberSteps.회원_생성_요청(email, password, age);
         this.accessToken = AuthAssuredTemplate.로그인(email, password)
                 .then().extract().jsonPath().getString("accessToken");
-    }
-
-    /**
-     * given 회원가입 후 로그인을 통해 토큰을 전달받습니다.
-     * when 전달받은 토큰으로 즐겨찾기 요청을 진행합니다.
-     * then 서로 연결되어 있지 않은 역을 요청했기 때문에 에러응답을 전달받습니다.
-     */
-    @DisplayName("즐겨찾기를 생성할 때 source 와 target 이 연결되어 있지 않다면 에러응답을 전달받습니다.")
-    @Test
-    void notConnect() {
-        // given
-        // when
-        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 사당역_id, 양재역_id)
-                .then().extract();
-
-        // then
-        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.NOT_CONNECTED_STATION.getMessage());
     }
 
     /**
@@ -105,26 +87,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         Tuple.tuple(new StationResponse(논현역_id, StationFixtures.논현역.getName()), new StationResponse(양재역_id, StationFixtures.양재역.getName())),
                         Tuple.tuple(new StationResponse(강남역_id, StationFixtures.강남역.getName()), new StationResponse(양재역_id, StationFixtures.양재역.getName()))
                 );
-    }
-
-    /**
-     * given 회원가입 후 로그인을 통해 토큰을 전달받습니다.
-     * when 전달받은 토큰으로 즐겨찾기 요청을 진행합니다, 서로 연결되어 있는 지하철 역이라면 정상 응답을 반환합니다.
-     * then 등록하지 않은 즐겨찾기를 삭제하는 경우 에러 응답을 받습니다.
-     */
-    @DisplayName("등록한 즐겨찾기가 아닌 데이터를 삭제하는 경우 에러 응답을 받습니다.")
-    @Test
-    void notEnrollFavorite() {
-        // given
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
-
-        // when
-        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_석제(accessToken, (long) Integer.MAX_VALUE)
-                .then().extract();
-
-        // then
-        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -155,6 +117,44 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .containsExactly(
                         Tuple.tuple(new StationResponse(논현역_id, StationFixtures.논현역.getName()), new StationResponse(양재역_id, StationFixtures.양재역.getName()))
                 );
+    }
+
+    /**
+     * given 회원가입 후 로그인을 통해 토큰을 전달받습니다.
+     * when 전달받은 토큰으로 즐겨찾기 요청을 진행합니다.
+     * then 서로 연결되어 있지 않은 역을 요청했기 때문에 에러응답을 전달받습니다.
+     */
+    @DisplayName("즐겨찾기를 생성할 때 source 와 target 이 연결되어 있지 않다면 에러응답을 전달받습니다.")
+    @Test
+    void notConnect() {
+        // given
+        // when
+        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 사당역_id, 양재역_id)
+                .then().extract();
+
+        // then
+        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.NOT_CONNECTED_STATION.getMessage());
+    }
+
+    /**
+     * given 회원가입 후 로그인을 통해 토큰을 전달받습니다.
+     * when 전달받은 토큰으로 즐겨찾기 요청을 진행합니다, 서로 연결되어 있는 지하철 역이라면 정상 응답을 반환합니다.
+     * then 등록하지 않은 즐겨찾기를 삭제하는 경우 에러 응답을 받습니다.
+     */
+    @DisplayName("등록한 즐겨찾기가 아닌 데이터를 삭제하는 경우 에러 응답을 받습니다.")
+    @Test
+    void notEnrollFavorite() {
+        // given
+        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
+        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
+
+        // when
+        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_석제(accessToken, (long) Integer.MAX_VALUE)
+                .then().extract();
+
+        // then
+        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
 

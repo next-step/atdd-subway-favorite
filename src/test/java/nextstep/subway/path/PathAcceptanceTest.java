@@ -3,11 +3,8 @@ package nextstep.subway.path;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.common.SubwayErrorMessage;
-import nextstep.subway.line.LineAssuredTemplate;
-import nextstep.subway.line.SectionAssuredTemplate;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAssuredTemplate;
 import nextstep.subway.station.StationFixtures;
 import nextstep.utils.AcceptanceTest;
 import org.assertj.core.api.Assertions;
@@ -16,6 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import static nextstep.subway.line.LineAssuredTemplate.*;
+import static nextstep.subway.line.SectionAssuredTemplate.*;
+import static nextstep.subway.station.StationAssuredTemplate.*;
 
 @DisplayName("경로 조회 기능")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -27,18 +28,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        long 강남역_id = StationAssuredTemplate.createStation(StationFixtures.강남역.getName()).then().extract().jsonPath().getLong("id");
-        this.양재역_id = StationAssuredTemplate.createStation(StationFixtures.양재역.getName()).then().extract().jsonPath().getLong("id");
-        this.논현역_id = StationAssuredTemplate.createStation(StationFixtures.논현역.getName()).then().extract().jsonPath().getLong("id");
-        this.고속터미널역_id = StationAssuredTemplate.createStation(StationFixtures.고속터미널역.getName()).then().extract().jsonPath().getLong("id");
-        this.교대역_id = StationAssuredTemplate.createStation(StationFixtures.교대역.getName()).then().extract().jsonPath().getLong("id");
+        long 강남역_id = createStationWithId(StationFixtures.강남역.getName());
+        this.양재역_id = createStationWithId(StationFixtures.양재역.getName());
+        this.논현역_id = createStationWithId(StationFixtures.논현역.getName());
+        this.고속터미널역_id = createStationWithId(StationFixtures.고속터미널역.getName());
+        this.교대역_id = createStationWithId(StationFixtures.교대역.getName());
 
-        long 신분당선_id = LineAssuredTemplate.createLine(new LineRequest("신분당선", "green", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
-        SectionAssuredTemplate.addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
+        long 신분당선_id = createLine(new LineRequest("신분당선", "green", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
+        addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
 
-        long 삼호선_id = LineAssuredTemplate.createLine(new LineRequest("3호선", "orange", 논현역_id, 고속터미널역_id, 2L)).then().extract().jsonPath().getLong("id");
-        SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
-        SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
+        long 삼호선_id = createLine(new LineRequest("3호선", "orange", 논현역_id, 고속터미널역_id, 2L)).then().extract().jsonPath().getLong("id");
+        addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
+        addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
     }
 
     /**
@@ -77,7 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void noConnected() {
         // given
-        long 사당역_id = StationAssuredTemplate.createStation(StationFixtures.사당역.getName()).then().extract().jsonPath().getLong("id");
+        long 사당역_id = createStationWithId(StationFixtures.사당역.getName());
         // when
         ExtractableResponse<Response> result = PathAssuredTemplate.searchShortestPath(사당역_id, 양재역_id)
                 .then().log().all()

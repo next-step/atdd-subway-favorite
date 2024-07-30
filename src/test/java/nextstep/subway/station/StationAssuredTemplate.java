@@ -8,6 +8,19 @@ import java.util.Map;
 
 public class StationAssuredTemplate {
 
+    public static Long createStationWithId(String stationName) {
+        Map<String, String> bodyData = Map.of("name", stationName);
+
+        return RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(bodyData)
+                .when()
+                .post("/stations")
+                .then().extract().jsonPath().getLong("id");
+    }
+
     public static Response createStation(String stationName) {
         Map<String, String> bodyData = Map.of("name", stationName);
 
@@ -19,6 +32,8 @@ public class StationAssuredTemplate {
                 .when()
                 .post("/stations");
     }
+
+
 
     public static Response deleteStation(long stationId) {
 

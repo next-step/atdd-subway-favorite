@@ -2,8 +2,6 @@ package nextstep.subway.path.infrastructure;
 
 import nextstep.subway.common.SubwayErrorMessage;
 import nextstep.subway.exception.NotConnectedStationException;
-import nextstep.subway.line.LineAssuredTemplate;
-import nextstep.subway.line.SectionAssuredTemplate;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
@@ -11,7 +9,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.ShortestPathService;
 import nextstep.subway.station.Station;
-import nextstep.subway.station.StationAssuredTemplate;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.StationRepository;
 import nextstep.utils.AcceptanceTest;
@@ -23,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static nextstep.subway.line.LineAssuredTemplate.*;
+import static nextstep.subway.line.SectionAssuredTemplate.*;
+import static nextstep.subway.station.StationAssuredTemplate.*;
 
 class JgraphtShortestPathServiceTest extends AcceptanceTest {
 
@@ -41,18 +42,18 @@ class JgraphtShortestPathServiceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        long 강남역_id = StationAssuredTemplate.createStation(StationFixtures.강남역.getName()).then().extract().jsonPath().getLong("id");
-        long 양재역_id = StationAssuredTemplate.createStation(StationFixtures.양재역.getName()).then().extract().jsonPath().getLong("id");
-        long 논현역_id = StationAssuredTemplate.createStation(StationFixtures.논현역.getName()).then().extract().jsonPath().getLong("id");
-        long 고속터미널역_id = StationAssuredTemplate.createStation(StationFixtures.고속터미널역.getName()).then().extract().jsonPath().getLong("id");
-        long 교대역_id = StationAssuredTemplate.createStation(StationFixtures.교대역.getName()).then().extract().jsonPath().getLong("id");
+        long 강남역_id = createStationWithId(StationFixtures.강남역.getName());
+        long 양재역_id = createStationWithId(StationFixtures.양재역.getName());
+        long 논현역_id = createStationWithId(StationFixtures.논현역.getName());
+        long 고속터미널역_id = createStationWithId(StationFixtures.고속터미널역.getName());
+        long 교대역_id = createStationWithId(StationFixtures.교대역.getName());
 
-        long 신분당선_id = LineAssuredTemplate.createLine(new LineRequest("신분당선", "red", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
-        long 삼호선_id = LineAssuredTemplate.createLine(new LineRequest("3호선", "orange", 논현역_id, 고속터미널역_id, 2L)).then().extract().jsonPath().getLong("id");
+        long 신분당선_id = createLine(new LineRequest("신분당선", "red", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
+        long 삼호선_id = createLine(new LineRequest("3호선", "orange", 논현역_id, 고속터미널역_id, 2L)).then().extract().jsonPath().getLong("id");
 
-        SectionAssuredTemplate.addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
-        SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
-        SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
+        addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
+        addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
+        addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
 
         this.논현역_id = 논현역_id;
         this.양재역_id = 양재역_id;
@@ -67,9 +68,9 @@ class JgraphtShortestPathServiceTest extends AcceptanceTest {
     @Test
     void notConnect() {
         // given
-        long 사당역_id = StationAssuredTemplate.createStation(StationFixtures.사당역.getName()).then().extract().jsonPath().getLong("id");
-        long 방배역_id = StationAssuredTemplate.createStation(StationFixtures.방배역.getName()).then().extract().jsonPath().getLong("id");
-        LineAssuredTemplate.createLine(new LineRequest("2호선", "green", 사당역_id, 방배역_id, 4L))
+        long 사당역_id = createStationWithId(StationFixtures.사당역.getName());
+        long 방배역_id = createStationWithId(StationFixtures.방배역.getName());
+        createLine(new LineRequest("2호선", "green", 사당역_id, 방배역_id, 4L))
                 .then().extract().jsonPath().getLong("id");
 
         Station sourceStation = stationRepository.findById(논현역_id).get();
