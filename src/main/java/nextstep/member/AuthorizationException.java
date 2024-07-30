@@ -5,10 +5,10 @@ import nextstep.exceptions.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthenticationException extends BaseException {
+@ResponseStatus(HttpStatus.FORBIDDEN)
+public class AuthorizationException extends BaseException {
 
-    public AuthenticationException() {
-        super(ErrorMessage.UNAUTHORIZED);
+    public AuthorizationException() {
+        super(ErrorMessage.FORBIDDEN);
     }
 }

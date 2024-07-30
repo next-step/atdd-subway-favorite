@@ -11,7 +11,12 @@ public enum ErrorMessage {
     SECTION_NOT_FOUND("존재하지 않는 구간입니다."),
     POSITIVE_DISTANCE("거리는 1이상이어야 합니다."),
     DIFFERENT_STATIONS("상행역과 하행역은 다른 역이어야 합니다."),
-    PATH_NOT_FOUND("경로를 찾을 수 없습니다")
+    PATH_NOT_FOUND("경로를 찾을 수 없습니다"),
+
+    FAVORITE_NOT_FOUND("즐겨찾기를 찾을 수 없습니다"),
+
+    UNAUTHORIZED("인증되지 않은 사용자입니다."),
+    FORBIDDEN("권한이 없습니다")
     ;
     private final String message;
 
