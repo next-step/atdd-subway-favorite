@@ -20,10 +20,17 @@ import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+
+import static nextstep.favorite.acceptance.FavoriteAssuredTemplate.*;
+import static nextstep.subway.line.LineAssuredTemplate.*;
+import static nextstep.subway.line.SectionAssuredTemplate.*;
+import static nextstep.subway.station.StationAssuredTemplate.*;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -43,20 +50,20 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        this.강남역_id = StationAssuredTemplate.createStationWithId(StationFixtures.강남역.getName());
-        this.양재역_id = StationAssuredTemplate.createStationWithId(StationFixtures.양재역.getName());
-        this.논현역_id = StationAssuredTemplate.createStationWithId(StationFixtures.논현역.getName());
-        this.고속터미널역_id = StationAssuredTemplate.createStationWithId(StationFixtures.고속터미널역.getName());
-        this.교대역_id = StationAssuredTemplate.createStationWithId(StationFixtures.교대역.getName());
+        this.강남역_id = createStationWithId(StationFixtures.강남역.getName());
+        this.양재역_id = createStationWithId(StationFixtures.양재역.getName());
+        this.논현역_id = createStationWithId(StationFixtures.논현역.getName());
+        this.고속터미널역_id = createStationWithId(StationFixtures.고속터미널역.getName());
+        this.교대역_id = createStationWithId(StationFixtures.교대역.getName());
 
-        long 신분당선_id = LineAssuredTemplate.createLine(new LineRequest("신분당선", "green", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
-        SectionAssuredTemplate.addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
+        long 신분당선_id = createLine(new LineRequest("신분당선", "green", 논현역_id, 강남역_id, 4L)).then().extract().jsonPath().getLong("id");
+        addSection(신분당선_id, new SectionRequest(강남역_id, 양재역_id, 3L));
 
-        long 삼호선_id = LineAssuredTemplate.createLine(new LineRequest("3호선", "orange", 논현역_id, 고속터미널역_id, 2L)).then().extract().jsonPath().getLong("id");
-        SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
-        SectionAssuredTemplate.addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
+        long 삼호선_id = createLine(new LineRequest("3호선", "orange", 논현역_id, 고속터미널역_id, 2L)).then().extract().jsonPath().getLong("id");
+        addSection(삼호선_id, new SectionRequest(고속터미널역_id, 교대역_id, 1L));
+        addSection(삼호선_id, new SectionRequest(교대역_id, 양재역_id, 3L));
 
-        this.사당역_id = StationAssuredTemplate.createStationWithId(StationFixtures.사당역.getName());
+        this.사당역_id = createStationWithId(StationFixtures.사당역.getName());
 
         MemberSteps.회원_생성_요청(email, password, age);
         this.accessToken = AuthAssuredTemplate.로그인(email, password)
@@ -72,11 +79,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void successFavorite() {
         // given
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
+        즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
+        즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
 
         // when
-        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_조회(accessToken)
+        ExtractableResponse<Response> result = 즐겨찾기_조회(accessToken)
                 .then().log().all()
                 .extract();
 
@@ -98,18 +105,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         // given
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
-        String location = FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id)
+        즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
+        String location = 즐겨찾기_등록(accessToken, 강남역_id, 양재역_id)
                 .then().extract().header(HttpHeaders.LOCATION);
 
         String[] split = location.split("/");
         String favoriteId = split[split.length - 1];
 
         // when
-        FavoriteAssuredTemplate.즐겨찾기_석제(accessToken, Long.valueOf(favoriteId));
+        즐겨찾기_석제(accessToken, Long.valueOf(favoriteId));
 
         // then
-        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_조회(accessToken)
+        ExtractableResponse<Response> result = 즐겨찾기_조회(accessToken)
                 .then().log().all().extract();
 
         Assertions.assertThat(result.body().as(new TypeRef<List<FavoriteResponse>>() {})).hasSize(1)
@@ -129,9 +136,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void notConnect() {
         // given
         // when
-        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 사당역_id, 양재역_id)
+        ExtractableResponse<Response> result = 즐겨찾기_등록(accessToken, 사당역_id, 양재역_id)
                 .then().extract();
 
+        // then
+        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.NOT_CONNECTED_STATION.getMessage());
+    }
+
+    /**
+     * given 회원가입 후 로그인을 통해 토큰을 전달받습니다.
+     * when 전달받은 토큰으로 즐겨찾기 요청을 진행합니다.
+     * then 서로 동일한 source, target 역을 요청했기 때문에 에러응답을 전달받습니다.
+     */
+    @DisplayName("즐겨찾기를 생성할 때 source 와 target 이 같다면 에러 응답을 전달받습니다.")
+    @Test
+    void sameStation() {
+        // given
+        // when
+        ExtractableResponse<Response> result = 즐겨찾기_등록(accessToken, 사당역_id, 사당역_id)
+                .then().extract();
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         Assertions.assertThat(result.body().asString()).isEqualTo(SubwayErrorMessage.NOT_CONNECTED_STATION.getMessage());
@@ -146,15 +170,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void notEnrollFavorite() {
         // given
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
-        FavoriteAssuredTemplate.즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
+        즐겨찾기_등록(accessToken, 논현역_id, 양재역_id);
+        즐겨찾기_등록(accessToken, 강남역_id, 양재역_id);
 
         // when
-        ExtractableResponse<Response> result = FavoriteAssuredTemplate.즐겨찾기_석제(accessToken, (long) Integer.MAX_VALUE)
+        ExtractableResponse<Response> result = 즐겨찾기_석제(accessToken, (long) Integer.MAX_VALUE)
                 .then().extract();
 
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest(name = "잘못된 토큰으로 삭제요청을 보내는 경우 에러 응답을 전달받습니다.")
+    @ValueSource(strings = {"", "Bearer   asd", "   bearer asdf"})
+    void noToken(String accessToken) {
+        // given
+        즐겨찾기_등록(this.accessToken, 논현역_id, 양재역_id);
+        즐겨찾기_등록(this.accessToken, 강남역_id, 양재역_id);
+        // when
+        ExtractableResponse<Response> result = 즐겨찾기_석제(accessToken, (long) Integer.MAX_VALUE)
+                .then().extract();
+        // then
+        Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
 
