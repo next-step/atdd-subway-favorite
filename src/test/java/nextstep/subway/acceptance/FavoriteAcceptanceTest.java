@@ -29,6 +29,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Long 강남역Id;
     private Long 양재역Id;
     private Long 남부터미널역Id;
+    private Long 미지역Id;
+    private String 인증_토큰;
 
     @BeforeEach
     void setUpData() {
@@ -36,6 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역Id = 역_생성("강남역").jsonPath().getLong("id");
         양재역Id = 역_생성("양재역").jsonPath().getLong("id");
         남부터미널역Id = 역_생성("남부터미널역").jsonPath().getLong("id");
+        미지역Id = 역_생성("미지역").jsonPath().getLong("id");
 
         노선_생성_Extract(노선_생성_매개변수("2호선", "bg-green-600", 교대역Id, 강남역Id, 10L));
         노선_생성_Extract(노선_생성_매개변수("신분당선", "bg-gre-600", 강남역Id, 양재역Id, 10L));
@@ -44,6 +47,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         노선에_새로운_구간_추가_Extract(구간_생성_매개변수(남부터미널역Id, 양재역Id, 3L), 삼호선Id);
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
+        인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
     }
     /**
      * given 3개의 노선이 등록돼있고, (교대-강남 [10], 강남-양재 [10], 교대-남부터미널 [2], 남부터미널-양재 [3])
@@ -55,14 +59,46 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 정상 생성")
     void 즐겨찾기_생성() {
         // given
-        String 인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
-
         Map<String, String> 경로_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
+
+        // when then
+        ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
+
+        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * given 로그인돼있고
+     * when 인증정보와 연결되지않은 경로를 즐겨찾기로 등록하면
+     * then 오류가 발생한다.
+     */
+    @Test
+    @DisplayName("연결되지않은 경로 즐겨찾기 생성 시 오류발생")
+    void 연결되지_않은_즐겨찾기_생성_오류_발생() {
+        // given
+        Map<String, String> 경로_매개변수 = 경로_매개변수(교대역Id, 미지역Id);
         // when
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
         // then
-        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * given 로그인돼있고
+     * when 인증정보와 존재하지않는 경로를 즐겨찾기로 등록하면
+     * then 오류가 발생한다.
+     */
+    @Test
+    @DisplayName("존재하지않는 경로 즐겨찾기 생성 시 오류발생")
+    void 존재하지_않는_즐겨찾기_생성_오류_발생() {
+        // given
+        Map<String, String> 경로_매개변수 = 경로_매개변수(교대역Id, 9999L);
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
+
+        // then
+        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     /**
@@ -74,7 +110,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 정상 조회")
     void 즐겨찾기_조회() {
         // given
-        String 인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
         Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
         Map<String, String> 강남_양재_매개변수 = 경로_매개변수(강남역Id, 양재역Id);
         즐겨찾기_생성(인증_토큰, 교대_양재_매개변수);
@@ -105,7 +140,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 정상 삭제")
     void 즐겨찾기_삭제() {
         // given
-        String 인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
         Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
         Map<String, String> 강남_양재_매개변수 = 경로_매개변수(강남역Id, 양재역Id);
         즐겨찾기_생성(인증_토큰, 교대_양재_매개변수);
@@ -116,11 +150,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 두번째_즐겨찾기_Id = 즐겨찾기_목록.get(1).getId();
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = RestAssured.given().log().all()
-                .auth().oauth2(인증_토큰)
-                .when().delete("/favorites/" + 첫번째_즐겨찾기_Id)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제(첫번째_즐겨찾기_Id);
 
         // then
         assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -131,6 +161,113 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         FavoriteResponse 즐겨찾기 = 삭제_후_즐겨찾기_목록.get(0);
         assertThat(즐겨찾기.getId()).isEqualTo(두번째_즐겨찾기_Id);
+    }
+
+    /**
+     * when 인증정보 없이 즐겨찾기를 생성하면
+     * then 401 Unauthorized 응답
+     */
+    @Test
+    @DisplayName("비로그인 즐겨찾기 생성 401 Unauthorized 응답")
+    void 비로그인_즐겨찾기_생성() {
+        // given
+        Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
+        // when
+        ExtractableResponse<Response> 비로그인_생성_응답 = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(교대_양재_매개변수)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(비로그인_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 인증정보 없이 즐겨찾기를 조회하면
+     * then 401 Unauthorized 응답
+     */
+    @Test
+    @DisplayName("비로그인 즐겨찾기 조회 401 Unauthorized 응답")
+    void 비로그인_즐겨찾기_조회() {
+        // when
+        ExtractableResponse<Response> 비로그인_조회_응답 = RestAssured.given().log().all()
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(비로그인_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 인증정보 없이 즐겨찾기를 삭제하면
+     * then 401 Unauthorized 응답
+     */
+    @Test
+    @DisplayName("비로그인 즐겨찾기 삭제 401 Unauthorized 응답")
+    void 비로그인_즐겨찾기_삭제() {
+        // when
+        ExtractableResponse<Response> 비로그인_삭제_응답 = RestAssured.given().log().all()
+                .when().delete("/favorites/" + 1L)
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(비로그인_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 유효하지않는 토큰으로 즐겨찾기를 생성하면
+     * then 401 Unauthorized 응답
+     */
+    @Test
+    @DisplayName("유효하지않는 토큰으로 즐겨찾기 생성 401 Unauthorized 응답")
+    void 유효하지_않는_토큰으로_즐겨찾기_생성() {
+        // given
+        Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
+        // when
+        ExtractableResponse<Response> 비로그인_생성_응답 = RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(교대_양재_매개변수)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(비로그인_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 유효하지않는 토큰으로 즐겨찾기를 조회하면
+     * then 401 Unauthorized 응답
+     */
+    @Test
+    @DisplayName("유효하지않는 토큰으로 즐겨찾기 조회 401 Unauthorized 응답")
+    void 유효하지_않는_토큰으로_즐겨찾기_조회() {
+        // when
+        ExtractableResponse<Response> 비로그인_조회_응답 = RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(비로그인_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * when 유효하지않는 토큰으로 즐겨찾기를 삭제하면
+     * then 401 Unauthorized 응답
+     */
+    @Test
+    @DisplayName("유효하지않는 토큰으로 즐겨찾기 삭제 401 Unauthorized 응답")
+    void 유효하지_않는_토큰으로_즐겨찾기_삭제() {
+        // when
+        ExtractableResponse<Response> 비로그인_삭제_응답 = RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .when().delete("/favorites/" + 1L)
+                .then().log().all()
+                .extract();
+        // then
+        assertThat(비로그인_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private static ExtractableResponse<Response> 즐겨찾기_목록_조회(String 인증_토큰) {
@@ -147,6 +284,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(경로_매개변수)
                 .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제(Long 즐겨찾기Id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(인증_토큰)
+                .when().delete("/favorites/" + 즐겨찾기Id)
                 .then().log().all()
                 .extract();
     }
