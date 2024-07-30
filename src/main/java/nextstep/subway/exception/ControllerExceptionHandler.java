@@ -12,7 +12,7 @@ public class ControllerExceptionHandler {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler({IllegalSectionException.class, IllegalPathException.class})
+    @ExceptionHandler({IllegalSectionException.class, IllegalPathException.class, IllegalFavoriteException.class})
     public ResponseEntity<Void> handleBadRequestException() {
         return ResponseEntity.badRequest().build();
     }
