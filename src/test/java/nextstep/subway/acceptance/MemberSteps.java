@@ -3,6 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -63,5 +64,37 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static String 로그인_토큰_생성(String email, String password, int age) {
+        Map<String, String> 로그인_매개변수 = 로그인_매개변수(email, password, String.valueOf(age));
+        ExtractableResponse<Response> response = 로그인_토큰_생성_응답(로그인_매개변수);
+        return response.jsonPath().getString("accessToken");
+    }
+
+    public static Map<String, String> 로그인_매개변수(String email, String password, String age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+        return params;
+    }
+
+    public static ExtractableResponse<Response> 로그인_토큰_생성_응답(Map<String, String> params) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회(String 로그인_토큰) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(로그인_토큰)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
     }
 }

@@ -1,9 +1,14 @@
 package nextstep.subway.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import static nextstep.subway.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +77,47 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String 로그인_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
 
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회(로그인_토큰);
+
+        JsonPath 내_정보_조회_JsonPath = 내_정보_조회_응답.jsonPath();
+        String email = 내_정보_조회_JsonPath.getString("email");
+        int age = 내_정보_조회_JsonPath.getInt("age");
+
+        assertThat(email).isEqualTo(EMAIL);
+        assertThat(age).isEqualTo(AGE);
     }
+
+    @DisplayName("비 로그인 상태에서 내 정보조회 시 401 Unauthorized 응답")
+    @Test
+    void 비_로그인_내_정보_조회() {
+        // when
+        ExtractableResponse<Response> 내_정보_조회_응답 = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(내_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("유효하지 않는 토큰으로 내 정보조회 시 401 Unauthorized 응답")
+    @Test
+    void 유효하지_않는_토큰_내_정보_조회() {
+        // when
+        ExtractableResponse<Response> 내_정보_조회_응답 = RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(내_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }

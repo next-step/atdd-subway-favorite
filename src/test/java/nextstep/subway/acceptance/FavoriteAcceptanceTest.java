@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AcceptanceTestUtil.*;
+import static nextstep.subway.acceptance.MemberSteps.로그인_토큰_생성;
 import static nextstep.subway.acceptance.MemberSteps.회원_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -294,29 +295,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().delete("/favorites/" + 즐겨찾기Id)
                 .then().log().all()
                 .extract();
-    }
-
-    private ExtractableResponse<Response> 로그인_토큰_생성_응답(Map<String, String> params) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/login/token")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-    }
-
-    private String 로그인_토큰_생성(String email, String password, int age) {
-        Map<String, String> 로그인_매개변수 = 로그인_매개변수(email, password, String.valueOf(age));
-        ExtractableResponse<Response> response = 로그인_토큰_생성_응답(로그인_매개변수);
-        return response.jsonPath().getString("accessToken");
-    }
-
-    private Map<String, String> 로그인_매개변수(String email, String password, String age) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", EMAIL);
-        params.put("password", PASSWORD);
-        params.put("age", AGE + "");
-        return params;
     }
 
     private Map<String, String> 경로_매개변수(Long source, Long target) {
