@@ -18,7 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest(properties = {"github.url.profile=http://localhost:8090/github"})
+@SpringBootTest(
+    properties = {"github.url.profile=http://localhost:8090/github"},
+    webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @WireMockTest(httpPort = 8090)
 @DisplayName("GithubProfileClient 단위 테스트")
 class GithubProfileClientTest {

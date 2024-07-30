@@ -30,7 +30,7 @@ public class GithubTokenClient {
   }
 
   public String getAccessToken(String code) {
-    GithubAccessTokenRequest request = GithubAccessTokenRequest.of(clientId, clientSecret, code);
+    GithubAccessTokenRequest request = new GithubAccessTokenRequest(clientId, clientSecret, code);
 
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
