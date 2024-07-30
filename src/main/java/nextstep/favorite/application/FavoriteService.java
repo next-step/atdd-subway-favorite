@@ -10,15 +10,12 @@ import nextstep.favorite.exception.NoFavoriteException;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.service.PathService;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,11 +28,6 @@ public class FavoriteService {
     private final PathService pathService;
     private final MemberService memberService;
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
     public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
         pathService.findShortestPath(request.getSource(), request.getTarget());
@@ -44,11 +36,6 @@ public class FavoriteService {
         return favoriteRepository.save(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
@@ -63,10 +50,6 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param favoriteId
-     */
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
 

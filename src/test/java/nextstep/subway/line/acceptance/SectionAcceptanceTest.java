@@ -108,7 +108,6 @@ public class SectionAcceptanceTest extends AcceptanceTest {
      * When 해당 노선에 신규 구간을 추가합니다.
      * Then 노선 조회 시 추가된 신규 구간이 정상적으로 응답으로 보입니다.
      */
-    // TODO: 7/17/24 좀 더 다양한 케이스에서 성공하는지 확인해야함, 특히 응답의 순서에 주의할 필요 있음
     @DisplayName("새로운 구간을 등록합니다.")
     @Test
     void addSection() {
