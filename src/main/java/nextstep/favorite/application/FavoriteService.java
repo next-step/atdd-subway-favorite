@@ -7,9 +7,7 @@ import nextstep.favorite.common.FavoriteErrorMessage;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.NoFavoriteException;
-import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
-import nextstep.member.domain.Member;
 import nextstep.subway.path.service.PathService;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
@@ -26,7 +24,6 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
     private final PathService pathService;
-    private final MemberService memberService;
 
     public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
         pathService.findShortestPath(request.getSource(), request.getTarget());
