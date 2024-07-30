@@ -3,16 +3,16 @@ package nextstep.subway.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.favorite.application.dto.FavoriteResponse;
 import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.acceptance.AcceptanceTestUtil.*;
@@ -42,6 +42,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 삼호선_생성_응답 = 노선_생성_Extract(노선_생성_매개변수("3호선", "bg-green-600", 교대역Id, 남부터미널역Id, 2L));
         long 삼호선Id = 삼호선_생성_응답.jsonPath().getLong("id");
         노선에_새로운_구간_추가_Extract(구간_생성_매개변수(남부터미널역Id, 양재역Id, 3L), 삼호선Id);
+
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
     }
     /**
      * given 3개의 노선이 등록돼있고, (교대-강남 [10], 강남-양재 [10], 교대-남부터미널 [2], 남부터미널-양재 [3])
@@ -50,28 +52,62 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * then 즐겨찾기로 등록된다.
      */
     @Test
-    @DisplayName("즐겨찾기 생성")
+    @DisplayName("즐겨찾기 정상 생성")
     void 즐겨찾기_생성() {
         // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-        Map<String, String> 로그인_매개변수 = 로그인_매개변수(EMAIL, PASSWORD, String.valueOf(AGE));
-        ExtractableResponse<Response> response = 로그인_토큰_생성_응답(로그인_매개변수);
-        String accessToken = response.jsonPath().getString("accessToken");
+        String 인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
 
-        Map<String, String> 경로_매개변수 = new HashMap<>();
-        경로_매개변수.put("source", 교대역Id.toString());
-        경로_매개변수.put("target", 남부터미널역Id.toString());
+        Map<String, String> 경로_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
         // when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = RestAssured.given().log().all()
+        ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
+
+        // then
+        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    /**
+     * given 계정에 즐겨찾기가 2개 등록돼있고
+     * when 인증정보와 함께 즐겨찾기를 조회하면
+     * then 즐겨찾기 정보가 리턴된다.
+     */
+    @Test
+    @DisplayName("즐겨찾기 정상 조회")
+    void 즐겨찾기_조회() {
+        // given
+        String 인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
+        Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
+        Map<String, String> 강남_양재_매개변수 = 경로_매개변수(강남역Id, 양재역Id);
+        즐겨찾기_생성(인증_토큰, 교대_양재_매개변수);
+        즐겨찾기_생성(인증_토큰, 강남_양재_매개변수);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_응답 = RestAssured.given().log().all()
+                .auth().oauth2(인증_토큰)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+
+        // then
+        List<FavoriteResponse> 즐겨찾기_목록 = 즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(즐겨찾기_목록).hasSize(2);
+        FavoriteResponse 첫번째_즐겨찾기 = 즐겨찾기_목록.get(0);
+        assertThat(첫번째_즐겨찾기.getSource().getId()).isEqualTo(교대역Id);
+        assertThat(첫번째_즐겨찾기.getTarget().getId()).isEqualTo(양재역Id);
+
+        FavoriteResponse 두번쨰_즐겨찾기 = 즐겨찾기_목록.get(1);
+        assertThat(두번쨰_즐겨찾기.getSource().getId()).isEqualTo(강남역Id);
+        assertThat(두번쨰_즐겨찾기.getTarget().getId()).isEqualTo(양재역Id);
+
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Map<String, String> 경로_매개변수) {
+        return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(경로_매개변수)
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
-
-        // then
-        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     private ExtractableResponse<Response> 로그인_토큰_생성_응답(Map<String, String> params) {
@@ -83,11 +119,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
     }
 
+    private String 로그인_토큰_생성(String email, String password, int age) {
+        Map<String, String> 로그인_매개변수 = 로그인_매개변수(email, password, String.valueOf(age));
+        ExtractableResponse<Response> response = 로그인_토큰_생성_응답(로그인_매개변수);
+        return response.jsonPath().getString("accessToken");
+    }
+
     private Map<String, String> 로그인_매개변수(String email, String password, String age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL);
         params.put("password", PASSWORD);
         params.put("age", AGE + "");
         return params;
+    }
+
+    private Map<String, String> 경로_매개변수(Long source, Long target) {
+        Map<String, String> param = new HashMap<>();
+        param.put("source", source.toString());
+        param.put("target", target.toString());
+        return param;
     }
 }

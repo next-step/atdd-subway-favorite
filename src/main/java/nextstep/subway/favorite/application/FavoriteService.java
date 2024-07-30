@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.dto.PathRequest;
 import nextstep.subway.dto.PathResponse;
+import nextstep.subway.dto.StationResponse;
 import nextstep.subway.entity.Station;
 import nextstep.subway.exception.NoSuchStationException;
 import nextstep.subway.favorite.application.dto.FavoriteRequest;
@@ -16,6 +17,7 @@ import nextstep.subway.service.PathService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -49,14 +51,12 @@ public class FavoriteService {
         return favorite.getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
     public List<FavoriteResponse> findFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+
+        return favorites.stream()
+                .map(f -> FavoriteResponse.from(f.getId(), f.getSourceStation(), f.getTargetStation()))
+                .collect(Collectors.toList());
     }
 
     /**
