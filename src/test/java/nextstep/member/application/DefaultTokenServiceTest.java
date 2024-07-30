@@ -31,12 +31,10 @@ class DefaultTokenServiceTest {
     @DisplayName("정상적으로 토큰이 생성된다")
     void createToken_Success() {
         // given
-        String email = "test@example.com";
-        String password = "password";
-        memberService.createMember(new MemberRequest(email, password, 30));
+        memberService.createMember(new MemberRequest(사용자1.getEmail(), DEFAULT_PASSWORD, DEFAULT_AGE));
 
-        // when
-        TokenResponse tokenResponse = tokenService.createToken(email, password);
+        // given & when
+        TokenResponse tokenResponse = tokenService.createToken(사용자1.getEmail(), DEFAULT_PASSWORD);
 
         // then
         assertThat(tokenResponse).isNotNull();
@@ -44,11 +42,11 @@ class DefaultTokenServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 회원으로 토큰을 생성하려고 하면 오류가 발생한다 발생하는 케이스")
+    @DisplayName("존재하지 않는 회원으로 토큰을 생성하려고 하면 오류가 발생한다")
     void createToken_MemberNotFound() {
         // given
-        String email = "non-existent@example.com";
-        String password = "password";
+        String email = PROFILE_없는_사용자.getEmail();
+        String password = DEFAULT_PASSWORD;
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -60,19 +58,18 @@ class DefaultTokenServiceTest {
     @DisplayName("틀린 비밀번호로 토큰 생성을 요청하면 오류가 발생한다")
     void createToken_InvalidPassword() {
         // given
-        String email = "test@example.com";
-        String password = "password";
-        memberService.createMember(new MemberRequest(email, password, 30));
+        memberService.createMember(new MemberRequest(사용자3.getEmail(), DEFAULT_PASSWORD, DEFAULT_AGE));
 
         // when & then
         assertThatExceptionOfType(AuthenticationException.class)
-            .isThrownBy(() -> tokenService.createToken(email, "wrong_password"));
+            .isThrownBy(() -> tokenService.createToken(사용자3.getEmail(), WRONG_PASSWORD));
     }
 
     @Test
     @DisplayName("정상적으로 Github를 통해 토큰이 생성된다.")
     void createTokenFromGithub_Success() {
         // given
+        memberService.createMember(new MemberRequest(사용자1.getEmail(), DEFAULT_PASSWORD, DEFAULT_AGE));
         String code = 사용자1.getCode();
 
         // when
@@ -87,7 +84,7 @@ class DefaultTokenServiceTest {
     @DisplayName("잘못된 코드 값으로 Github를 통해 토큰을 생성하려고 할 때 오류가 발생한다")
     void createTokenFromGithub_InvalidAccessToken() {
         // given
-        String code = "invalid_code";
+        String code = CODE_없는_사용자.getCode();
 
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class)
@@ -99,8 +96,8 @@ class DefaultTokenServiceTest {
     @DisplayName("github를 통해 토큰을 생성하려고 할 때 존재하지 않는 회원에 대해 회원이 가입되고 토큰이 생성된다")
     void createTokenFromGithub_NewMember() {
         // given
-        String code = 사용자2.getCode();
-        String email = 사용자2.getEmail();
+        String code = PROFILE_없는_사용자.getCode();
+        String email = PROFILE_없는_사용자.getEmail();
 
         // when
         TokenResponse tokenResponse = tokenService.createTokenFromGithub(code);
