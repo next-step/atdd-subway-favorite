@@ -38,7 +38,7 @@ public class DefaultFavoriteService implements FavoriteService {
     }
 
     public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmailOrThrow(loginMember.getEmail());
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
@@ -51,7 +51,7 @@ public class DefaultFavoriteService implements FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmailOrThrow(loginMember.getEmail());
 
         return favoriteRepository.findByMemberId(member.getId())
             .stream()
@@ -68,7 +68,7 @@ public class DefaultFavoriteService implements FavoriteService {
     }
 
     public void deleteFavorite(Long id, LoginMember loginMember) {
-        Member foundMember = memberService.findMemberByEmail(loginMember.getEmail());
+        Member foundMember = memberService.findMemberByEmailOrThrow(loginMember.getEmail());
 
         if (foundMember == null) {
             throw new AuthenticationException();

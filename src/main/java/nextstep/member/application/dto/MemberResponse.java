@@ -31,4 +31,8 @@ public class MemberResponse {
     public Integer getAge() {
         return age;
     }
+
+    public Member toMember() {
+        return new Member(id, email, null, age);
+    }
 }

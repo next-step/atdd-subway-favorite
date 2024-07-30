@@ -15,11 +15,12 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.member.acceptance.AuthSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
+    public static final String EMAIL = "email@example.com";
+    public static final String PASSWORD = "default_password";
     public static final Integer AGE = 20;
 
     @Autowired
@@ -51,5 +52,16 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    @Test
+    @DisplayName("Github 로그인을 통해 토큰을 발급받는다.")
+    void githubAuth() {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", "code");
+
+        ExtractableResponse<Response> response = github_로그인_요청(params);
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }

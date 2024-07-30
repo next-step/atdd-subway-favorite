@@ -36,13 +36,18 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
+    public Member findMemberByEmailOrThrow(String email) {
         return memberRepository.findByEmail(email)
             .orElseThrow(() -> new IllegalArgumentException(MEMBER_NOT_FOUND_MESSAGE));
     }
 
+    public Member findMemberByEmailOrNull(String email) {
+        return memberRepository.findByEmail(email).orElse(null);
+    }
+
+
     public MemberResponse findMe(LoginMember loginMember) {
-        Member member = findMemberByEmail(loginMember.getEmail());
+        Member member = findMemberByEmailOrThrow(loginMember.getEmail());
         return MemberResponse.of(member);
     }
 }
