@@ -81,11 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성(인증_토큰, 강남_양재_매개변수);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_목록_응답 = RestAssured.given().log().all()
-                .auth().oauth2(인증_토큰)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 즐겨찾기_목록_응답 = 즐겨찾기_목록_조회(인증_토큰);
 
         // then
         List<FavoriteResponse> 즐겨찾기_목록 = 즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
@@ -98,6 +94,51 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(두번쨰_즐겨찾기.getSource().getId()).isEqualTo(강남역Id);
         assertThat(두번쨰_즐겨찾기.getTarget().getId()).isEqualTo(양재역Id);
 
+    }
+
+    /**
+     * given 계정에 즐겨찾기가 2개 등록돼있고
+     * when 인증정보와 함께 즐겨찾기를 삭제하면
+     * then 즐겨찾기가 삭제된다.
+     */
+    @Test
+    @DisplayName("즐겨찾기 정상 삭제")
+    void 즐겨찾기_삭제() {
+        // given
+        String 인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
+        Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
+        Map<String, String> 강남_양재_매개변수 = 경로_매개변수(강남역Id, 양재역Id);
+        즐겨찾기_생성(인증_토큰, 교대_양재_매개변수);
+        즐겨찾기_생성(인증_토큰, 강남_양재_매개변수);
+        ExtractableResponse<Response> 즐겨찾기_목록_응답 = 즐겨찾기_목록_조회(인증_토큰);
+        List<FavoriteResponse> 즐겨찾기_목록 = 즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
+        Long 첫번째_즐겨찾기_Id = 즐겨찾기_목록.get(0).getId();
+        Long 두번째_즐겨찾기_Id = 즐겨찾기_목록.get(1).getId();
+        
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = RestAssured.given().log().all()
+                .auth().oauth2(인증_토큰)
+                .when().delete("/favorites/" + 첫번째_즐겨찾기_Id)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        ExtractableResponse<Response> 삭제_후_즐겨찾기_목록_응답 = 즐겨찾기_목록_조회(인증_토큰);
+        List<FavoriteResponse> 삭제_후_즐겨찾기_목록 = 삭제_후_즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(삭제_후_즐겨찾기_목록).hasSize(1);
+
+        FavoriteResponse 즐겨찾기 = 삭제_후_즐겨찾기_목록.get(0);
+        assertThat(즐겨찾기.getId()).isEqualTo(두번째_즐겨찾기_Id);
+    }
+
+    private static ExtractableResponse<Response> 즐겨찾기_목록_조회(String 인증_토큰) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(인증_토큰)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Map<String, String> 경로_매개변수) {
