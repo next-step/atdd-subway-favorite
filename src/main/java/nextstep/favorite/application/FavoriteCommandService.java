@@ -1,8 +1,11 @@
 package nextstep.favorite.application;
 
+import nextstep.exceptions.ErrorMessage;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exceptions.FavoriteNotFoundException;
 import nextstep.favorite.payload.FavoriteRequest;
+import nextstep.member.AuthorizationException;
 import nextstep.station.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +28,14 @@ public class FavoriteCommandService {
         return saved.getId();
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+
+    public void deleteFavorite(final Long memberId, final Long id) {
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new FavoriteNotFoundException(ErrorMessage.FAVORITE_NOT_FOUND));
+
+        if(!favorite.hasAuthority(memberId)) {
+            throw new AuthorizationException();
+        }
+        favoriteRepository.delete(favorite);
     }
 }

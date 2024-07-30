@@ -40,4 +40,8 @@ public class Favorite {
     public Long getId() {
         return id;
     }
+
+    public boolean hasAuthority(final Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }
