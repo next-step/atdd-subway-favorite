@@ -3,6 +3,8 @@ package nextstep.member.ui;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 class AuthenticationPrincipalArgumentResolverTest {
 
@@ -30,12 +34,14 @@ class AuthenticationPrincipalArgumentResolverTest {
     private NativeWebRequest nativeWebRequest;
     @Mock
     private WebDataBinderFactory binderFactory;
+    @Mock
+    private MemberRepository memberRepository;
 
     @DisplayName("토큰 정보가 없으면 인증 에러가 발생합니다.")
     @Test
     void noToken() throws Exception {
         // given
-        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
         Mockito.doReturn(null).when(nativeWebRequest).getHeader("Authorization");
         // when
         // then
@@ -48,7 +54,7 @@ class AuthenticationPrincipalArgumentResolverTest {
     void basicToken() {
         // given
         String basic = "Basic accessToken";
-        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
         Mockito.doReturn(basic).when(nativeWebRequest).getHeader("Authorization");
         // when
         // then
@@ -61,7 +67,7 @@ class AuthenticationPrincipalArgumentResolverTest {
     void noAccessToken() {
         // given
         String bearer = "Bearer ";
-        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
         Mockito.doReturn(bearer).when(nativeWebRequest).getHeader("Authorization");
         // when
         // then
@@ -76,7 +82,7 @@ class AuthenticationPrincipalArgumentResolverTest {
         String accessToken = "accessToken";
         String bearer = prefix + accessToken;
         Mockito.doReturn(bearer).when(nativeWebRequest).getHeader("Authorization");
-        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
         // when
         // then
         Assertions.assertThatThrownBy(() -> argumentResolver.resolveArgument(methodParameter, modelAndViewContainer, nativeWebRequest, binderFactory))
@@ -90,14 +96,15 @@ class AuthenticationPrincipalArgumentResolverTest {
         String token = "accessToken";
         String bearer = "Bearer " + token;
         String email = "email@test.com";
-        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider);
+        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
         Mockito.doReturn(bearer).when(nativeWebRequest).getHeader("Authorization");
         Mockito.doReturn(true).when(jwtTokenProvider).validateToken(token);
         Mockito.doReturn(email).when(jwtTokenProvider).getPrincipal(token);
+        Mockito.doReturn(Optional.of(new Member(1L, email))).when(memberRepository).findByEmail(email);
 
         // when
         LoginMember loginMember = (LoginMember) argumentResolver.resolveArgument(methodParameter, modelAndViewContainer, nativeWebRequest, binderFactory);
         // then
-        Assertions.assertThat(loginMember).isEqualTo(new LoginMember(email));
+        Assertions.assertThat(loginMember).isEqualTo(new LoginMember(1L, email));
     }
 }

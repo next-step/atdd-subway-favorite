@@ -29,16 +29,14 @@ public class FavoriteService {
     private final MemberService memberService;
 
     public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
         pathService.findShortestPath(request.getSource(), request.getTarget());
-        Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
 
         return favoriteRepository.save(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
 
         List<Long> stationIds = favorites.stream().flatMap(favorite -> Stream.of(favorite.getSourceStationId(), favorite.getTargetStationId()))
                 .distinct()
@@ -51,9 +49,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
-
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, member.getId())
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
                 .orElseThrow(() -> new NoFavoriteException(FavoriteErrorMessage.NO_FAVORITE_EXIST));
 
         favoriteRepository.delete(favorite);
