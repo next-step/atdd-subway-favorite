@@ -54,7 +54,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         @Test
         void whenShowShortestPAth() {
             var 결과 = PathApiRequest.최단거리를_반환한다(교대역, 양재역);
-            var ids =결과.jsonPath().getList("stations.id" , Long.class);
+            var ids = 결과.jsonPath().getList("stations.id", Long.class);
             assertThat(ids).containsExactly(교대역, 남부터미널역, 양재역);
         }
 
@@ -75,10 +75,9 @@ class PathAcceptanceTest extends AcceptanceTest {
             var 도착역없음 = PathApiRequest.최단거리를_반환한다(교대역, 유령역);
             var 출발역없음 = PathApiRequest.최단거리를_반환한다(유령역, 교대역);
             // Then
-            assertAll(() -> {
-                assertBadRequest(도착역없음.statusCode());
-                assertBadRequest(출발역없음.statusCode());
-            });
+            assertAll(() -> assertBadRequest(도착역없음.statusCode()),
+                    () -> assertBadRequest(출발역없음.statusCode())
+            );
         }
 
         @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 400코드를 반환한다")
