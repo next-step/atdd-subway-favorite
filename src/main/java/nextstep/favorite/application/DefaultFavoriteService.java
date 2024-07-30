@@ -1,5 +1,10 @@
 package nextstep.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
@@ -12,14 +17,6 @@ import nextstep.member.domain.Member;
 import nextstep.subway.domain.model.Station;
 import nextstep.subway.domain.service.PathService;
 import nextstep.subway.domain.service.StationService;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import java.util.Collections;
-import java.util.List;
-
-import java.util.stream.Collectors;
 
 @Service
 public class DefaultFavoriteService implements FavoriteService {
@@ -41,7 +38,7 @@ public class DefaultFavoriteService implements FavoriteService {
     }
 
     public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmailOrThrow(loginMember.getEmail());
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
@@ -49,40 +46,34 @@ public class DefaultFavoriteService implements FavoriteService {
             throw new IllegalArgumentException(PATH_NOT_FOUND_MESSAGE);
         }
 
-        Favorite favorite = new Favorite(source, target, member);
+        Favorite favorite = new Favorite(source.getId(), target.getId(), member.getId());
         return favoriteRepository.save(favorite);
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmailOrThrow(loginMember.getEmail());
 
-        return findFavoritesByMember(member).stream()
-            .map(FavoriteResponse::of)
+        return favoriteRepository.findByMemberId(member.getId())
+            .stream()
+            .map(this::buildFavoriteResponse)
             .collect(Collectors.toList());
     }
 
-    private List<Favorite> findFavoritesByMember(Member member) {
-        List<Favorite> favorites = favoriteRepository.findByMember(member);
-
-        if (CollectionUtils.isEmpty(favorites)) {
-            return Collections.emptyList();
-        }
-
-        return favorites;
+    private FavoriteResponse buildFavoriteResponse(Favorite favorite) {
+        return FavoriteResponse.of(
+            favorite.getId(),
+            stationService.findStationById(favorite.getSourceStationId()),
+            stationService.findStationById(favorite.getTargetStationId())
+        );
     }
 
     public void deleteFavorite(Long id, LoginMember loginMember) {
-        Favorite favorite = findFavoriteByIdOrThrow(id);
+        Member foundMember = memberService.findMemberByEmailOrThrow(loginMember.getEmail());
 
-        if (!favorite.matchesMemberEmail(loginMember.getEmail())) {
+        if (foundMember == null) {
             throw new AuthenticationException();
         }
 
         favoriteRepository.deleteById(id);
-    }
-
-    private Favorite findFavoriteByIdOrThrow(Long id) {
-        return favoriteRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FAVORITE_MESSAGE));
     }
 }

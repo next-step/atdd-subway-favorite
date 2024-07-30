@@ -10,7 +10,7 @@ import nextstep.member.domain.Member;
 public interface FavoriteRepository {
     Optional<Favorite> findById(Long id);
 
-    List<Favorite> findByMember(Member member);
+    List<Favorite> findByMemberId(Long memberId);
 
     void deleteById(Long id);
 

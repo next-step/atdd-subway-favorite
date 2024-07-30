@@ -1,0 +1,5 @@
+github:
+  client-id: test_client_id
+  client-secret: test_client_secret
+  token-url: http://localhost:8080/github/login/oauth/access_token
+  user-url: http://localhost:8080/github/user

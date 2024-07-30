@@ -1,5 +1,7 @@
 package nextstep.member.application.dto;
 
+import org.springframework.util.StringUtils;
+
 public class TokenRequest {
     private String email;
     private String password;
@@ -7,9 +9,13 @@ public class TokenRequest {
     public TokenRequest() {
     }
 
-    public TokenRequest(String email, String password) {
+    public TokenRequest(String email, String password, String code) {
         this.email = email;
         this.password = password;
+    }
+
+    public static TokenRequest of(String email, String password) {
+        return new TokenRequest(email, password, null);
     }
 
     public String getEmail() {
