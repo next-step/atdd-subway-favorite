@@ -31,6 +31,10 @@ public class Favorite {
         this.targetStation = targetStation;
     }
 
+    public boolean isSameMember(Member member) {
+        return this.member.equals(member);
+    }
+
     public Long getId() {
         return id;
     }

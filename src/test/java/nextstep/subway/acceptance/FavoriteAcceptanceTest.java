@@ -114,7 +114,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteResponse> 즐겨찾기_목록 = 즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
         Long 첫번째_즐겨찾기_Id = 즐겨찾기_목록.get(0).getId();
         Long 두번째_즐겨찾기_Id = 즐겨찾기_목록.get(1).getId();
-        
+
         // when
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = RestAssured.given().log().all()
                 .auth().oauth2(인증_토큰)

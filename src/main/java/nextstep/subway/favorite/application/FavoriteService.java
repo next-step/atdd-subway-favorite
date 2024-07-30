@@ -1,9 +1,8 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.dto.PathRequest;
-import nextstep.subway.dto.PathResponse;
-import nextstep.subway.dto.StationResponse;
 import nextstep.subway.entity.Station;
+import nextstep.subway.exception.IllegalFavoriteException;
 import nextstep.subway.exception.NoSuchStationException;
 import nextstep.subway.favorite.application.dto.FavoriteRequest;
 import nextstep.subway.favorite.application.dto.FavoriteResponse;
@@ -42,7 +41,7 @@ public class FavoriteService {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
 
-        pathService.getPath(new PathRequest(request.getSource(), request.getTarget()));
+        checkPathConnectionOrThrow(request);
 
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
 
@@ -59,12 +58,21 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new IllegalFavoriteException("존재하지 않는 즐겨찾기입니다."));
+
+        if (!favorite.isSameMember(member)) {
+            throw new IllegalFavoriteException("즐겨찾기를 삭제할 수 없습니다.");
+        }
+
         favoriteRepository.deleteById(id);
+    }
+
+    private void checkPathConnectionOrThrow(FavoriteRequest request) {
+        pathService.getPath(new PathRequest(request.getSource(), request.getTarget()));
     }
 
     private Station getStation(Long stationId) {
