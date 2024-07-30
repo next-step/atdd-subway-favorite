@@ -50,8 +50,9 @@ public class FavoriteService {
         return favorite.getId();
     }
 
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
 
         return favorites.stream()
                 .map(f -> FavoriteResponse.from(f.getId(), f.getSourceStation(), f.getTargetStation()))
