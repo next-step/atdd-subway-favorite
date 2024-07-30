@@ -1,7 +1,6 @@
 package nextstep.subway.setup;
 
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,12 +20,8 @@ public abstract class BaseTestSetup {
     public int port;
 
     @BeforeEach
-    public void before() {
+    public void setup() {
         RestAssured.port = port;
-    }
-
-    @AfterEach
-    public void after() {
         DatabaseCleaner.clean(applicationContext);
     }
 }
