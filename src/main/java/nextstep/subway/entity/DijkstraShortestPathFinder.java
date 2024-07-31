@@ -31,7 +31,7 @@ public class DijkstraShortestPathFinder implements PathFinder {
 
         long shortestDistance = (long) dijkstraShortestPath.getPathWeight(source, target);
 
-        return PathResponse.from(shortestPath, shortestDistance);
+        return PathResponse.of(shortestPath, shortestDistance);
     }
 
     private static void validateEqualStation(Station source, Station target) {
