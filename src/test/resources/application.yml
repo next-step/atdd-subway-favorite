@@ -1,3 +1,7 @@
+spring:
+  profiles:
+    active: test
+
 github:
   client-id: test_client_id
   client-secret: test_client_secret

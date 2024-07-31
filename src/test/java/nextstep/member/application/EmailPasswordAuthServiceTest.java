@@ -1,4 +1,4 @@
-package nextstep.member.tobe.application;
+package nextstep.member.application;
 
 import static nextstep.member.application.MemberService.*;
 import static nextstep.member.application.dto.GithubResponses.*;
@@ -9,13 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
+import nextstep.member.AuthenticationException;
+import nextstep.member.UsernameNotFoundException;
+import nextstep.member.application.EmailPasswordAuthService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.tobe.AuthenticationException;
-import nextstep.member.tobe.application.dto.TokenRequest;
-import nextstep.member.tobe.application.dto.TokenResponse;
+import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.TokenResponse;
 
+@DisplayName("EmailPasswordAuthService 테스트")
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class EmailPasswordAuthServiceTest {
@@ -56,9 +61,8 @@ class EmailPasswordAuthServiceTest {
         String password = DEFAULT_PASSWORD;
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> authService.login(TokenRequest.ofEmailAndPassword(email, password)))
-            .withMessageContaining(MEMBER_NOT_FOUND_MESSAGE);
+        assertThatExceptionOfType(UsernameNotFoundException.class)
+            .isThrownBy(() -> authService.login(TokenRequest.ofEmailAndPassword(email, password)));
     }
 
     @Test

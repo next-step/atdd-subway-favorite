@@ -1,20 +1,18 @@
-package nextstep.member.tobe.application;
+package nextstep.member.application;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.domain.GithubClient;
 import nextstep.member.domain.Member;
-import nextstep.member.tobe.application.dto.TokenRequest;
-import nextstep.member.tobe.application.dto.TokenResponse;
-import nextstep.member.tobe.domain.AuthService;
+import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.domain.AuthService;
 
 @Service
 @Qualifier("githubAuthService")
@@ -41,8 +39,13 @@ public class GithubAuthService implements AuthService {
 
     @Override
     public TokenResponse login(TokenRequest request) {
-        GithubAccessTokenRequest githubAccessTokenRequest = GithubAccessTokenRequest.of(clientId, clientSecret,
-            request.getCode(), null, null);
+        GithubAccessTokenRequest githubAccessTokenRequest = GithubAccessTokenRequest.of(
+            clientId,
+            clientSecret,
+            request.getCode(),
+            null,
+            null
+        );
         GithubAccessTokenResponse accessTokenResponse = githubClient.getAccessToken(githubAccessTokenRequest);
         GithubProfileResponse profile = githubClient.getUserProfile(accessTokenResponse.getAccessToken());
 

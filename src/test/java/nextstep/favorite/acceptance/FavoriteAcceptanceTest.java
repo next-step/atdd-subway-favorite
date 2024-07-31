@@ -1,5 +1,5 @@
 package nextstep.favorite.acceptance;
-/*
+
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.subway.acceptance.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -100,4 +100,4 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
-*/
+

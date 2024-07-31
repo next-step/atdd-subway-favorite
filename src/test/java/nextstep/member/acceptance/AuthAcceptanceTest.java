@@ -57,7 +57,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 로그인_요청(params);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test

@@ -1,15 +1,14 @@
-package nextstep.member.tobe.application;
+package nextstep.member.application;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.tobe.AuthenticationException;
-import nextstep.member.tobe.application.dto.TokenRequest;
-import nextstep.member.tobe.application.dto.TokenResponse;
-import nextstep.member.tobe.domain.AuthService;
+import nextstep.member.AuthenticationException;
+import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.domain.AuthService;
+import nextstep.member.domain.UserDetails;
+import nextstep.member.domain.UserDetailsService;
 
 @Service
 @Qualifier("emailPasswordAuthService")

@@ -1,19 +1,22 @@
 package nextstep.member.application.dto;
 
 public class TokenRequest {
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
+    private final String code;
 
-    public TokenRequest() {
-    }
-
-    public TokenRequest(String email, String password, String code) {
+    private TokenRequest(String email, String password, String code) {
         this.email = email;
         this.password = password;
+        this.code = code;
     }
 
-    public static TokenRequest of(String email, String password) {
+    public static TokenRequest ofEmailAndPassword(String email, String password) {
         return new TokenRequest(email, password, null);
+    }
+
+    public static TokenRequest ofCode(String code) {
+        return new TokenRequest(null, null, code);
     }
 
     public String getEmail() {
@@ -22,5 +25,9 @@ public class TokenRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

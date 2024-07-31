@@ -1,4 +1,4 @@
-package nextstep.member.tobe.application;
+package nextstep.member.application;
 
 import static nextstep.member.application.dto.GithubResponses.*;
 import static org.assertj.core.api.Assertions.*;
@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
-import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
+import nextstep.member.application.dto.TokenRequest;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
-import nextstep.member.tobe.application.dto.TokenRequest;
-import nextstep.member.tobe.application.dto.TokenResponse;
 
+@DisplayName("GithubAuthService 테스트")
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class GithubAuthServiceTest {

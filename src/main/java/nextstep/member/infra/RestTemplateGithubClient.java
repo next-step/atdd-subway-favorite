@@ -14,6 +14,7 @@ import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.domain.GithubClient;
 
+@Component
 public class RestTemplateGithubClient implements GithubClient {
 
     private final RestTemplate restTemplate;
