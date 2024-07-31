@@ -24,10 +24,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        교대역Id = 역_생성("교대역").jsonPath().getLong("id");
-        강남역Id = 역_생성("강남역").jsonPath().getLong("id");
-        양재역Id = 역_생성("양재역").jsonPath().getLong("id");
-        남부터미널역Id = 역_생성("남부터미널역").jsonPath().getLong("id");
+        교대역Id = 역_생성_후_id_추출("교대역");
+        강남역Id = 역_생성_후_id_추출("강남역");
+        양재역Id = 역_생성_후_id_추출("양재역");
+        남부터미널역Id = 역_생성_후_id_추출("남부터미널역");
     }
 
     /**

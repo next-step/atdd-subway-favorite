@@ -26,9 +26,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        신사역Id = 역_생성("신사역").jsonPath().getLong("id");
-        논현역Id = 역_생성("논현역").jsonPath().getLong("id");
-        강남역Id = 역_생성("강남역").jsonPath().getLong("id");
+        신사역Id = 역_생성_후_id_추출("신사역");
+        논현역Id = 역_생성_후_id_추출("논현역");
+        강남역Id = 역_생성_후_id_추출("강남역");
         신분당선_요청_매개변수 = 노선_생성_매개변수("신분당선", "bg-red-600", 신사역Id, 논현역Id, 10L);
 
     }

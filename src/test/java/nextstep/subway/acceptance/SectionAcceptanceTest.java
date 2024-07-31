@@ -26,11 +26,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        신사역Id = 역_생성("신사역").jsonPath().getLong("id");
-        논현역Id = 역_생성("논현역").jsonPath().getLong("id");
-        강남역Id = 역_생성("강남역").jsonPath().getLong("id");
-        판교역Id = 역_생성("판교역").jsonPath().getLong("id");
-        광교역Id = 역_생성("광교역").jsonPath().getLong("id");
+        신사역Id = 역_생성_후_id_추출("신사역");
+        논현역Id = 역_생성_후_id_추출("논현역");
+        강남역Id = 역_생성_후_id_추출("강남역");
+        판교역Id = 역_생성_후_id_추출("판교역");
+        광교역Id = 역_생성_후_id_추출("광교역");
     }
 
     /**

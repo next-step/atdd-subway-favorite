@@ -34,6 +34,10 @@ public final class AcceptanceTestUtil {
                 .extract();
     }
 
+    static Long 역_생성_후_id_추출(String stationName) {
+        return 역_생성(stationName).jsonPath().getLong("id");
+    }
+
     static ExtractableResponse<Response> 역_생성(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);

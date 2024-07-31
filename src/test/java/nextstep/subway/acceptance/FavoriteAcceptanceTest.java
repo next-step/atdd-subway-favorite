@@ -35,14 +35,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        교대역Id = 역_생성("교대역").jsonPath().getLong("id");
-        강남역Id = 역_생성("강남역").jsonPath().getLong("id");
-        양재역Id = 역_생성("양재역").jsonPath().getLong("id");
-        남부터미널역Id = 역_생성("남부터미널역").jsonPath().getLong("id");
-        미지역Id = 역_생성("미지역").jsonPath().getLong("id");
+        교대역Id = 역_생성_후_id_추출("교대역");
+        강남역Id = 역_생성_후_id_추출("강남역");
+        양재역Id = 역_생성_후_id_추출("양재역");
+        남부터미널역Id = 역_생성_후_id_추출("남부터미널역");
+        미지역Id = 역_생성_후_id_추출("미지역");
 
         노선_생성_Extract(노선_생성_매개변수("2호선", "bg-green-600", 교대역Id, 강남역Id, 10L));
         노선_생성_Extract(노선_생성_매개변수("신분당선", "bg-gre-600", 강남역Id, 양재역Id, 10L));
+
         ExtractableResponse<Response> 삼호선_생성_응답 = 노선_생성_Extract(노선_생성_매개변수("3호선", "bg-green-600", 교대역Id, 남부터미널역Id, 2L));
         long 삼호선Id = 삼호선_생성_응답.jsonPath().getLong("id");
         노선에_새로운_구간_추가_Extract(구간_생성_매개변수(남부터미널역Id, 양재역Id, 3L), 삼호선Id);
