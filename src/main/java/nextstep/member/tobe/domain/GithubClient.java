@@ -1,4 +1,4 @@
-package nextstep.member.domain;
+package nextstep.member.tobe.domain;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;

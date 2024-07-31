@@ -13,14 +13,15 @@ import nextstep.member.domain.GithubClient;
 @Primary
 public class FakeGithubClient implements GithubClient {
     @Override
-    public GithubAccessTokenResponse getAccessTokenFromGithub(GithubAccessTokenRequest request) {
+    public GithubAccessTokenResponse getAccessToken(GithubAccessTokenRequest request) {
         GithubResponses response = GithubResponses.findByCode(request.getCode());
         return new GithubAccessTokenResponse(response.getAccessToken(), "bearer", "repo,user");
     }
 
     @Override
-    public GithubProfileResponse getUserProfileFromGithub(String accessToken) {
+    public GithubProfileResponse getUserProfile(String accessToken) {
         GithubResponses response = GithubResponses.findByAccessToken(accessToken);
         return new GithubProfileResponse(response.getEmail(), 30);
     }
 }
+

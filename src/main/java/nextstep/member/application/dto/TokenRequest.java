@@ -1,7 +1,5 @@
 package nextstep.member.application.dto;
 
-import org.springframework.util.StringUtils;
-
 public class TokenRequest {
     private String email;
     private String password;

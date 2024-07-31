@@ -44,8 +44,8 @@ public class DefaultTokenService implements TokenService {
 
     public TokenResponse createTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(clientId, clientSecret, code, null, null);
-        GithubAccessTokenResponse accessTokenResponse = githubClient.getAccessTokenFromGithub(githubAccessTokenRequest);
-        GithubProfileResponse profile = githubClient.getUserProfileFromGithub(accessTokenResponse.getAccessToken());
+        GithubAccessTokenResponse accessTokenResponse = githubClient.getAccessToken(githubAccessTokenRequest);
+        GithubProfileResponse profile = githubClient.getUserProfile(accessTokenResponse.getAccessToken());
 
         Member member = memberService.findMemberByEmailOrNull(profile.getEmail());
         if (member == null) {

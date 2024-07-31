@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.TokenService;
 
-@RestController
-@RequestMapping("/login")
 public class AuthController {
     private final TokenService tokenService;
 

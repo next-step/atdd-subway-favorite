@@ -14,7 +14,6 @@ import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.domain.GithubClient;
 
-@Component
 public class RestTemplateGithubClient implements GithubClient {
 
     private final RestTemplate restTemplate;
@@ -35,7 +34,7 @@ public class RestTemplateGithubClient implements GithubClient {
     }
 
     @Override
-    public GithubAccessTokenResponse getAccessTokenFromGithub(GithubAccessTokenRequest request) {
+    public GithubAccessTokenResponse getAccessToken(GithubAccessTokenRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
@@ -46,7 +45,7 @@ public class RestTemplateGithubClient implements GithubClient {
     }
 
     @Override
-    public GithubProfileResponse getUserProfileFromGithub(String accessToken) {
+    public GithubProfileResponse getUserProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
 
