@@ -14,11 +14,13 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.repository.StationRepository;
 import nextstep.subway.service.PathService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private StationRepository stationRepository;
@@ -35,6 +37,7 @@ public class FavoriteService {
         this.memberService = memberService;
     }
 
+    @Transactional
     public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
@@ -59,6 +62,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
 
