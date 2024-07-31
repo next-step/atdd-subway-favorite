@@ -16,7 +16,7 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
+        Member member = memberService.findMemberByEmailOrThrow(email);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
         }

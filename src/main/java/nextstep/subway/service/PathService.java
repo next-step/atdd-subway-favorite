@@ -26,7 +26,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse getPath(PathRequest pathRequest) {
+    public PathResponse getPathOrThrow(PathRequest pathRequest) {
         if (pathRequest.getSource() == null|| pathRequest.getTarget() == null) {
             throw new IllegalPathException("경로를 찾을수 없습니다.");
         }

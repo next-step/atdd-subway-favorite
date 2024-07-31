@@ -39,7 +39,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    public Member findMemberByEmail(String email) {
+    public Member findMemberByEmailOrThrow(String email) {
         return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 
