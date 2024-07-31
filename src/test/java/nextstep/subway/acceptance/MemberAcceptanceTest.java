@@ -95,11 +95,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 비_로그인_내_정보_조회() {
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 내_정보_조회_응답 = 비로그인_내_정보_조회_요청();
 
         //then
         assertThat(내_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -109,15 +105,26 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void 유효하지_않는_토큰_내_정보_조회() {
         // when
-        ExtractableResponse<Response> 내_정보_조회_응답 = RestAssured.given().log().all()
-                .auth().oauth2("invalid token")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 내_정보_조회_응답 = 유효하지_않는_토큰_내_정보_조회_요청();
 
         //then
         assertThat(내_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    private static ExtractableResponse<Response> 유효하지_않는_토큰_내_정보_조회_요청() {
+        return RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private static ExtractableResponse<Response> 비로그인_내_정보_조회_요청() {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
 }

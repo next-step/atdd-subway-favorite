@@ -172,16 +172,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      */
     @Test
     @DisplayName("비로그인 즐겨찾기 생성 401 Unauthorized 응답")
-    void 비로그인_즐겨찾기_생성() {
+    void 비로그인_즐겨찾기_생성_요청() {
         // given
         Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
         // when
-        ExtractableResponse<Response> 비로그인_생성_응답 = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(교대_양재_매개변수)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 비로그인_생성_응답 = 비로그인_즐겨찾기_생성_요청(교대_양재_매개변수);
         // then
         assertThat(비로그인_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -194,10 +189,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("비로그인 즐겨찾기 조회 401 Unauthorized 응답")
     void 비로그인_즐겨찾기_조회() {
         // when
-        ExtractableResponse<Response> 비로그인_조회_응답 = RestAssured.given().log().all()
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 비로그인_조회_응답 = 비로그인_즐겨찾기_조회_요청();
         // then
         assertThat(비로그인_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -210,10 +202,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("비로그인 즐겨찾기 삭제 401 Unauthorized 응답")
     void 비로그인_즐겨찾기_삭제() {
         // when
-        ExtractableResponse<Response> 비로그인_삭제_응답 = RestAssured.given().log().all()
-                .when().delete("/favorites/" + 1L)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 비로그인_삭제_응답 = 비로그인_즐겨찾기_삭제_요청();
         // then
         assertThat(비로그인_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -228,15 +217,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         Map<String, String> 교대_양재_매개변수 = 경로_매개변수(교대역Id, 양재역Id);
         // when
-        ExtractableResponse<Response> 비로그인_생성_응답 = RestAssured.given().log().all()
-                .auth().oauth2("invalid token")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(교대_양재_매개변수)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 유효하지_않는_토큰_즐겨찾기_생성_요청(교대_양재_매개변수);
         // then
-        assertThat(비로그인_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -247,13 +230,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효하지않는 토큰으로 즐겨찾기 조회 401 Unauthorized 응답")
     void 유효하지_않는_토큰으로_즐겨찾기_조회() {
         // when
-        ExtractableResponse<Response> 비로그인_조회_응답 = RestAssured.given().log().all()
-                .auth().oauth2("invalid token")
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 유효하지_않는_토큰_즐겨찾기_조회_요청();
         // then
-        assertThat(비로그인_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
@@ -264,13 +243,46 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효하지않는 토큰으로 즐겨찾기 삭제 401 Unauthorized 응답")
     void 유효하지_않는_토큰으로_즐겨찾기_삭제() {
         // when
-        ExtractableResponse<Response> 비로그인_삭제_응답 = RestAssured.given().log().all()
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 유효하지_않는_토큰_즐겨찾기_삭제_요청();
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_삭제_요청() {
+        return RestAssured.given().log().all()
                 .auth().oauth2("invalid token")
                 .when().delete("/favorites/" + 1L)
                 .then().log().all()
                 .extract();
-        // then
-        assertThat(비로그인_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+    private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_조회_요청() {
+        return RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+    private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_생성_요청(Map<String, String> 교대_양재_매개변수) {
+        return RestAssured.given().log().all()
+                .auth().oauth2("invalid token")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(교대_양재_매개변수)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+    private static ExtractableResponse<Response> 비로그인_즐겨찾기_삭제_요청() {
+        return RestAssured.given().log().all()
+                .when().delete("/favorites/" + 1L)
+                .then().log().all()
+                .extract();
+    }
+
+    private static ExtractableResponse<Response> 비로그인_즐겨찾기_조회_요청() {
+        return RestAssured.given().log().all()
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private static ExtractableResponse<Response> 즐겨찾기_목록_조회(String 인증_토큰) {
@@ -304,5 +316,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         param.put("source", source.toString());
         param.put("target", target.toString());
         return param;
+    }
+
+    private static ExtractableResponse<Response> 비로그인_즐겨찾기_생성_요청(Map<String, String> 교대_양재_매개변수) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(교대_양재_매개변수)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
     }
 }
