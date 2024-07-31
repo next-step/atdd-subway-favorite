@@ -2,6 +2,8 @@ package nextstep.subway.domain.entity.favorite;
 
 import lombok.Getter;
 import nextstep.subway.domain.command.FavoriteCommand;
+import nextstep.subway.domain.exception.SubwayDomainException;
+import nextstep.subway.domain.exception.SubwayDomainExceptionType;
 
 import javax.persistence.*;
 
@@ -32,5 +34,11 @@ public class Favorite {
 
     public static Favorite create(FavoriteCommand.CreateFavorite command) {
         return new Favorite(command.getMemberId(), command.getSource(), command.getTarget());
+    }
+
+    public void verifyOwner(Long memberId) {
+        if (!this.memberId.equals(memberId)) {
+            throw new SubwayDomainException(SubwayDomainExceptionType.UNAUTHORIZED_FAVORITE);
+        }
     }
 }
