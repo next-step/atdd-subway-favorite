@@ -8,7 +8,8 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
-    public FavoriteResponse() {}
+    public FavoriteResponse() {
+    }
 
     private FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
@@ -24,23 +25,11 @@ public class FavoriteResponse {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public StationResponse getSource() {
         return source;
     }
 
-    public void setSource(StationResponse source) {
-        this.source = source;
-    }
-
     public StationResponse getTarget() {
         return target;
-    }
-
-    public void setTarget(StationResponse target) {
-        this.target = target;
     }
 }

@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class DijkstraShortestPathFinder implements PathFinder{
+public class DijkstraShortestPathFinder implements PathFinder {
     public static PathFinderBuilder searchBuilder() {
         return new PathFinderBuilder(new DijkstraShortestPathFinder());
     }

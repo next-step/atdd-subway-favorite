@@ -32,12 +32,12 @@ public class PathFinderBuilder {
     }
 
     public PathFinderBuilder setSource(Station station) {
-        this.source=station;
+        this.source = station;
         return this;
     }
 
     public PathFinderBuilder setTarget(Station station) {
-        this.target=station;
+        this.target = station;
         return this;
     }
 

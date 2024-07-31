@@ -50,9 +50,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성_요청(EMAIL, PASSWORD, AGE);
         인증_토큰 = 로그인_토큰_생성(EMAIL, PASSWORD, AGE);
     }
+
     /**
      * given 3개의 노선이 등록돼있고, (교대-강남 [10], 강남-양재 [10], 교대-남부터미널 [2], 남부터미널-양재 [3])
-     *       인증정보를 가지고있다.
+     * 인증정보를 가지고있다.
      * when 인증정보와 경로를 즐겨찾기로 등록하면
      * then 즐겨찾기로 등록된다.
      */

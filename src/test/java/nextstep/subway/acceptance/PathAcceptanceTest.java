@@ -8,8 +8,6 @@ import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
@@ -23,9 +21,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long 강남역Id;
     private Long 양재역Id;
     private Long 남부터미널역Id;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     void setUpData() {
