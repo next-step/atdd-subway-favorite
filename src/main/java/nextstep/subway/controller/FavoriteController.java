@@ -39,8 +39,10 @@ public class FavoriteController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<FavoriteView.Main>> getFavorites() {
-        List<FavoriteView.Main> favorites = favoriteReader.getFavorites();
+    public ResponseEntity<List<FavoriteView.Main>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        Member member = memberReader.getMe(loginMember.getEmail());
+
+        List<FavoriteView.Main> favorites = favoriteReader.getFavoritesByMemberId(member.getId());
         return ResponseEntity.ok().body(favorites);
     }
 

@@ -28,8 +28,8 @@ public class FavoriteReader {
         return joinAndTransform(favorite, stationMap);
     }
 
-    public List<FavoriteView.Main> getFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
+    public List<FavoriteView.Main> getFavoritesByMemberId(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         List<Long> stationIds = favorites.stream()
                 .flatMap(favorite -> Stream.of(favorite.getSourceStationId(), favorite.getTargetStationId()))
                 .collect(Collectors.toList());
