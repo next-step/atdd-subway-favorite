@@ -10,11 +10,11 @@ import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
+import nextstep.member.domain.GithubClient;
 import nextstep.member.domain.Member;
 import nextstep.member.tobe.application.dto.TokenRequest;
 import nextstep.member.tobe.application.dto.TokenResponse;
 import nextstep.member.tobe.domain.AuthService;
-import nextstep.member.tobe.domain.GithubClient;
 
 @Service
 @Qualifier("githubAuthService")

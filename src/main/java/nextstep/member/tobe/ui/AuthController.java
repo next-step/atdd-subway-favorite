@@ -32,7 +32,7 @@ public class AuthController {
 
     @PostMapping("/github")
     public ResponseEntity<TokenResponse> loginWithGithub(@RequestBody String code) {
-        TokenRequest request = TokenRequest.of(code);
+        TokenRequest request = TokenRequest.ofCode(code);
         TokenResponse tokenResponse = githubAuthService.login(request);
         return ResponseEntity.ok(tokenResponse);
     }

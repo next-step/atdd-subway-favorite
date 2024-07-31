@@ -11,11 +11,11 @@ public class TokenRequest {
         this.code = code;
     }
 
-    public static TokenRequest of(String email, String password) {
+    public static TokenRequest ofEmailAndPassword(String email, String password) {
         return new TokenRequest(email, password, null);
     }
 
-    public static TokenRequest of(String code) {
+    public static TokenRequest ofCode(String code) {
         return new TokenRequest(null, null, code);
     }
 
