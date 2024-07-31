@@ -1,6 +1,6 @@
 package nextstep.subway.acceptance;
 
-import nextstep.subway.setup.BaseTestSetup;
+import nextstep.util.BaseTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

@@ -1,6 +1,6 @@
 package nextstep.member.acceptance;
 
-import nextstep.subway.setup.BaseTestSetup;
+import nextstep.util.BaseTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

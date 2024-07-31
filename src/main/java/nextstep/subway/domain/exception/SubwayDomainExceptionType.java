@@ -10,6 +10,7 @@ public enum SubwayDomainExceptionType {
     NOT_FOUND_STATION_ON_LINE(HttpStatus.NOT_FOUND.value(), "NOT_FOUND_STATION_ON_LINE", "not found station on line"),
     NOT_FOUND_LINE(HttpStatus.NOT_FOUND.value(), "NOT_FOUND_LINE", "not found line"),
     NOT_FOUND_LINE_SECTION(HttpStatus.NOT_FOUND.value(), "NOT_FOUND_LINE_SECTION", "not found line section"),
+    NOT_FOUND_FAVORITE(HttpStatus.NOT_FOUND.value(), "NOT_FOUND_FAVORITE", "not found favorite"),
     INVALID_STATION(HttpStatus.BAD_REQUEST.value(), "INVALID_STATION", "invalid station"),
     INVALID_SECTION_SIZE(HttpStatus.BAD_REQUEST.value(), "INVALID_SECTION_SIZE", "invalid section size"),
     INVALID_SECTION_DISTANCE(HttpStatus.BAD_REQUEST.value(), "INVALID_SECTION_DISTANCE", "invalid section distance"),
