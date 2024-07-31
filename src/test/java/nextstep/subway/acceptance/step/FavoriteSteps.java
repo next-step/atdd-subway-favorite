@@ -25,9 +25,22 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
+
     public static void 단일_즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, String source, String target) {
         assertThat(response.jsonPath().getLong("id")).isNotNull();
         assertThat(response.jsonPath().getString("source.name")).isEqualTo(source);
-        assertThat(response.jsonPath().getInt("target.name")).isEqualTo(target);
+        assertThat(response.jsonPath().getString("target.name")).isEqualTo(target);
+    }
+
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long... favoriteIds) {
+        assertThat(response.jsonPath().getList("id", Long.class)).containsExactly(favoriteIds);
     }
 }

@@ -6,12 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.acceptance.step.FavoriteSteps.단일_즐겨찾기_정보_조회됨;
-import static nextstep.subway.acceptance.step.FavoriteSteps.즐겨찾기_등록_요청;
 import static nextstep.member.acceptance.AuthSteps.로그인;
 import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.step.BaseStepAsserter.응답_상태값이_올바른지_검증한다;
+import static nextstep.subway.acceptance.step.FavoriteStepExtractor.즐겨찾기_추출기.단일_응답의_id_를_추출한다;
+import static nextstep.subway.acceptance.step.FavoriteSteps.*;
 import static nextstep.subway.acceptance.step.LineStep.*;
 import static nextstep.subway.acceptance.step.LineStepExtractor.노선_추출기;
 import static nextstep.subway.acceptance.step.StationStep.*;
@@ -19,6 +19,10 @@ import static nextstep.subway.acceptance.step.StationStepExtractor.역_추출기
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends BaseTestSetup {
+    public static final String EMAIL = "admin@email.com";
+    public static final String PASSWORD = "password";
+    public static final Integer AGE = 20;
+
     private Long 시청역_id;
     private Long 서울역_id;
     private Long 을지로입구역_id;
@@ -56,18 +60,18 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
     @Test
     public void 즐겨찾기_등록_테스트() {
         // given
-        String email = "asdfg@email.com";
-        String password = "password";
-
-        회원_생성_요청(email, password, 20);
-        String 인증토큰 = 인증토큰을_추출한다(로그인(email, password));
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
 
         // when
         var 즐겨찾기_등록_응답값 = 즐겨찾기_등록_요청(서울역_id, 충무로역_id, 인증토큰);
 
         // then
         응답_상태값이_올바른지_검증한다(즐겨찾기_등록_응답값, HttpStatus.CREATED.value());
-//        단일_즐겨찾기_정보_조회됨(즐겨찾기_등록_응답값, "서울역", "충무로역");
+        단일_즐겨찾기_정보_조회됨(즐겨찾기_등록_응답값, "서울역", "충무로역");
+
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청(인증토큰), 단일_응답의_id_를_추출한다(즐겨찾기_등록_응답값));
     }
 
     /**
@@ -75,6 +79,24 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
      * When: 본인의 즐켜찾기 목록을 조회하면
      * Then: 2개의 즐겨찾기 목록이 반환된다.
      */
+    @Test
+    public void 즐겨찾기_목록_조회_테스트() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
+        Long 서울_을지로3가_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(서울역_id, 을지로3가역_id, 인증토큰));
+        Long 시청_충무로_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(시청역_id, 충무로역_id, 인증토큰));
+
+        // when
+        var 즐겨찾기_목록_조회_응답값 = 즐겨찾기_목록_조회_요청(인증토큰);
+
+        // then
+        응답_상태값이_올바른지_검증한다(즐겨찾기_목록_조회_응답값, HttpStatus.OK.value());
+
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답값, 서울_을지로3가_즐겨찾기_id, 시청_충무로_즐겨찾기_id);
+    }
+
 
     /**
      * Given: 회원이 즐겨찾기를 등록했고
