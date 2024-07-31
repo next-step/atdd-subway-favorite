@@ -32,7 +32,7 @@ public class FavoriteController {
         Member member = memberReader.getMe(loginMember.getEmail());
         Long id = favoriteCommander.createFavorite(request.toCommand(member.getId()));
 
-        FavoriteView.Main view = favoriteReader.getById(id);
+        FavoriteView.Main view = favoriteReader.getOneById(id);
 
         return ResponseEntity
                 .created(URI.create("/favorites/" + id))

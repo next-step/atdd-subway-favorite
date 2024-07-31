@@ -22,7 +22,7 @@ public class FavoriteReader {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
 
-    public FavoriteView.Main getById(Long id) {
+    public FavoriteView.Main getOneById(Long id) {
         Favorite favorite = favoriteRepository.findByIdOrThrow(id);
         Map<Long, Station> stationMap = getStationMapByIds(List.of(favorite.getSourceStationId(), favorite.getTargetStationId()));
         return joinAndTransform(favorite, stationMap);
