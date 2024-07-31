@@ -10,7 +10,6 @@ import nextstep.member.domain.UserDetails;
 import nextstep.member.domain.UserDetailsService;
 
 @Service
-
 public class DefaultUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
