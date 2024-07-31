@@ -18,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -135,6 +136,61 @@ class FavoriteCommanderTest extends BaseTestSetup {
                 );
                 return null;
             });
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteFavorite")
+    class DeleteFavorite {
+        @ParameterizedTest
+        @AutoSource
+        @Customization(InitStationCustomizer.class)
+        public void sut_throws_if_favorite_owner(
+                Long memberId,
+                Station sourceStation,
+                Station targetStation,
+                List<Station> allStations
+        ) {
+            // given
+            allStations.add(0, sourceStation);
+            allStations.add(targetStation);
+            stationRepository.saveAll(allStations);
+            lineRepository.save(LineFixture.prepareConnectedLine(allStations.toArray(new Station[0])));
+            Long favoriteId = sut.createFavorite(new FavoriteCommand.CreateFavorite(memberId, sourceStation.getId(), targetStation.getId()));
+
+            FavoriteCommand.DeleteFavorite command = new FavoriteCommand.DeleteFavorite(123L, favoriteId);
+
+            // when
+            SubwayDomainException actual = (SubwayDomainException) catchThrowable(() -> sut.deleteFavorite(command));
+
+            // then
+            assertThat(actual.getExceptionType()).isEqualTo(SubwayDomainExceptionType.UNAUTHORIZED_FAVORITE);
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        @Customization(InitStationCustomizer.class)
+        public void sut_deletes_favorite(
+                Long memberId,
+                Station sourceStation,
+                Station targetStation,
+                List<Station> allStations
+        ) {
+            // given
+            allStations.add(0, sourceStation);
+            allStations.add(targetStation);
+            stationRepository.saveAll(allStations);
+            lineRepository.save(LineFixture.prepareConnectedLine(allStations.toArray(new Station[0])));
+            Long favoriteId = sut.createFavorite(new FavoriteCommand.CreateFavorite(memberId, sourceStation.getId(), targetStation.getId()));
+
+            FavoriteCommand.DeleteFavorite command = new FavoriteCommand.DeleteFavorite(memberId, favoriteId);
+
+            // when
+            sut.deleteFavorite(command);
+
+            // then
+            Optional<Favorite> actual = favoriteRepository.findById(favoriteId);
+            assertThat(actual).isEmpty();
         }
     }
 }

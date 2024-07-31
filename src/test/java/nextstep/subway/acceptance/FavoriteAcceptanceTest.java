@@ -103,4 +103,22 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
      * When: 본인의 즐켜찾기 목록을 삭제하면
      * Then: 해당 즐켜찾기가 삭제되고 즐겨찾기 목록에서 제외된다.
      */
+    @Test
+    public void 즐겨찾기_삭제_테스트() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
+        Long 서울_을지로3가_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(서울역_id, 을지로3가역_id, 인증토큰));
+        단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(시청역_id, 충무로역_id, 인증토큰));
+
+        // when
+        var 즐겨찾기_삭제_응답값 = 즐겨찾기_삭제_요청(서울_을지로3가_즐겨찾기_id, 인증토큰);
+
+        // then
+        응답_상태값이_올바른지_검증한다(즐겨찾기_삭제_응답값, HttpStatus.NO_CONTENT.value());
+
+        // then
+        즐겨찾기_목록에서_제거됨(즐겨찾기_목록_조회_요청(인증토큰), 서울_을지로3가_즐겨찾기_id);
+    }
+
 }

@@ -2,10 +2,10 @@ package nextstep.subway.domain.command;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.domain.entity.favorite.Favorite;
-import nextstep.subway.domain.query.PathFinder;
+import nextstep.subway.domain.exception.SubwayDomainException;
+import nextstep.subway.domain.exception.SubwayDomainExceptionType;
 import nextstep.subway.domain.query.PathReader;
 import nextstep.subway.domain.repository.FavoriteRepository;
-import nextstep.subway.domain.repository.LineRepository;
 import nextstep.subway.domain.repository.StationRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class FavoriteCommander {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
-    private final LineRepository lineRepository;
     private final PathReader pathReader;
 
     public Long createFavorite(FavoriteCommand.CreateFavorite command) {
@@ -25,12 +24,14 @@ public class FavoriteCommander {
         return favorite.getId();
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(FavoriteCommand.DeleteFavorite command) {
+        Favorite favorite = favoriteRepository.findByIdOrThrow(command.getFavoriteId());
+
+        if (!favorite.getMemberId().equals(command.getMemberId())) {
+            throw new SubwayDomainException(SubwayDomainExceptionType.UNAUTHORIZED_FAVORITE);
+        }
+
+        favoriteRepository.deleteById(command.getFavoriteId());
     }
 
     private void verifyStationExist(Long upStationId, Long downStationId) {

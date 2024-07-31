@@ -6,6 +6,7 @@ import nextstep.member.controller.dto.LoginMember;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.query.MemberReader;
 import nextstep.subway.controller.dto.CreateFavoriteRequest;
+import nextstep.subway.domain.command.FavoriteCommand;
 import nextstep.subway.domain.command.FavoriteCommander;
 import nextstep.subway.domain.query.FavoriteReader;
 import nextstep.subway.domain.view.FavoriteView;
@@ -47,8 +48,13 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@PathVariable Long id) {
-        favoriteCommander.deleteFavorite(id);
+    public ResponseEntity<Void> deleteFavorite(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @PathVariable Long id
+    ) {
+        Member member = memberReader.getMe(loginMember.getEmail());
+
+        favoriteCommander.deleteFavorite(new FavoriteCommand.DeleteFavorite(member.getId(), id));
         return ResponseEntity.noContent().build();
     }
 }

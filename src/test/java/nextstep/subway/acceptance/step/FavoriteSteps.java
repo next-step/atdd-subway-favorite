@@ -34,6 +34,15 @@ public class FavoriteSteps {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long favoriteId, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/" + favoriteId)
+                .then().log().all().extract();
+    }
+
     public static void 단일_즐겨찾기_정보_조회됨(ExtractableResponse<Response> response, String source, String target) {
         assertThat(response.jsonPath().getLong("id")).isNotNull();
         assertThat(response.jsonPath().getString("source.name")).isEqualTo(source);
@@ -42,5 +51,9 @@ public class FavoriteSteps {
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long... favoriteIds) {
         assertThat(response.jsonPath().getList("id", Long.class)).containsExactly(favoriteIds);
+    }
+
+    public static void 즐겨찾기_목록에서_제거됨(ExtractableResponse<Response> response, Long... favoriteIds) {
+        assertThat(response.jsonPath().getList("id", Long.class)).doesNotContain(favoriteIds);
     }
 }

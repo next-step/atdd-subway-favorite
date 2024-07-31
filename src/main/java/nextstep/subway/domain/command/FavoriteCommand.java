@@ -14,4 +14,12 @@ public class FavoriteCommand {
         private Long source;
         private Long target;
     }
+
+    @ToString
+    @Getter
+    @AllArgsConstructor
+    public static class DeleteFavorite {
+        private Long memberId;
+        private Long favoriteId;
+    }
 }
