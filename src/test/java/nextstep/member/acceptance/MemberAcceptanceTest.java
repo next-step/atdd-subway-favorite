@@ -1,14 +1,16 @@
 package nextstep.member.acceptance;
 
-import nextstep.utils.AcceptanceTest;
+import nextstep.util.BaseTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.member.acceptance.AuthSteps.로그인;
+import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MemberAcceptanceTest extends AcceptanceTest {
+class MemberAcceptanceTest extends BaseTestSetup {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
@@ -34,7 +36,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(response, EMAIL, AGE);
-
     }
 
     @DisplayName("회원 정보를 수정한다.")
@@ -72,6 +73,14 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
 
+        // when
+        var 내_정보_응답값 = 내_정보_조회_요청(인증토큰);
+
+        // then
+        회원_정보_조회됨(내_정보_응답값, EMAIL, AGE);
     }
 }
