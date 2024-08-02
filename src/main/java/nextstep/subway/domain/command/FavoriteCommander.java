@@ -5,6 +5,7 @@ import nextstep.subway.domain.entity.favorite.Favorite;
 import nextstep.subway.domain.query.PathReader;
 import nextstep.subway.domain.repository.FavoriteRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -12,6 +13,7 @@ public class FavoriteCommander {
     private final FavoriteRepository favoriteRepository;
     private final PathReader pathReader;
 
+    @Transactional
     public Long createFavorite(FavoriteCommand.CreateFavorite command) {
         verifyPathExist(command.getSource(), command.getTarget());
         Favorite favorite = Favorite.create(command);
@@ -19,6 +21,7 @@ public class FavoriteCommander {
         return favorite.getId();
     }
 
+    @Transactional
     public void deleteFavorite(FavoriteCommand.DeleteFavorite command) {
         Favorite favorite = favoriteRepository.findByIdOrThrow(command.getFavoriteId());
         favorite.verifyOwner(command.getMemberId());

@@ -8,6 +8,7 @@ import nextstep.subway.domain.repository.StationRepository;
 import nextstep.subway.domain.view.FavoriteView;
 import nextstep.subway.domain.view.StationView;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +23,14 @@ public class FavoriteReader {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
 
+    @Transactional(readOnly = true)
     public FavoriteView.Main getOneById(Long id) {
         Favorite favorite = favoriteRepository.findByIdOrThrow(id);
         Map<Long, Station> stationMap = getStationMapByIds(List.of(favorite.getSourceStationId(), favorite.getTargetStationId()));
         return joinAndTransform(favorite, stationMap);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteView.Main> getFavoritesByMemberId(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
         List<Long> stationIds = favorites.stream()
