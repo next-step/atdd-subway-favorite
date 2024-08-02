@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import nextstep.member.UsernameNotFoundException;
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
@@ -13,6 +14,8 @@ import nextstep.member.domain.Member;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.AuthService;
+import nextstep.member.domain.UserDetails;
+import nextstep.member.domain.UserDetailsService;
 
 @Service
 @Qualifier("githubAuthService")
@@ -21,20 +24,20 @@ public class GithubAuthService implements AuthService {
     private final String clientSecret;
     private final GithubClient githubClient;
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberService memberService;
+    private final UserDetailsService userDetailsService;
 
     public GithubAuthService(
         @Value("${github.client-id}") String clientId,
         @Value("${github.client-secret}") String clientSecret,
         GithubClient githubClient,
         JwtTokenProvider jwtTokenProvider,
-        MemberService memberService
+        UserDetailsService userDetailsService
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.githubClient = githubClient;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberService = memberService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -49,13 +52,9 @@ public class GithubAuthService implements AuthService {
         GithubAccessTokenResponse accessTokenResponse = githubClient.getAccessToken(githubAccessTokenRequest);
         GithubProfileResponse profile = githubClient.getUserProfile(accessTokenResponse.getAccessToken());
 
-        Member member = memberService.findMemberByEmailOrNull(profile.getEmail());
-        if (member == null) {
-            MemberRequest memberRequest = new MemberRequest(profile.getEmail(), "default_password", profile.getAge());
-            member = memberService.createMember(memberRequest).toMember();
-        }
+        UserDetails userDetails = userDetailsService.loadUserByGithubProfile(profile);
+        String token = jwtTokenProvider.createToken(userDetails.getUsername());
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
         return TokenResponse.of(token);
     }
 }
