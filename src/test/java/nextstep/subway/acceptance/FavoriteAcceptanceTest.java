@@ -29,6 +29,8 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
     private Long 을지로3가역_id;
     private Long 충무로역_id;
 
+    private String 인증토큰;
+
     /**
      *           *2호선*
      * 시청역 --- 을지로입구역 --- 을지로3가역
@@ -47,9 +49,12 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
 
         일호선을_생성한다(시청역_id, 서울역_id, 10L);
         삼호선을_생성한다(을지로3가역_id, 충무로역_id, 10L);
-        Long 이호선_id = 노선_추출기.단일_id_를_추출한다(이호선을_생성한다(시청역_id, 을지로입구역_id, 10L));
+        var 이호선_id = 노선_추출기.단일_id_를_추출한다(이호선을_생성한다(시청역_id, 을지로입구역_id, 10L));
 
         구간을_추가한다(이호선_id, 을지로입구역_id, 을지로3가역_id, 10L);
+
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
+        인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
     }
 
     /**
@@ -59,10 +64,6 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
      */
     @Test
     public void 즐겨찾기_등록_테스트() {
-        // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
-
         // when
         var 즐겨찾기_등록_응답값 = 즐겨찾기_등록_요청(서울역_id, 충무로역_id, 인증토큰);
 
@@ -82,10 +83,8 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
     @Test
     public void 즐겨찾기_목록_조회_테스트() {
         // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
-        Long 서울_을지로3가_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(서울역_id, 을지로3가역_id, 인증토큰));
-        Long 시청_충무로_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(시청역_id, 충무로역_id, 인증토큰));
+        var 서울_을지로3가_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(서울역_id, 을지로3가역_id, 인증토큰));
+        var 시청_충무로_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(시청역_id, 충무로역_id, 인증토큰));
 
         // when
         var 즐겨찾기_목록_조회_응답값 = 즐겨찾기_목록_조회_요청(인증토큰);
@@ -106,9 +105,7 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
     @Test
     public void 즐겨찾기_삭제_테스트() {
         // given
-        회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
-        Long 서울_을지로3가_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(서울역_id, 을지로3가역_id, 인증토큰));
+        var 서울_을지로3가_즐겨찾기_id = 단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(서울역_id, 을지로3가역_id, 인증토큰));
         단일_응답의_id_를_추출한다(즐겨찾기_등록_요청(시청역_id, 충무로역_id, 인증토큰));
 
         // when

@@ -25,7 +25,7 @@ public class FavoriteCommander {
     public void deleteFavorite(FavoriteCommand.DeleteFavorite command) {
         Favorite favorite = favoriteRepository.findByIdOrThrow(command.getFavoriteId());
         favorite.verifyOwner(command.getMemberId());
-        favoriteRepository.deleteById(command.getFavoriteId());
+        favoriteRepository.deleteById(favorite.getId());
     }
 
     private void verifyPathExist(Long source, Long target) {
