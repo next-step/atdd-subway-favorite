@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.dto.OauthGithubTokenRequest;
 import nextstep.subway.member.application.TokenService;
 import nextstep.subway.member.application.dto.TokenRequest;
 import nextstep.subway.member.application.dto.TokenResponse;
@@ -19,6 +20,13 @@ public class TokenController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> createGithubToken(@RequestBody OauthGithubTokenRequest request) {
+        TokenResponse response = tokenService.createGithubToken(request);
 
         return ResponseEntity.ok(response);
     }
