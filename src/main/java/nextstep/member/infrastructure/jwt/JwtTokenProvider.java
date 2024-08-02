@@ -1,43 +1,50 @@
 package nextstep.member.infrastructure.jwt;
 
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
+import nextstep.member.domain.entity.TokenPrincipal;
 import nextstep.member.domain.command.TokenGenerator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider implements TokenGenerator {
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
-    @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
 
-    public String createToken(String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    private final JwtConfig jwtConfig;
+    private static String CLAIMS_EMAIL = "EMAIL";
+
+    public String createToken(TokenPrincipal principal) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(CLAIMS_EMAIL, principal.getEmail());
+
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + jwtConfig.getValidityInMilliseconds());
 
         return Jwts.builder()
                 .setClaims(claims)
+                .setSubject(principal.getSubject().toString())
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey())
                 .compact();
     }
 
-    public String getPrincipal(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+    public TokenPrincipal getPrincipal(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(jwtConfig.getSecretKey())
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+        return new TokenPrincipal(Long.valueOf(claims.getSubject()), claims.get(CLAIMS_EMAIL, String.class));
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts.parser().setSigningKey(jwtConfig.getSecretKey()).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {

@@ -1,6 +1,7 @@
 package nextstep.member.domain.command;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.member.domain.entity.TokenPrincipal;
 import nextstep.configuration.error.AuthenticationException;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.repository.MemberRepository;
@@ -18,6 +19,6 @@ public class TokenService {
             throw new AuthenticationException();
         }
 
-        return tokenGenerator.createToken(member.getEmail());
+        return tokenGenerator.createToken(new TokenPrincipal(member.getId(), member.getEmail()));
     }
 }

@@ -2,7 +2,7 @@ package nextstep.subway.controller;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.configuration.auth.AuthenticationPrincipal;
-import nextstep.member.controller.dto.LoginMember;
+import nextstep.configuration.auth.LoginMember;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.query.MemberReader;
 import nextstep.subway.controller.dto.CreateFavoriteRequest;
