@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler({NoSuchLineException.class, NoSuchStationException.class})
+    @ExceptionHandler({NoSuchLineException.class, NoSuchStationException.class, NoSuchMemberException.class})
     public ResponseEntity<Void> handleNotFoundException() {
         return ResponseEntity.notFound().build();
     }
