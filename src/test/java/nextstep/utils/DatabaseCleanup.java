@@ -30,11 +30,22 @@ public class DatabaseCleanup implements InitializingBean {
     @Transactional
     public void execute() {
         entityManager.flush();
+
+        // Get the names of all the sequences
+        List<String> sequenceNames = entityManager.createNativeQuery("SELECT SEQUENCE_NAME FROM INFORMATION_SCHEMA.SEQUENCES WHERE SEQUENCE_SCHEMA='PUBLIC'").getResultList();
+
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+
         for (String tableName : tableNames) {
+            // Truncate the table
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+
+            // Reset the sequences
+            for (String sequenceName : sequenceNames) {
+                entityManager.createNativeQuery("ALTER SEQUENCE " + sequenceName + " RESTART WITH 1").executeUpdate();
+            }
         }
+
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 }
