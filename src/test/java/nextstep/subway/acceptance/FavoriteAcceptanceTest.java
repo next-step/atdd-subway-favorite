@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.로그인;
+import static nextstep.member.acceptance.AuthSteps.이메일_패스워드_로그인;
 import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.step.BaseStepAsserter.응답_상태값이_올바른지_검증한다;
@@ -54,7 +54,7 @@ public class FavoriteAcceptanceTest extends BaseTestSetup {
         구간을_추가한다(이호선_id, 을지로입구역_id, 을지로3가역_id, 10L);
 
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
+        인증토큰 = 인증토큰을_추출한다(이메일_패스워드_로그인(EMAIL, PASSWORD));
     }
 
     /**

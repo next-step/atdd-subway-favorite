@@ -1,45 +1,54 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.member.domain.entity.Member;
-import nextstep.member.domain.repository.MemberRepository;
 import nextstep.util.BaseTestSetup;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static nextstep.member.acceptance.AuthSteps.로그인;
-import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.member.acceptance.AuthSteps.이메일_패스워드_로그인;
+import static nextstep.member.acceptance.AuthSteps.인증토큰이_반환됨;
+import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.acceptance.step.BaseStepAsserter.응답_상태값이_올바른지_검증한다;
 
 class AuthAcceptanceTest extends BaseTestSetup {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @DisplayName("Bearer Auth")
+    /**
+     * Given: 회원가입이 이미 된 회원이
+     * When: 이메일 패스워드 방식으로 로그인을 하면
+     * Then: 인증 토큰이 반환된다.
+     */
     @Test
-    void bearerAuth() {
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+    void 이메일_패스워드_로그인_테스트() {
+        // given
+        회원_생성_요청(EMAIL, PASSWORD, AGE);
 
-        String accessToken = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
-        assertThat(accessToken).isNotBlank();
+        // when
+        var 로그인_응답값 = 이메일_패스워드_로그인(EMAIL, PASSWORD);
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        // then
+        응답_상태값이_올바른지_검증한다(로그인_응답값, HttpStatus.OK.value());
+        인증토큰이_반환됨(로그인_응답값);
+    }
 
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    /**
+     * Given: 등록되지 않은 회원이
+     * When: 깃헙 로그인을 요청하면
+     * Then: 인증 토큰이 반환되고 내 정보를 가져올 수 있다.
+     */
+    @Test
+    void 깃헙_회원가입_테스트() {
+
+    }
+
+    /**
+     * Given 등록된 회원이
+     * When: 깃헙 로그인을 하면
+     * Then: 인증 토큰이 반환되고 내 정보를 가져올 수 있다.
+     */
+    @Test
+    void 깃헙_로그인_테스트() {
+
     }
 }

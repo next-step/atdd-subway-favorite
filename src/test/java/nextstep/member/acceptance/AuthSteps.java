@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthSteps {
-    public static ExtractableResponse<Response> 로그인(String email, String password) {
+    public static ExtractableResponse<Response> 이메일_패스워드_로그인(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -29,5 +29,9 @@ public class AuthSteps {
 
     public static String 인증토큰을_추출한다(ExtractableResponse<Response> response) {
         return response.jsonPath().getString("accessToken");
+    }
+
+    public static void 인증토큰이_반환됨(ExtractableResponse<Response> response) {
+        assertThat(인증토큰을_추출한다(response)).isNotBlank();
     }
 }
