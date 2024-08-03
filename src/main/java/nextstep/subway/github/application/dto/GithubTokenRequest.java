@@ -1,12 +1,12 @@
 package nextstep.subway.github.application.dto;
 
-public class OauthGithubTokenRequest {
+public class GithubTokenRequest{
     private String code;
 
-    public OauthGithubTokenRequest() {
+    public GithubTokenRequest() {
     }
 
-    public OauthGithubTokenRequest(String code) {
+    public GithubTokenRequest(String code) {
         this.code = code;
     }
 
