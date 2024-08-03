@@ -12,7 +12,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RestAssuredTest {
+class RestAssuredTest {
 
     @DisplayName("구글 페이지 접근 테스트")
     @Test

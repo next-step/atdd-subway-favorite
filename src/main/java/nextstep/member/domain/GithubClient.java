@@ -5,7 +5,7 @@ import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.GithubProfileResponse;
 
 public interface GithubClient {
-    GithubAccessTokenResponse getAccessTokenFromGithub(GithubAccessTokenRequest request);
+    GithubAccessTokenResponse getAccessToken(GithubAccessTokenRequest request);
 
-    GithubProfileResponse getUserProfileFromGithub(String accessToken);
+    GithubProfileResponse getUserProfile(String accessToken);
 }

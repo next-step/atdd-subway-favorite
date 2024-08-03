@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends AcceptanceTest {
 
@@ -99,3 +100,4 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
+
