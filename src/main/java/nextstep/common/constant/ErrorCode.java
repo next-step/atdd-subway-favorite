@@ -22,6 +22,8 @@ public enum ErrorCode {
     SECTION_NOT_PERMISSION_NOT_LAST_DESCENDING_STATION(400, "SECTION_NOT_PERMISSION_NOT_LAST_DESCENDING_STATION", "하행 종점역만 삭제할 수 있습니다."),
     SECTION_NOT_PERMISSION_COUNT_TOO_LOW(400, "SECTION_NOT_PERMISSION_COUNT_TOO_LOW", "구간은 최소 1개 이상이어야 합니다."),
     UNAUTHORIZED_ACCESS(401, "UNAUTHORIZED_ACCESS", "권한이 유효하지 않습니다."),
+    FAVORITE_NOT_FOUND(400, "FAVORITE_NOT_FOUND", "즐겨찾기를 찾을 수 없습니다."),
+    FAVORITE_NOT_PERMISSION(400, "FAVORITE_NOT_PERMISSION", "즐겨찾기를 등록할 수 없습니다."),
     ERROR_MESSAGE(499, "ERROR_MESSAGE", "관리자에게 문의하세요.");
 
     private static final Map<String, ErrorCode> ERROR_CODE_MAP = new HashMap<>();

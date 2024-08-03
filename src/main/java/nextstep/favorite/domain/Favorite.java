@@ -19,7 +19,7 @@ public class Favorite {
     @JoinColumn(name = "targetStationId")
     private Station targetStation;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
 

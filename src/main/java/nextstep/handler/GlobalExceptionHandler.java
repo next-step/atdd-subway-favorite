@@ -2,6 +2,7 @@ package nextstep.handler;
 
 import nextstep.common.constant.ErrorCode;
 import nextstep.common.dto.ErrorResponse;
+import nextstep.favorite.exception.FavoriteException;
 import nextstep.line.exception.LineNotFoundException;
 import nextstep.member.exception.UnAuthorizedException;
 import nextstep.path.exception.PathException;
@@ -50,5 +51,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> UnAuthorizedExceptionHandler(UnAuthorizedException e) {
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(FavoriteException.class)
+    public ResponseEntity<ErrorResponse> FavoriteExceptionHandler(FavoriteException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

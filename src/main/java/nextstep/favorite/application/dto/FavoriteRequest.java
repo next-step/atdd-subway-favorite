@@ -1,7 +1,11 @@
 package nextstep.favorite.application.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class FavoriteRequest {
+    @NotNull
     private Long source;
+    @NotNull
     private Long target;
 
     public FavoriteRequest() {
