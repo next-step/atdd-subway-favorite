@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TokenService {
+public class TokenCommander {
     private final TokenGenerator tokenGenerator;
     private final MemberRepository memberRepository;
 
