@@ -2,8 +2,7 @@ package nextstep.member.infrastructure.github;
 
 import autoparams.AutoSource;
 import nextstep.fake.github.GithubStaticUsers;
-import nextstep.member.infrastructure.github.dto.GithubAccessTokenRequest;
-import nextstep.member.infrastructure.github.dto.GithubAccessTokenResponse;
+import nextstep.member.infrastructure.github.dto.GithubProfileResponse;
 import nextstep.util.BaseTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,29 +11,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GithubOAuthClientTest extends BaseTestSetup {
+class GithubApiClientTest extends BaseTestSetup {
 
     @Autowired
-    GithubOAuthClient sut;
+    GithubApiClient sut;
 
     @Autowired
     GithubConfig config;
 
-    @DisplayName("getAccessToken")
+    @DisplayName("getUser")
     @Nested
     class GetAccessToken {
         @ParameterizedTest
         @AutoSource
-        public void sut_returns_access_token() {
+        public void sut_returns_users() {
             // given
             GithubStaticUsers expected = GithubStaticUsers.SAMPLE1;
-            GithubAccessTokenRequest request = new GithubAccessTokenRequest(config.getClientId(), config.getClientSecret(), expected.getCode());
 
             // when
-            GithubAccessTokenResponse actual = sut.getAccessToken(request);
+            GithubProfileResponse actual = sut.getUser(expected.getAccessToken());
 
             // then
-            assertThat(actual.getAccessToken()).isEqualTo(expected.getAccessToken());
+            assertThat(actual.getEmail()).isEqualTo(expected.getEmail());
         }
     }
 }

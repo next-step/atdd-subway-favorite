@@ -1,16 +1,14 @@
 package nextstep.member.infrastructure.github;
 
+import nextstep.member.infrastructure.github.dto.GithubProfileResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.net.URI;
-
-@FeignClient(name = "github-api-client", url = "${github.api.url}")
+@FeignClient(name = "github-api-client", url = "${github.api.url}", configuration = {GithubFeignClientConfig.class})
 public interface GithubApiClient {
-// curl --request GET \
-//--url "https://api.github.com/user" \
-//--header "Accept: application/vnd.github+json" \
-//--header "Authorization: Bearer USER_ACCESS_TOKEN" \
-//--header "X-GitHub-Api-Version: 2022-11-28"
+    @RequestMapping(method = RequestMethod.GET, value = "/user")
+    GithubProfileResponse getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization);
 }

@@ -29,5 +29,12 @@ public enum GithubStaticUsers {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find github user"));
     }
+
+    public static GithubStaticUsers getByAccessToken(String accessToken) {
+        return Arrays.stream(GithubStaticUsers.values())
+                .filter(it -> it.getAccessToken().equals(accessToken))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cannot find github user"));
+    }
 }
 
