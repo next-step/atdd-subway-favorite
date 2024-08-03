@@ -60,6 +60,17 @@ class AuthAcceptanceTest extends BaseTestSetup {
      */
     @Test
     void 깃헙_로그인_테스트() {
+        // given
+        회원_생성_요청(깃헙_사용자1.getEmail(), PASSWORD, AGE);
 
+        // when
+        var 로그인_응답값 = 깃헙_로그인(깃헙_사용자1);
+
+        // then
+        응답_상태값이_올바른지_검증한다(로그인_응답값, HttpStatus.OK.value());
+
+        // then
+        var 인증토큰 = 인증토큰을_추출한다(로그인_응답값);
+        회원_정보_조회됨(내_정보_조회_요청(인증토큰), 깃헙_사용자1.getEmail(), AGE);
     }
 }
