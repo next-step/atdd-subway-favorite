@@ -38,9 +38,7 @@ public class PathQueryService {
         this.stationMapper = stationMapper;
     }
 
-    public ShortestPathResponse findShortestPath(final SearchPathRequest request) {
-        Long source = request.getSource();
-        Long target = request.getTarget();
+    public ShortestPathResponse findShortestPath(final Long source, final Long target) {
         assertStationExist(source, target);
         List<LineSectionEdge> edges = lineRepository.findAll().stream()
                 .flatMap(Line::sectionStream)

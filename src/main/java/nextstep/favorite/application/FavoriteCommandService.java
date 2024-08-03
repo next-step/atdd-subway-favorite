@@ -6,6 +6,7 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exceptions.FavoriteNotFoundException;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.member.AuthorizationException;
+import nextstep.path.application.PathQueryService;
 import nextstep.station.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteCommandService {
     private final FavoriteRepository favoriteRepository;
 
+    private final PathQueryService pathQueryService;
 
-    public FavoriteCommandService(final FavoriteRepository favoriteRepository) {
+    public FavoriteCommandService(final FavoriteRepository favoriteRepository, final PathQueryService pathQueryService) {
         this.favoriteRepository = favoriteRepository;
+        this.pathQueryService = pathQueryService;
     }
 
     public Long createFavorite(final Long memberId, final FavoriteRequest request) {
-        Favorite favorite = new Favorite(memberId, request.getSource(), request.getTarget());
+        Long source = request.getSource();
+        Long target = request.getTarget();
+        pathQueryService.findShortestPath(source, target);
+        Favorite favorite = new Favorite(memberId, source, target);
         Favorite saved = favoriteRepository.save(favorite);
         return saved.getId();
     }

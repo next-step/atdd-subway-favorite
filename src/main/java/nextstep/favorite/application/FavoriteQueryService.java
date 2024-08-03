@@ -17,9 +17,7 @@ import java.util.stream.Stream;
 @Service
 public class FavoriteQueryService {
     private final FavoriteRepository favoriteRepository;
-
     private final StationMapper stationMapper;
-
 
     public FavoriteQueryService(final FavoriteRepository favoriteRepository, final StationMapper stationMapper) {
         this.favoriteRepository = favoriteRepository;

@@ -88,7 +88,7 @@ class PathQueryServiceTest {
                 .thenReturn(List.of(교대역));
 
         assertThrows(NonExistentStationException.class,
-                () -> pathQueryService.findShortestPath(request));
+                () -> pathQueryService.findShortestPath(request.getSource(), request.getTarget()));
     }
 
     @Test
@@ -108,7 +108,7 @@ class PathQueryServiceTest {
                 .thenReturn(List.of(이호선, 신분당선, 삼호선));
 
 
-        ShortestPathResponse shortestPath = pathQueryService.findShortestPath(request);
+        ShortestPathResponse shortestPath = pathQueryService.findShortestPath(request.getSource(), request.getTarget());
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(5L),
                 () -> assertThat(getPathNames(shortestPath))
