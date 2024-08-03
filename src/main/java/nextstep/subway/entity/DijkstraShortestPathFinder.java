@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class DijkstraShortestPathFinder implements PathFinder{
+public class DijkstraShortestPathFinder implements PathFinder {
     public static PathFinderBuilder searchBuilder() {
         return new PathFinderBuilder(new DijkstraShortestPathFinder());
     }
@@ -31,7 +31,7 @@ public class DijkstraShortestPathFinder implements PathFinder{
 
         long shortestDistance = (long) dijkstraShortestPath.getPathWeight(source, target);
 
-        return PathResponse.from(shortestPath, shortestDistance);
+        return PathResponse.of(shortestPath, shortestDistance);
     }
 
     private static void validateEqualStation(Station source, Station target) {

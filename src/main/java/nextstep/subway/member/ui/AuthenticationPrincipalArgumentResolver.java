@@ -26,7 +26,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String authorization = webRequest.getHeader("Authorization");
         if (authorization == null
                 || authorization.split(" ").length < 2
-                ||!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+                || !"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new AuthenticationException();
         }
         String token = authorization.split(" ")[1];

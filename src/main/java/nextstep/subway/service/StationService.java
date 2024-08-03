@@ -3,6 +3,7 @@ package nextstep.subway.service;
 import nextstep.subway.dto.StationRequest;
 import nextstep.subway.dto.StationResponse;
 import nextstep.subway.entity.Station;
+import nextstep.subway.exception.NoSuchStationException;
 import nextstep.subway.repository.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,11 @@ public class StationService {
         return stationRepository.findAll().stream()
                 .map(this::createStationResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Station findStationByIdOrThrow(Long id) {
+        return stationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchStationException("존재하지 않는 역입니다."));
     }
 
     @Transactional

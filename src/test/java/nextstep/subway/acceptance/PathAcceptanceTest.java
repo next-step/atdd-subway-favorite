@@ -8,8 +8,6 @@ import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
@@ -24,15 +22,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long 양재역Id;
     private Long 남부터미널역Id;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     @BeforeEach
     void setUpData() {
-        교대역Id = 역_생성("교대역").jsonPath().getLong("id");
-        강남역Id = 역_생성("강남역").jsonPath().getLong("id");
-        양재역Id = 역_생성("양재역").jsonPath().getLong("id");
-        남부터미널역Id = 역_생성("남부터미널역").jsonPath().getLong("id");
+        교대역Id = 역_생성_후_id_추출("교대역");
+        강남역Id = 역_생성_후_id_추출("강남역");
+        양재역Id = 역_생성_후_id_추출("양재역");
+        남부터미널역Id = 역_생성_후_id_추출("남부터미널역");
     }
 
     /**

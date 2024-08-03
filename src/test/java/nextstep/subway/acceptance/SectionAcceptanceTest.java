@@ -7,9 +7,7 @@ import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 구간 관련 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
     private Long 신사역Id;
     private Long 논현역Id;
     private Long 강남역Id;
@@ -31,11 +26,11 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUpData() {
-        신사역Id = 역_생성("신사역").jsonPath().getLong("id");
-        논현역Id = 역_생성("논현역").jsonPath().getLong("id");
-        강남역Id = 역_생성("강남역").jsonPath().getLong("id");
-        판교역Id = 역_생성("판교역").jsonPath().getLong("id");
-        광교역Id = 역_생성("광교역").jsonPath().getLong("id");
+        신사역Id = 역_생성_후_id_추출("신사역");
+        논현역Id = 역_생성_후_id_추출("논현역");
+        강남역Id = 역_생성_후_id_추출("강남역");
+        판교역Id = 역_생성_후_id_추출("판교역");
+        광교역Id = 역_생성_후_id_추출("광교역");
     }
 
     /**

@@ -19,6 +19,6 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> getPath(PathRequest pathRequest) {
-        return ResponseEntity.ok().body(pathService.getPath(pathRequest));
+        return ResponseEntity.ok().body(pathService.getPathOrThrow(pathRequest));
     }
 }
