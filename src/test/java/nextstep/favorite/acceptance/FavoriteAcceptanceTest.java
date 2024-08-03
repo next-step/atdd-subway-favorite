@@ -85,18 +85,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             var 즐겨찾기1 = 즐겨찾기_생성후_ID를_추출한다(joy, lineFixture.교대역(), lineFixture.양재역());
             var 즐겨찾기2 = 즐겨찾기_생성후_ID를_추출한다(joy, lineFixture.강남역(), lineFixture.남부터미널역());
 
-            Response 삭제_결과 = 즐겨찾기를_삭제한다(joy,즐겨찾기2);
+            Response 삭제_결과 = 즐겨찾기를_삭제한다(joy, 즐겨찾기2);
             assertNoContent(삭제_결과.statusCode());
 
-            var 조회_결과 = 특정회원의_즐겨찾기를_전체_조회한다(joy).jsonPath().getList("" , FavoriteResponse.class);
+            var 조회_결과 = 특정회원의_즐겨찾기를_전체_조회한다(joy).jsonPath();
 
-            assertAll(() -> assertThat(조회_결과).hasSize(1),
-                    () ->assertThat(조회_결과.get(0).getSource().getId()).isEqualTo(lineFixture.교대역()),
-                    () ->assertThat(조회_결과.get(0).getTarget().getId()).isEqualTo(lineFixture.양재역())
+
+            assertAll(
+                    () -> assertThat(조회_결과.getList("source.name", String.class)).containsExactly("교대역"),
+                    () -> assertThat(조회_결과.getList("target.name", String.class)).containsExactly("양재역")
             );
         }
     }
-
 
 
 }
