@@ -2,7 +2,6 @@ package nextstep.member.domain.command;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.domain.entity.TokenPrincipal;
-import nextstep.configuration.error.AuthenticationException;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.repository.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -15,10 +14,7 @@ public class TokenService {
 
     public String createToken(String email, String password) {
         Member member =  memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
-        }
-
+        member.verifyPassword(password);
         return tokenGenerator.createToken(new TokenPrincipal(member.getId(), member.getEmail()));
     }
 }

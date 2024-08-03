@@ -1,26 +1,26 @@
-package nextstep.subway.domain.exception;
+package nextstep.member.domain.exception;
 
 import lombok.Getter;
 import nextstep.base.exception.BaseDomainException;
 
 @Getter
-public class SubwayDomainException extends BaseDomainException {
-    private final SubwayDomainExceptionType exceptionType;
+public class MemberDomainException extends BaseDomainException {
+    private final MemberDomainExceptionType exceptionType;
     private final String detail;
 
-    public SubwayDomainException() {
+    public MemberDomainException() {
         super();
-        this.exceptionType = SubwayDomainExceptionType.INTERNAL_SERVER_ERROR;
+        this.exceptionType = MemberDomainExceptionType.INTERNAL_SERVER_ERROR;
         this.detail = exceptionType.getMessage();
     }
 
-    public SubwayDomainException(SubwayDomainExceptionType exceptionType) {
+    public MemberDomainException(MemberDomainExceptionType exceptionType) {
         super(exceptionType.getStatus(), exceptionType.getName(), exceptionType.getMessage());
         this.exceptionType = exceptionType;
         this.detail = exceptionType.getMessage();
     }
 
-    public SubwayDomainException(SubwayDomainExceptionType exceptionType, String detail) {
+    public MemberDomainException(MemberDomainExceptionType exceptionType, String detail) {
         super(exceptionType.getStatus(), exceptionType.getName(), exceptionType.getMessage(), detail);
         this.exceptionType = exceptionType;
         this.detail = detail;

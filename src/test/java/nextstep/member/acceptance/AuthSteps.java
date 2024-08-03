@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.fake.github.GithubStaticUsers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -27,11 +28,25 @@ public class AuthSteps {
                 .extract();
     }
 
-    public static String 인증토큰을_추출한다(ExtractableResponse<Response> response) {
-        return response.jsonPath().getString("accessToken");
+    public static ExtractableResponse<Response> 깃헙_로그인(GithubStaticUsers githubStaticUsers) {
+        return 깃헙_로그인(githubStaticUsers.getCode());
     }
 
-    public static void 인증토큰이_반환됨(ExtractableResponse<Response> response) {
-        assertThat(인증토큰을_추출한다(response)).isNotBlank();
+    public static ExtractableResponse<Response> 깃헙_로그인(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static String 인증토큰을_추출한다(ExtractableResponse<Response> response) {
+        return response.jsonPath().getString("accessToken");
     }
 }

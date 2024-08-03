@@ -1,5 +1,6 @@
 package nextstep.member.controller;
 
+import nextstep.member.controller.dto.OAuthCodeRequest;
 import nextstep.member.domain.command.TokenService;
 import nextstep.member.controller.dto.TokenRequest;
 import nextstep.member.controller.dto.TokenResponse;
@@ -19,6 +20,12 @@ public class TokenController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         TokenResponse response = new TokenResponse(tokenService.createToken(request.getEmail(), request.getPassword()));
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> createToken(@RequestBody OAuthCodeRequest request) {
+        TokenResponse response = new TokenResponse("토큰토큰");
         return ResponseEntity.ok(response);
     }
 }

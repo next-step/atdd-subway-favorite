@@ -11,9 +11,6 @@ public class MemberRequest {
     private String password;
     private Integer age;
 
-    public MemberRequest() {
-    }
-
     public MemberCommand.CreateMember toCreateCommand() {
         return new MemberCommand.CreateMember(email, password, age);
     }
