@@ -5,6 +5,8 @@ import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticateComma
 import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticator;
 import nextstep.member.domain.command.authenticator.SocialOAuthProvider;
 import nextstep.member.domain.command.authenticator.SocialOAuthUser;
+import nextstep.member.domain.exception.MemberDomainException;
+import nextstep.member.domain.exception.MemberDomainExceptionType;
 import nextstep.member.infrastructure.github.GithubAuthenticator;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,6 @@ public class CompositeSocialOAuthAuthenticator implements SocialOAuthAuthenticat
             return githubAuthenticator.authenticate(command);
         }
 
-        throw new RuntimeException("에러");
+        throw new MemberDomainException(MemberDomainExceptionType.INVALID_SOCIAL_LOGIN_PROVIDER);
     }
 }

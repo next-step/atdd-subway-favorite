@@ -24,10 +24,7 @@ class GithubApiClientTest extends BaseTestSetup {
     class GetAccessToken {
         @ParameterizedTest
         @AutoSource
-        public void sut_returns_users() {
-            // given
-            GithubStaticUsers expected = GithubStaticUsers.SAMPLE1;
-
+        public void sut_returns_users(GithubStaticUsers expected) {
             // when
             GithubProfileResponse actual = sut.getUser(expected.getAccessToken());
 

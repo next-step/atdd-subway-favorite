@@ -25,9 +25,8 @@ class GithubOAuthClientTest extends BaseTestSetup {
     class GetAccessToken {
         @ParameterizedTest
         @AutoSource
-        public void sut_returns_access_token() {
+        public void sut_returns_access_token(GithubStaticUsers expected) {
             // given
-            GithubStaticUsers expected = GithubStaticUsers.SAMPLE1;
             GithubAccessTokenRequest request = new GithubAccessTokenRequest(config.getClientId(), config.getClientSecret(), expected.getCode());
 
             // when
