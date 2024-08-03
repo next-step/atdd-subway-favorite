@@ -1,8 +1,8 @@
-package nextstep.subway.auth.domain;
+package nextstep.subway.github.domain;
 
-import nextstep.subway.auth.application.dto.GithubAccessTokenRequest;
-import nextstep.subway.auth.application.dto.GithubAccessTokenResponse;
-import nextstep.subway.auth.application.dto.GithubProfileResponse;
+import nextstep.subway.github.application.dto.GithubAccessTokenRequest;
+import nextstep.subway.github.application.dto.GithubAccessTokenResponse;
+import nextstep.subway.github.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;

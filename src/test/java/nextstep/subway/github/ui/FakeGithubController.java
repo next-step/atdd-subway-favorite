@@ -1,8 +1,8 @@
-package nextstep.subway.auth.ui;
+package nextstep.subway.github.ui;
 
-import nextstep.subway.auth.application.dto.GithubAccessTokenRequest;
-import nextstep.subway.auth.application.dto.GithubAccessTokenResponse;
-import nextstep.subway.auth.application.dto.GithubProfileResponse;
+import nextstep.subway.github.application.dto.GithubAccessTokenRequest;
+import nextstep.subway.github.application.dto.GithubAccessTokenResponse;
+import nextstep.subway.github.application.dto.GithubProfileResponse;
 import nextstep.subway.utils.GithubResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

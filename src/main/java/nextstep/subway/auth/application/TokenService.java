@@ -1,8 +1,8 @@
 package nextstep.subway.auth.application;
 
-import nextstep.subway.auth.application.dto.GithubProfileResponse;
-import nextstep.subway.auth.application.dto.OauthGithubTokenRequest;
-import nextstep.subway.auth.domain.GithubClient;
+import nextstep.subway.github.application.dto.GithubProfileResponse;
+import nextstep.subway.github.application.dto.OauthGithubTokenRequest;
+import nextstep.subway.github.domain.GithubClient;
 import nextstep.subway.exception.NoSuchMemberException;
 import nextstep.subway.exception.AuthenticationException;
 import nextstep.subway.member.application.MemberService;

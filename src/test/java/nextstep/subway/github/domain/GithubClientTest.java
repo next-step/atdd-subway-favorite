@@ -1,6 +1,6 @@
-package nextstep.subway.auth.domain;
+package nextstep.subway.github.domain;
 
-import nextstep.subway.auth.application.dto.GithubProfileResponse;
+import nextstep.subway.github.application.dto.GithubProfileResponse;
 import nextstep.subway.utils.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
