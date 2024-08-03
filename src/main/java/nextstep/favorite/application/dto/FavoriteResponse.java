@@ -1,13 +1,9 @@
 package nextstep.favorite.application.dto;
 
-import nextstep.line.dto.LineResponse;
 import nextstep.station.dto.StationResponse;
 
 import java.util.Objects;
 
-/**
- * TODO: StationResponse를 포함하는 클래스로 만듭니다.
- */
 public class FavoriteResponse {
 
     private Long id;

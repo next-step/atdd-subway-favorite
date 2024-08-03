@@ -16,7 +16,7 @@ public class FavoriteRequest {
         this.target = target;
     }
 
-    public static FavoriteRequest of (Long source, Long target) {
+    public static FavoriteRequest of(Long source, Long target) {
         return new FavoriteRequest(source, target);
     }
 

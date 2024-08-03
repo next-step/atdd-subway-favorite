@@ -52,7 +52,7 @@ public class Section {
     }
 
     public static Section of(Long id, Station upStation, Station downStation, Long distance) {
-        if(distance < 1) {
+        if (distance < 1) {
             throw new SectionException(String.valueOf(SECTION_DISTANCE_TOO_SHORT));
         }
 
@@ -60,7 +60,7 @@ public class Section {
     }
 
     public static Section of(Station upStation, Station downStation, Long distance) {
-        if(distance < 1) {
+        if (distance < 1) {
             throw new SectionException(String.valueOf(SECTION_DISTANCE_TOO_SHORT));
         }
 
