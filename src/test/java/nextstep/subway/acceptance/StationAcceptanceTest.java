@@ -7,13 +7,14 @@ import io.restassured.specification.RequestSpecification;
 import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static nextstep.subway.acceptance.AcceptanceTestUtil.상태코드_CREATED;
+import static nextstep.subway.acceptance.AcceptanceTestUtil.역_생성_후_id_추출;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -30,7 +31,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = createStation("강남역");
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        상태코드_CREATED(response);
 
         // then
         List<String> stationNames = requestSpecificationWithLog()
@@ -71,7 +72,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        long stationId = createStation("사당역").jsonPath().getLong("id");
+        long stationId = 역_생성_후_id_추출("사당역");
 
         // when
         requestSpecificationWithLog()

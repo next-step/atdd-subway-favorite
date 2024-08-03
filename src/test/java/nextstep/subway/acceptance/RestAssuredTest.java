@@ -6,10 +6,9 @@ import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.acceptance.AcceptanceTestUtil.상태코드_OK;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class RestAssuredTest extends AcceptanceTest {
@@ -24,6 +23,6 @@ public class RestAssuredTest extends AcceptanceTest {
                 .then()
                 .extract();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        상태코드_OK(response);
     }
 }

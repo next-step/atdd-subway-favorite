@@ -8,7 +8,6 @@ import nextstep.subway.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -25,6 +24,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
+    public static final String INVALID_TOKEN = "invalid_token";
 
     private Long 교대역Id;
     private Long 강남역Id;
@@ -67,7 +67,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when then
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
-        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        상태코드_CREATED(즐겨찾기_생성_응답_추출);
     }
 
     /**
@@ -84,7 +84,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
         // then
-        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        상태코드_BAD_REQUEST(즐겨찾기_생성_응답_추출);
     }
 
     /**
@@ -101,7 +101,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
         // then
-        assertThat(즐겨찾기_생성_응답_추출.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        상태코드_NOT_FOUND(즐겨찾기_생성_응답_추출);
     }
 
     /**
@@ -156,7 +156,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제(첫번째_즐겨찾기_Id);
 
         // then
-        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        상태코드_NO_CONTENT(즐겨찾기_삭제_응답);
 
         ExtractableResponse<Response> 삭제_후_즐겨찾기_목록_응답 = 즐겨찾기_목록_조회(인증_토큰);
         List<FavoriteResponse> 삭제_후_즐겨찾기_목록 = 삭제_후_즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
@@ -178,7 +178,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 비로그인_생성_응답 = 비로그인_즐겨찾기_생성_요청(교대_양재_매개변수);
         // then
-        assertThat(비로그인_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_UNAUTHORIZED(비로그인_생성_응답);
     }
 
     /**
@@ -191,7 +191,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 비로그인_조회_응답 = 비로그인_즐겨찾기_조회_요청();
         // then
-        assertThat(비로그인_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_UNAUTHORIZED(비로그인_조회_응답);
     }
 
     /**
@@ -204,7 +204,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 비로그인_삭제_응답 = 비로그인_즐겨찾기_삭제_요청();
         // then
-        assertThat(비로그인_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_UNAUTHORIZED(비로그인_삭제_응답);
     }
 
     /**
@@ -219,7 +219,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 유효하지_않는_토큰_즐겨찾기_생성_요청(교대_양재_매개변수);
         // then
-        assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_UNAUTHORIZED(즐겨찾기_생성_응답);
     }
 
     /**
@@ -232,7 +232,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_조회_응답 = 유효하지_않는_토큰_즐겨찾기_조회_요청();
         // then
-        assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_UNAUTHORIZED(즐겨찾기_조회_응답);
     }
 
     /**
@@ -245,26 +245,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 유효하지_않는_토큰_즐겨찾기_삭제_요청();
         // then
-        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        상태코드_UNAUTHORIZED(즐겨찾기_삭제_응답);
     }
 
     private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_삭제_요청() {
         return RestAssured.given().log().all()
-                .auth().oauth2("invalid token")
+                .auth().oauth2(INVALID_TOKEN)
                 .when().delete("/favorites/" + 1L)
                 .then().log().all()
                 .extract();
     }
     private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_조회_요청() {
         return RestAssured.given().log().all()
-                .auth().oauth2("invalid token")
+                .auth().oauth2(INVALID_TOKEN)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
     }
     private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_생성_요청(Map<String, String> 교대_양재_매개변수) {
         return RestAssured.given().log().all()
-                .auth().oauth2("invalid token")
+                .auth().oauth2(INVALID_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(교대_양재_매개변수)
                 .when().post("/favorites")
@@ -326,4 +326,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 }

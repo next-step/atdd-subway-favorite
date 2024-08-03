@@ -28,7 +28,7 @@ public class GithubClient {
     public String requestGithubToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, client, clientSecret);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(githubAccessTokenRequest, makeJsonHeader());
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity(githubAccessTokenRequest, makeJsonHeader());
         RestTemplate restTemplate = new RestTemplate();
 
         String url = githubUrlToken;
@@ -41,7 +41,7 @@ public class GithubClient {
         HttpHeaders jsonHeaders = makeJsonHeader();
         jsonHeaders.setBearerAuth(githubAccessToken);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(jsonHeaders);
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity(jsonHeaders);
         RestTemplate restTemplate = new RestTemplate();
 
         String url = githubUrlUserProfile;
@@ -56,13 +56,13 @@ public class GithubClient {
         return headers;
     }
 
-    private GithubProfileResponse getUserProfile(RestTemplate restTemplate, String url, HttpEntity<MultiValueMap<String, String>> httpEntity) {
+    private GithubProfileResponse getUserProfile(RestTemplate restTemplate, String url, HttpEntity<GithubAccessTokenRequest> httpEntity) {
         return restTemplate
                 .exchange(url, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
     }
 
-    private String getGithubAccessToken(RestTemplate restTemplate, String url, HttpEntity<MultiValueMap<String, String>> httpEntity) {
+    private String getGithubAccessToken(RestTemplate restTemplate, String url, HttpEntity<GithubAccessTokenRequest> httpEntity) {
         return restTemplate
                 .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                 .getBody()

@@ -64,7 +64,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_생성_Extract(분당선_요청_매개변수);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(404);
+        상태코드_NOT_FOUND(response);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_생성_Extract(분당선_요청_매개변수);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(404);
+        상태코드_NOT_FOUND(response);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 조회한다.")
     void viewLine() {
         // given
-        long lineId = 노선_생성_Extract(신분당선_요청_매개변수).jsonPath().getLong("id");
+        long lineId = 노선_생성_후_id_추출(신분당선_요청_매개변수);
 
         // when
         ExtractableResponse<Response> response = 노선_조회_Extract(lineId);
@@ -140,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_조회_Extract(9999L);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(404);
+        상태코드_NOT_FOUND(response);
     }
 
 
@@ -148,7 +148,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선을 수정한다.")
     void updateLine() {
         // given
-        long lineId = 노선_생성_Extract(신분당선_요청_매개변수).jsonPath().getLong("id");
+        long lineId = 노선_생성_후_id_추출(신분당선_요청_매개변수);
 
         Map<String, Object> 노선_수정_매개변수 = new HashMap<>();
         노선_수정_매개변수.put("name", "다른분당선");
@@ -160,7 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> viewResponse = 노선_조회_Extract(lineId);
 
         // then
-        assertThat(patchResponse.statusCode()).isEqualTo(200);
+        상태코드_OK(patchResponse);
 
         assertThat(viewResponse.jsonPath().getString("name")).isEqualTo("다른분당선");
         assertThat(viewResponse.jsonPath().getString("color")).isEqualTo("bg-red-700");
@@ -178,20 +178,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> patchResponse = patchLineExtract(노선_수정_매개변수, 999L);
 
         // then
-        assertThat(patchResponse.statusCode()).isEqualTo(404);
+        상태코드_NOT_FOUND(patchResponse);
     }
 
     @Test
     @DisplayName("지하철 노선을 삭제한다.")
     void DeleteLine() {
         // given
-        long lineId = 노선_생성_Extract(신분당선_요청_매개변수).jsonPath().getLong("id");
+        long lineId = 노선_생성_후_id_추출(신분당선_요청_매개변수);
         // when
         ExtractableResponse<Response> deleteResponse = deleteLineExtract(lineId);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(204);
-        assertThat(노선_조회_Extract(lineId).statusCode()).isEqualTo(404);
+        상태코드_NO_CONTENT(deleteResponse);
+        상태코드_NOT_FOUND(노선_조회_Extract(lineId));
     }
 
     @Test
@@ -201,7 +201,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = deleteLineExtract(999L);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(404);
+        상태코드_NOT_FOUND(deleteResponse);
     }
 
     private ExtractableResponse<Response> getLineListExtract() {
