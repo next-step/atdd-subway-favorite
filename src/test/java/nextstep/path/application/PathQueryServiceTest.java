@@ -8,6 +8,7 @@ import nextstep.path.payload.SearchPathRequest;
 import nextstep.path.payload.ShortestPathResponse;
 import nextstep.station.domain.Station;
 import nextstep.station.exception.NonExistentStationException;
+import nextstep.station.payload.StationMapper;
 import nextstep.station.payload.StationResponse;
 import nextstep.station.repository.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ class PathQueryServiceTest {
 
     private ShortestPathFinder<LineSectionEdge, Long> shortestPathFinder;
 
+    private StationMapper stationMapper;
 
     private Station 교대역;
     private Station 강남역;
@@ -72,8 +74,8 @@ class PathQueryServiceTest {
         shortestPathFinder = new ShortestPathFinder<>();
         stationRepository = mock(StationRepository.class);
         lineRepository = mock(LineRepository.class);
-        pathQueryService = new PathQueryService(stationRepository, lineRepository, shortestPathFinder);
-
+        stationMapper = new StationMapper(stationRepository);
+        pathQueryService = new PathQueryService(stationRepository, lineRepository, shortestPathFinder, stationMapper);
     }
 
 
@@ -104,6 +106,7 @@ class PathQueryServiceTest {
 
         when(lineRepository.findAll())
                 .thenReturn(List.of(이호선, 신분당선, 삼호선));
+
 
         ShortestPathResponse shortestPath = pathQueryService.findShortestPath(request);
         assertAll(

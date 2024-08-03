@@ -13,6 +13,7 @@ public class StationMapper {
 
     private final StationRepository stationRepository;
 
+
     public StationMapper(final StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
