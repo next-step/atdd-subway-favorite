@@ -1,7 +1,7 @@
 package nextstep.member.infrastructure.composite;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticateCommand;
+import nextstep.member.domain.command.authenticator.AuthenticateSocialOAuthCommand;
 import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticator;
 import nextstep.member.domain.command.authenticator.SocialOAuthProvider;
 import nextstep.member.domain.command.authenticator.SocialOAuthUser;
@@ -17,7 +17,7 @@ public class CompositeSocialOAuthAuthenticator implements SocialOAuthAuthenticat
     private final GithubAuthenticator githubAuthenticator;
 
     @Override
-    public SocialOAuthUser authenticate(SocialOAuthAuthenticateCommand.ByAuthCode command) {
+    public SocialOAuthUser authenticate(AuthenticateSocialOAuthCommand.ByAuthCode command) {
         if (command.getProvider() == SocialOAuthProvider.GITHUB) {
             return githubAuthenticator.authenticate(command);
         }

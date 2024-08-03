@@ -3,7 +3,7 @@ package nextstep.member.domain.command.authenticator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class SocialOAuthAuthenticateCommand {
+public class AuthenticateSocialOAuthCommand {
 
     @Getter
     @AllArgsConstructor

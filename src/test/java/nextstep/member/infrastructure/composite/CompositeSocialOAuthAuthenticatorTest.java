@@ -2,7 +2,7 @@ package nextstep.member.infrastructure.composite;
 
 import autoparams.AutoSource;
 import nextstep.fake.github.GithubStaticUsers;
-import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticateCommand;
+import nextstep.member.domain.command.authenticator.AuthenticateSocialOAuthCommand;
 import nextstep.member.domain.command.authenticator.SocialOAuthProvider;
 import nextstep.member.domain.command.authenticator.SocialOAuthUser;
 import nextstep.util.BaseTestSetup;
@@ -20,7 +20,7 @@ class CompositeSocialOAuthAuthenticatorTest extends BaseTestSetup {
     @AutoSource
     public void sut_returns_github_user_if_provider_github(GithubStaticUsers expected) {
         // given
-        SocialOAuthAuthenticateCommand.ByAuthCode command = new SocialOAuthAuthenticateCommand.ByAuthCode(SocialOAuthProvider.GITHUB, expected.getCode());
+        AuthenticateSocialOAuthCommand.ByAuthCode command = new AuthenticateSocialOAuthCommand.ByAuthCode(SocialOAuthProvider.GITHUB, expected.getCode());
 
         // when
         SocialOAuthUser actual = sut.authenticate(command);

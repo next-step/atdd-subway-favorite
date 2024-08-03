@@ -1,7 +1,7 @@
 package nextstep.member.infrastructure.github;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticateCommand;
+import nextstep.member.domain.command.authenticator.AuthenticateSocialOAuthCommand;
 import nextstep.member.domain.command.authenticator.SocialOAuthAuthenticator;
 import nextstep.member.domain.command.authenticator.SocialOAuthUser;
 import nextstep.member.infrastructure.github.dto.GithubAccessTokenRequest;
@@ -18,7 +18,7 @@ public class GithubAuthenticator implements SocialOAuthAuthenticator {
     private final GithubApiClient githubApiClient;
 
     @Override
-    public SocialOAuthUser authenticate(SocialOAuthAuthenticateCommand.ByAuthCode command) {
+    public SocialOAuthUser authenticate(AuthenticateSocialOAuthCommand.ByAuthCode command) {
         GithubAccessTokenRequest tokenRequest = new GithubAccessTokenRequest(
                 githubConfig.getClientId(),
                 githubConfig.getClientSecret(),
