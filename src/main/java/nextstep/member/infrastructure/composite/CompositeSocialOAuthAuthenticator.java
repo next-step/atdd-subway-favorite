@@ -8,8 +8,10 @@ import nextstep.member.domain.command.authenticator.SocialOAuthUser;
 import nextstep.member.domain.exception.MemberDomainException;
 import nextstep.member.domain.exception.MemberDomainExceptionType;
 import nextstep.member.infrastructure.github.GithubAuthenticator;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+@Primary
 @Component
 @RequiredArgsConstructor
 public class CompositeSocialOAuthAuthenticator implements SocialOAuthAuthenticator {

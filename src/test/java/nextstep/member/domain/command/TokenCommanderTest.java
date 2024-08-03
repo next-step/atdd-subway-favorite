@@ -2,6 +2,9 @@ package nextstep.member.domain.command;
 
 import autoparams.AutoSource;
 import nextstep.base.exception.AuthenticationException;
+import nextstep.fake.github.GithubStaticUsers;
+import nextstep.member.domain.command.authenticator.AuthenticateSocialOAuthCommand;
+import nextstep.member.domain.command.authenticator.SocialOAuthProvider;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.exception.MemberDomainException;
 import nextstep.member.domain.exception.MemberDomainExceptionType;
@@ -55,12 +58,43 @@ class TokenCommanderTest extends BaseTestSetup {
 
         @ParameterizedTest
         @AutoSource
-        public void sut_throws_returns_token(Member member) {
+        public void sut_returns_token(Member member) {
             // given
             memberRepository.save(member);
 
             // when
             String actual = sut.createToken(member.getEmail(), member.getPassword());
+
+            // then
+            assertThat(actual).isNotNull();
+        }
+    }
+
+    @DisplayName("authenticateSocialOAuth")
+    @Nested
+    class AuthenticateSocialOAuth {
+        @ParameterizedTest
+        @AutoSource
+        public void sut_create_member_if_not_found(GithubStaticUsers user) {
+            // given
+            AuthenticateSocialOAuthCommand.ByAuthCode command = new AuthenticateSocialOAuthCommand.ByAuthCode(SocialOAuthProvider.GITHUB, user.getCode());
+
+            // when
+            sut.authenticateSocialOAuth(command);
+
+            // then
+            Member actual = memberRepository.findByEmailOrThrow(user.getEmail());
+            assertThat(actual.getId()).isNotNull();
+        }
+
+        @ParameterizedTest
+        @AutoSource
+        public void sut_returns_token(GithubStaticUsers user) {
+            // given
+            AuthenticateSocialOAuthCommand.ByAuthCode command = new AuthenticateSocialOAuthCommand.ByAuthCode(SocialOAuthProvider.GITHUB, user.getCode());
+
+            // when
+            String actual = sut.authenticateSocialOAuth(command);
 
             // then
             assertThat(actual).isNotNull();

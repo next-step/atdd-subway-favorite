@@ -2,6 +2,7 @@ package nextstep.member.domain.entity;
 
 import lombok.Getter;
 import nextstep.base.exception.AuthenticationException;
+import nextstep.member.domain.command.authenticator.SocialOAuthUser;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -29,6 +30,10 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public static Member of(SocialOAuthUser socialOAuthUser) {
+        return new Member(socialOAuthUser.getEmail(), null, null);
     }
 
     public void update(Member member) {

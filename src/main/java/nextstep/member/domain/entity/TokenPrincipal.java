@@ -8,4 +8,8 @@ import lombok.Getter;
 public class TokenPrincipal {
     private Long subject;
     private String email;
+
+    public static TokenPrincipal of(Member member) {
+        return new TokenPrincipal(member.getId(), member.getEmail());
+    }
 }
