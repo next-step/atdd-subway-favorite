@@ -15,7 +15,6 @@ public class MemberReader {
     }
 
     public Member getMe(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmailOrThrow(email);
     }
 }

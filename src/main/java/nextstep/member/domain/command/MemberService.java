@@ -2,6 +2,7 @@ package nextstep.member.domain.command;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.domain.entity.Member;
+import nextstep.member.domain.exception.NotFoundMemberException;
 import nextstep.member.domain.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class MemberService {
     }
 
     public void updateMember(MemberCommand.UpdateMember command) {
-        Member member = memberRepository.findById(command.getId()).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(command.getId()).orElseThrow(() -> new NotFoundMemberException(command.getId()));
         member.update(command.toMember());
     }
 
