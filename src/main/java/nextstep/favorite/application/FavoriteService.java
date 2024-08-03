@@ -4,26 +4,42 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.station.entity.Station;
+import nextstep.station.service.StationService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
+    private MemberService memberService;
+    private StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberService memberService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
+        this.memberService = memberService;
+        this.stationService = stationService;
     }
 
     /**
      * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
      *
-     * @param request
+     * *
+     * @param loginMember,
+     * @param favoriteRequest
      */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    @Transactional
+    public Long createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
+        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Station sourceStation = stationService.getStationByIdOrThrow(favoriteRequest.getSource());
+        Station targetStation = stationService.getStationByIdOrThrow(favoriteRequest.getTarget());
+        Favorite favorite = Favorite.of(member, sourceStation, targetStation);
+        return favoriteRepository.save(favorite).getId();
     }
 
     /**

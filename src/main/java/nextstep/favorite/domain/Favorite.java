@@ -1,9 +1,9 @@
 package nextstep.favorite.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import nextstep.member.domain.Member;
+import nextstep.station.entity.Station;
+
+import javax.persistence.*;
 
 @Entity
 public class Favorite {
@@ -11,4 +11,43 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "sourceStationId")
+    private Station sourceStation;
+
+    @ManyToOne
+    @JoinColumn(name = "targetStationId")
+    private Station targetStation;
+
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "memberId")
+    private Member member;
+
+    public Favorite () {}
+
+    public Favorite (Member member, Station sourceStation, Station targetStation) {
+        this.member = member;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+    }
+
+    public static Favorite of (Member member, Station sourceStation, Station targetStation) {
+        return new Favorite(member, sourceStation, targetStation);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
+    }
+
+    public Member getMember() {
+        return member;
+    }
 }
