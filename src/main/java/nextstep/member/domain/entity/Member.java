@@ -1,19 +1,29 @@
 package nextstep.member.domain.entity;
 
+import lombok.Getter;
+import nextstep.base.exception.AuthenticationException;
+import nextstep.member.domain.command.authenticator.SocialOAuthUser;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@Getter
 @Entity
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String email;
+
+    @Column
     private String password;
+
+    @Column
     private Integer age;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
@@ -22,26 +32,20 @@ public class Member {
         this.age = age;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
+    public static Member of(SocialOAuthUser socialOAuthUser) {
+        return new Member(socialOAuthUser.getEmail(), null, null);
     }
 
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
+    }
+
+    public void verifyPassword(String password) {
+        if (!checkPassword(password)) {
+            throw new AuthenticationException();
+        }
     }
 
     public boolean checkPassword(String password) {

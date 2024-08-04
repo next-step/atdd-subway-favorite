@@ -2,7 +2,7 @@ package nextstep.subway.controller;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.configuration.auth.AuthenticationPrincipal;
-import nextstep.member.controller.dto.LoginMember;
+import nextstep.configuration.auth.LoginMember;
 import nextstep.member.domain.entity.Member;
 import nextstep.member.domain.query.MemberReader;
 import nextstep.subway.controller.dto.CreateFavoriteRequest;
@@ -22,15 +22,13 @@ import java.util.List;
 public class FavoriteController {
     private final FavoriteCommander favoriteCommander;
     private final FavoriteReader favoriteReader;
-    private final MemberReader memberReader;
 
     @PostMapping("")
     public ResponseEntity<FavoriteView.Main> createFavorite(
             @AuthenticationPrincipal LoginMember loginMember,
             @RequestBody CreateFavoriteRequest request
     ) {
-        Member member = memberReader.getMe(loginMember.getEmail());
-        Long id = favoriteCommander.createFavorite(request.toCommand(member.getId()));
+        Long id = favoriteCommander.createFavorite(request.toCommand(loginMember.getId()));
         FavoriteView.Main view = favoriteReader.getOneById(id);
 
         return ResponseEntity
@@ -40,9 +38,7 @@ public class FavoriteController {
 
     @GetMapping("")
     public ResponseEntity<List<FavoriteView.Main>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        Member member = memberReader.getMe(loginMember.getEmail());
-
-        List<FavoriteView.Main> favorites = favoriteReader.getFavoritesByMemberId(member.getId());
+        List<FavoriteView.Main> favorites = favoriteReader.getFavoritesByMemberId(loginMember.getId());
         return ResponseEntity.ok().body(favorites);
     }
 
@@ -51,9 +47,7 @@ public class FavoriteController {
             @AuthenticationPrincipal LoginMember loginMember,
             @PathVariable Long id
     ) {
-        Member member = memberReader.getMe(loginMember.getEmail());
-
-        favoriteCommander.deleteFavorite(new FavoriteCommand.DeleteFavorite(member.getId(), id));
+        favoriteCommander.deleteFavorite(new FavoriteCommand.DeleteFavorite(loginMember.getId(), id));
         return ResponseEntity.noContent().build();
     }
 }

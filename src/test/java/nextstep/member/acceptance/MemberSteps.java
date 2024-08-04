@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.fake.github.GithubStaticUsers;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
@@ -72,5 +73,10 @@ public class MemberSteps {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
+    }
+
+    public static void 깃헙_사용자_조회됨(ExtractableResponse<Response> response, GithubStaticUsers githubUser) {
+        assertThat(response.jsonPath().getString("id")).isNotNull();
+        assertThat(response.jsonPath().getString("email")).isEqualTo(githubUser.getEmail());
     }
 }

@@ -12,6 +12,14 @@ repositories {
     mavenCentral()
 }
 
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.8"
+    }
+}
+
+
 dependencies {
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -25,6 +33,9 @@ dependencies {
 
     // jwt
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+    // openfeign
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'

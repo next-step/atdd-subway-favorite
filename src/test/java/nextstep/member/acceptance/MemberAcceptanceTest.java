@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.로그인;
+import static nextstep.member.acceptance.AuthSteps.이메일_패스워드_로그인;
 import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +65,7 @@ class MemberAcceptanceTest extends BaseTestSetup {
     }
 
     /**
-     * Given 회원 가입을 생성하고
+     * Given 회원을 생성하고
      * And 로그인을 하고
      * When 토큰을 통해 내 정보를 조회하면
      * Then 내 정보를 조회할 수 있다
@@ -75,7 +75,7 @@ class MemberAcceptanceTest extends BaseTestSetup {
     void getMyInfo() {
         // given
         회원_생성_요청(EMAIL, PASSWORD, AGE);
-        String 인증토큰 = 인증토큰을_추출한다(로그인(EMAIL, PASSWORD));
+        String 인증토큰 = 인증토큰을_추출한다(이메일_패스워드_로그인(EMAIL, PASSWORD));
 
         // when
         var 내_정보_응답값 = 내_정보_조회_요청(인증토큰);
