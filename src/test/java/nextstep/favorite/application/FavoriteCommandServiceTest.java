@@ -6,6 +6,7 @@ import nextstep.favorite.exceptions.FavoriteAlreadyExistsException;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.path.application.PathQueryService;
 import nextstep.path.exceptions.PathNotFoundException;
+import nextstep.path.repository.PathRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,14 +21,14 @@ import static org.mockito.Mockito.when;
 class FavoriteCommandServiceTest {
 
     private FavoriteRepository favoriteRepository;
-    private PathQueryService pathQueryService;
+    private PathRepository pathRepository;
     private FavoriteCommandService favoriteCommandService;
 
     @BeforeEach
     void setUp() {
         favoriteRepository = mock(FavoriteRepository.class);
-        pathQueryService = mock(PathQueryService.class);
-        favoriteCommandService = new FavoriteCommandService(favoriteRepository, pathQueryService);
+        pathRepository = mock(PathRepository.class);
+        favoriteCommandService = new FavoriteCommandService(favoriteRepository, pathRepository);
     }
 
     @Nested
@@ -40,7 +41,7 @@ class FavoriteCommandServiceTest {
             Long target = 2L;
 
             //When 만약 경로가 끊어진 경우
-            when(pathQueryService.findShortestPath(source, target)).thenReturn(Optional.empty());
+            when(pathRepository.get(source, target)).thenReturn(Optional.empty());
 
             //에러를 반환한다
             assertThrows(PathNotFoundException.class, () ->
@@ -56,8 +57,8 @@ class FavoriteCommandServiceTest {
             Long target = 2L;
 
             //동일 경로가 이미 등록된 경우
-            when(favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId,source, target))
-                    .thenReturn(Optional.of(new Favorite(memberId , source ,target)));
+            when(favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId, source, target))
+                    .thenReturn(Optional.of(new Favorite(memberId, source, target)));
 
             //에러를 반환한다
             assertThrows(FavoriteAlreadyExistsException.class, () ->
