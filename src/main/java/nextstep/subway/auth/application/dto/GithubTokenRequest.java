@@ -1,6 +1,6 @@
 package nextstep.subway.auth.application.dto;
 
-public class GithubTokenRequest{
+public class GithubTokenRequest {
     private String code;
 
     public GithubTokenRequest() {
