@@ -13,8 +13,13 @@ public enum ErrorMessage {
     DIFFERENT_STATIONS("상행역과 하행역은 다른 역이어야 합니다."),
     PATH_NOT_FOUND("경로를 찾을 수 없습니다"),
 
+    
+    //즐겨찾기
     FAVORITE_NOT_FOUND("즐겨찾기를 찾을 수 없습니다"),
+    PATH_ALREADY_EXISTS("즐겨찾기를 찾을 수 없습니다"),
 
+    
+    //회원 관련
     UNAUTHORIZED("인증되지 않은 사용자입니다."),
     FORBIDDEN("권한이 없습니다")
     ;

@@ -1,6 +1,8 @@
 package nextstep.favorite.application;
 
+import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exceptions.FavoriteAlreadyExistsException;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.path.application.PathQueryService;
 import nextstep.path.exceptions.PathNotFoundException;
@@ -30,8 +32,6 @@ class FavoriteCommandServiceTest {
 
     @Nested
     class WhenAdd {
-
-        //TODO 끊어진 경로인 경우 생성 불가
         @DisplayName("끊어진 경로인 경우 생성되지 않는다")
         @Test
         void whenBrokenPathThenThrow() {
@@ -48,18 +48,23 @@ class FavoriteCommandServiceTest {
             );
         }
 
-        //TODO source target 같으면 생성 불가
-        @DisplayName("두 경로가 같을 경우 생성되지 않는다")
         @Test
-        void test2() {
+        @DisplayName("동일 경로가 이미 등록된 경우 생성되지 않는다")
+        void whenPathEarlyExistsThenThrow() {
+            Long memberId = 1L;
+            Long source = 1L;
+            Long target = 2L;
 
+            //동일 경로가 이미 등록된 경우
+            when(favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId,source, target))
+                    .thenReturn(Optional.of(new Favorite(memberId , source ,target)));
+
+            //에러를 반환한다
+            assertThrows(FavoriteAlreadyExistsException.class, () ->
+                    favoriteCommandService.createFavorite(memberId, new FavoriteRequest(source, target))
+            );
         }
 
-        //TODO 동일 경로가 있는경우 생성 불가
-
-        //TODO 로그인 유저가 아닌 경우 생성 불가
-
     }
-
 
 }

@@ -3,6 +3,7 @@ package nextstep.favorite.application;
 import nextstep.exceptions.ErrorMessage;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.exceptions.FavoriteAlreadyExistsException;
 import nextstep.favorite.exceptions.FavoriteNotFoundException;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.member.AuthorizationException;
@@ -26,12 +27,22 @@ public class FavoriteCommandService {
     public Long createFavorite(final Long memberId, final FavoriteRequest request) {
         Long source = request.getSource();
         Long target = request.getTarget();
+
+        assertDuplicateFavorite(memberId, source, target);
+
         pathQueryService.findShortestPath(source, target)
-                .orElseThrow(() -> new PathNotFoundException(ErrorMessage.PATH_NOT_FOUND));
+                .orElseThrow(() -> new PathNotFoundException(ErrorMessage.PATH_ALREADY_EXISTS));
 
         Favorite favorite = new Favorite(memberId, source, target);
         Favorite saved = favoriteRepository.save(favorite);
         return saved.getId();
+    }
+
+    private void assertDuplicateFavorite(final Long memberId, final Long source, final Long target) {
+        favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId, source, target)
+                .ifPresent(it -> {
+                    throw new FavoriteAlreadyExistsException(ErrorMessage.PATH_NOT_FOUND);
+                });
     }
 
     public void deleteFavorite(final Long memberId, final Long id) {
