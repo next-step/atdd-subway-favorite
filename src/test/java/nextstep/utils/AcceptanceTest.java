@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
+@ActiveProfiles("databaseCleanup")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class AcceptanceTest {
 
@@ -16,7 +16,7 @@ public class AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
-        databaseCleanup.execute();
+        databaseCleanup.execute(getClass());
         dataLoader.loadData();
     }
 }
