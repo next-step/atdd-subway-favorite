@@ -36,8 +36,8 @@ public class LineFixtureGenerator {
         Long 이호선 = lineCommandService.saveLine(new CreateLineRequest("2호선", "green", 교대역, 강남역, 10L)).getId();
         Long 신분당선 = lineCommandService.saveLine(new CreateLineRequest("신분당선", "red", 강남역, 양재역, 10L)).getId();
         Long 삼호선 = lineCommandService.saveLine(new CreateLineRequest("3호선", "orange", 교대역, 남부터미널역, 2L)).getId();
-        lineCommandService.addSection(삼호선, new AddSectionRequest(남부터미널역, 양재역, 3L));
-        return new LineFixture(교대역, 강남역, 양재역, 남부터미널역, 부산역, 서면역, 이호선, 신분당선, 삼호선);
+        Long 부산2호선 =  lineCommandService.saveLine(new CreateLineRequest("부산2호선", "green", 부산역, 서면역, 2L)).getId();
+        return new LineFixture(교대역, 강남역, 양재역, 남부터미널역, 부산역, 서면역, 이호선, 신분당선, 삼호선,부산2호선);
     }
 
 
