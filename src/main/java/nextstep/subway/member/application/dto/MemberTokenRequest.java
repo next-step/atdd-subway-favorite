@@ -1,13 +1,13 @@
 package nextstep.subway.member.application.dto;
 
-public class EmailPasswordTokenRequest {
+public class MemberTokenRequest {
     private String email;
     private String password;
 
-    public EmailPasswordTokenRequest() {
+    public MemberTokenRequest() {
     }
 
-    public EmailPasswordTokenRequest(String email, String password) {
+    public MemberTokenRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }
