@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
+import static nextstep.member.acceptance.MemberSteps.본인_정보_조회;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -35,11 +36,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         String accessToken = response.jsonPath().getString("accessToken");
         assertThat(accessToken).isNotBlank();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+        ExtractableResponse<Response> response2 = 본인_정보_조회(accessToken);
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
