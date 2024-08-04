@@ -1,15 +1,10 @@
 package nextstep.path.application;
 
-import nextstep.line.domain.Line;
-import nextstep.line.domain.Section;
-import nextstep.line.repository.LineRepository;
-import nextstep.path.domain.LineSectionEdge;
+import nextstep.path.exceptions.PathNotFoundException;
 import nextstep.path.payload.SearchPathRequest;
-import nextstep.path.payload.ShortestPathResponse;
+import nextstep.path.repository.PathRepository;
 import nextstep.station.domain.Station;
 import nextstep.station.exception.NonExistentStationException;
-import nextstep.station.payload.StationMapper;
-import nextstep.station.payload.StationResponse;
 import nextstep.station.repository.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,10 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.mock;
@@ -30,13 +24,9 @@ class PathQueryServiceTest {
 
     private StationRepository stationRepository;
 
-    private LineRepository lineRepository;
-
     private PathQueryService pathQueryService;
 
-    private ShortestPathFinder<LineSectionEdge, Long> shortestPathFinder;
-
-    private StationMapper stationMapper;
+    private PathRepository pathRepository;
 
     private Station 교대역;
     private Station 강남역;
@@ -44,10 +34,6 @@ class PathQueryServiceTest {
     private Station 남부터미널역;
 
     private List<Station> 전체역;
-
-    private Line 이호선;
-    private Line 신분당선;
-    private Line 삼호선;
 
 
     /**
@@ -66,16 +52,9 @@ class PathQueryServiceTest {
         남부터미널역 = new Station(4L, "남부터미널역");
         전체역 = List.of(교대역, 강남역, 양재역, 남부터미널역);
 
-        이호선 = new Line("2호선", "green", new Section(교대역.getId(), 강남역.getId(), 10L));
-        신분당선 = new Line("신분당선", "red", new Section(강남역.getId(), 양재역.getId(), 10L));
-        삼호선 = new Line("3호선", "orange", new Section(교대역.getId(), 남부터미널역.getId(), 2L));
-        삼호선.addSection(남부터미널역.getId(), 양재역.getId(), 3L);
-
-        shortestPathFinder = new ShortestPathFinder<>();
         stationRepository = mock(StationRepository.class);
-        lineRepository = mock(LineRepository.class);
-        stationMapper = new StationMapper(stationRepository);
-        pathQueryService = new PathQueryService(stationRepository, lineRepository, shortestPathFinder, stationMapper);
+        pathRepository = mock(PathRepository.class);
+        pathQueryService = new PathQueryService(stationRepository, pathRepository);
     }
 
 
@@ -92,7 +71,7 @@ class PathQueryServiceTest {
     }
 
     @Test
-    @DisplayName("최단 거리와 경로를 반환한다")
+    @DisplayName("최단 거리와 경로가 없는 경우 에러를 반환한다")
     void whenShowShortestPath() {
         SearchPathRequest request = new SearchPathRequest(교대역.getId(), 양재역.getId());
 
@@ -104,23 +83,12 @@ class PathQueryServiceTest {
                             .collect(Collectors.toList());
                 });
 
-        when(lineRepository.findAll())
-                .thenReturn(List.of(이호선, 신분당선, 삼호선));
+        when(pathRepository.get(request.getSource(), request.getTarget()))
+                .thenReturn(Optional.empty());
 
-
-        ShortestPathResponse shortestPath = pathQueryService.getShortestPath(request.getSource(), request.getTarget());
-        assertAll(
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(5L),
-                () -> assertThat(getPathNames(shortestPath))
-                        .containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName())
-
+        assertThrows(PathNotFoundException.class, () ->
+                pathQueryService.getShortestPath(request.getSource(), request.getTarget())
         );
-    }
-
-    private List<String> getPathNames(final ShortestPathResponse shortestPath) {
-        return shortestPath.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
     }
 
     private Station findStationById(final Long id) {
