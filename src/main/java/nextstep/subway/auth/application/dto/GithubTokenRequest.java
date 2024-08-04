@@ -1,4 +1,4 @@
-package nextstep.subway.github.application.dto;
+package nextstep.subway.auth.application.dto;
 
 public class GithubTokenRequest{
     private String code;

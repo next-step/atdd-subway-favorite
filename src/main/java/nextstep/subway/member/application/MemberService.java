@@ -52,4 +52,14 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(() -> new NoSuchMemberException("존재하지 않는 사용자입니다."));
     }
+
+    @Transactional
+    public Member findByEmailOrCreateMember(String email) {
+        try {
+            return findMemberByEmailOrThrow(email);
+        } catch (NoSuchMemberException e) {
+            createMember(new MemberRequest(email));
+            return findMemberByEmailOrThrow(email);
+        }
+    }
 }

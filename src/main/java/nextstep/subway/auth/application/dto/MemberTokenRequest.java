@@ -1,4 +1,4 @@
-package nextstep.subway.member.application.dto;
+package nextstep.subway.auth.application.dto;
 
 public class MemberTokenRequest {
     private String email;

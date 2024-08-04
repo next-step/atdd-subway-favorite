@@ -1,8 +1,8 @@
 package nextstep.subway.auth.ui;
 
-import nextstep.subway.github.application.dto.GithubTokenRequest;
+import nextstep.subway.auth.application.dto.GithubTokenRequest;
 import nextstep.subway.auth.application.TokenService;
-import nextstep.subway.member.application.dto.MemberTokenRequest;
+import nextstep.subway.auth.application.dto.MemberTokenRequest;
 import nextstep.subway.auth.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,7 @@ public class TokenController {
 
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody MemberTokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+        TokenResponse response = tokenService.createToken(request);
 
         return ResponseEntity.ok(response);
     }
