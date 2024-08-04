@@ -8,7 +8,7 @@ import nextstep.subway.favorite.application.dto.FavoriteResponse;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.application.dto.LoginMember;
+import nextstep.subway.auth.application.dto.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;

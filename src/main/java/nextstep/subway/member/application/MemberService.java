@@ -3,7 +3,7 @@ package nextstep.subway.member.application;
 import nextstep.subway.exception.NoSuchMemberException;
 import nextstep.subway.member.application.dto.MemberRequest;
 import nextstep.subway.member.application.dto.MemberResponse;
-import nextstep.subway.member.application.dto.LoginMember;
+import nextstep.subway.auth.application.dto.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;

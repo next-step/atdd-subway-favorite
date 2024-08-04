@@ -2,7 +2,7 @@ package nextstep.subway.auth.config;
 
 import nextstep.subway.exception.AuthenticationException;
 import nextstep.subway.auth.application.JwtTokenProvider;
-import nextstep.subway.member.application.dto.LoginMember;
+import nextstep.subway.auth.application.dto.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

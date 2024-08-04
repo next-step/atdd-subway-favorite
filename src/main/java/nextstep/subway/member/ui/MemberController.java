@@ -4,7 +4,7 @@ import nextstep.subway.auth.config.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.application.dto.MemberRequest;
 import nextstep.subway.member.application.dto.MemberResponse;
-import nextstep.subway.member.application.dto.LoginMember;
+import nextstep.subway.auth.application.dto.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
