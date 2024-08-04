@@ -7,7 +7,6 @@ import nextstep.favorite.exceptions.FavoriteAlreadyExistsException;
 import nextstep.favorite.exceptions.FavoriteNotFoundException;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.member.AuthorizationException;
-import nextstep.path.application.PathQueryService;
 import nextstep.path.exceptions.PathNotFoundException;
 import nextstep.path.repository.PathRepository;
 import org.springframework.stereotype.Service;

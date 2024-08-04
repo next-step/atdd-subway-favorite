@@ -1,8 +1,9 @@
 package nextstep.line.domain;
 
-import nextstep.line.domain.Section;
-import nextstep.line.domain.Sections;
-import nextstep.line.exception.*;
+import nextstep.line.exception.InsufficientStationsException;
+import nextstep.line.exception.InvalidDownStationException;
+import nextstep.line.exception.LineHasNoStationException;
+import nextstep.line.exception.SectionDistanceNotValidException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

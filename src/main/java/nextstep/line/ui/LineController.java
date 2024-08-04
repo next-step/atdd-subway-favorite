@@ -1,11 +1,11 @@
 package nextstep.line.ui;
 
+import nextstep.line.application.LineCommandService;
+import nextstep.line.application.LineQueryService;
 import nextstep.line.payload.AddSectionRequest;
 import nextstep.line.payload.CreateLineRequest;
 import nextstep.line.payload.LineResponse;
 import nextstep.line.payload.UpdateLineRequest;
-import nextstep.line.application.LineCommandService;
-import nextstep.line.application.LineQueryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

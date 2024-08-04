@@ -1,6 +1,5 @@
 package nextstep.path.application;
 
-import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.Section;
 import nextstep.path.domain.LineSectionEdge;

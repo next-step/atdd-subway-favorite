@@ -5,8 +5,8 @@ import nextstep.station.payload.StationResponse;
 import java.util.List;
 
 public class ShortestPathResponse {
-    private List<StationResponse> stations;
-    private Long distance;
+    private final List<StationResponse> stations;
+    private final Long distance;
 
     public ShortestPathResponse(final List<StationResponse> stations, final Long distance) {
         this.stations = stations;

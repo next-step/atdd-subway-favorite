@@ -1,7 +1,5 @@
 package nextstep.line.domain;
 
-import nextstep.line.domain.ChainSorter;
-import nextstep.line.domain.Section;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

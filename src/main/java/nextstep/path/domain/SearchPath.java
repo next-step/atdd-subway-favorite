@@ -1,7 +1,5 @@
 package nextstep.path.domain;
 
-import java.util.Objects;
-
 public class SearchPath {
 
     private final Long source;

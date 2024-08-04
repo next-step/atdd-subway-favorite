@@ -1,7 +1,6 @@
 package nextstep.favorite.acceptance;
 
 import io.restassured.response.Response;
-import nextstep.favorite.payload.FavoriteResponse;
 import nextstep.line.fixture.LineFixture;
 import nextstep.line.fixture.LineFixtureGenerator;
 import nextstep.member.fixture.AuthFixture;

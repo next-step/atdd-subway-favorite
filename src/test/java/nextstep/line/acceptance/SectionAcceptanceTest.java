@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static nextstep.line.acceptance.LineApiRequest.노선을_생성한다;
+import static nextstep.line.acceptance.LineApiRequest.노선을_조회한다;
 import static nextstep.line.acceptance.SectionApiRequest.구간을_추가한다;
 import static nextstep.line.acceptance.SectionApiRequest.노선에서_역을_삭제한다;
 import static nextstep.station.acceptance.StationApiRequest.역을_생성한다;
-import static nextstep.line.acceptance.LineApiRequest.노선을_생성한다;
-import static nextstep.line.acceptance.LineApiRequest.노선을_조회한다;
 import static nextstep.utils.HttpStatusAssertion.assertBadRequest;
 import static nextstep.utils.HttpStatusAssertion.assertNoContent;
 import static org.assertj.core.api.Assertions.assertThat;

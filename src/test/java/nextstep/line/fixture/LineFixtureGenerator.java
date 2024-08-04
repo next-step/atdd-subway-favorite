@@ -1,7 +1,6 @@
 package nextstep.line.fixture;
 
 import nextstep.line.application.LineCommandService;
-import nextstep.line.payload.AddSectionRequest;
 import nextstep.line.payload.CreateLineRequest;
 import nextstep.station.payload.StationRequest;
 import nextstep.station.service.StationService;
@@ -39,6 +38,5 @@ public class LineFixtureGenerator {
         Long 부산2호선 =  lineCommandService.saveLine(new CreateLineRequest("부산2호선", "green", 부산역, 서면역, 2L)).getId();
         return new LineFixture(교대역, 강남역, 양재역, 남부터미널역, 부산역, 서면역, 이호선, 신분당선, 삼호선,부산2호선);
     }
-
 
 }

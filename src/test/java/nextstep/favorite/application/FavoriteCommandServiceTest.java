@@ -4,7 +4,6 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exceptions.FavoriteAlreadyExistsException;
 import nextstep.favorite.payload.FavoriteRequest;
-import nextstep.path.application.PathQueryService;
 import nextstep.path.exceptions.PathNotFoundException;
 import nextstep.path.repository.PathRepository;
 import org.junit.jupiter.api.BeforeEach;
