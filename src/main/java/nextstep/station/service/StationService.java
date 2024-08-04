@@ -1,5 +1,6 @@
 package nextstep.station.service;
 
+import nextstep.path.repository.PathRepository;
 import nextstep.station.domain.Station;
 import nextstep.station.payload.StationRequest;
 import nextstep.station.payload.StationResponse;
@@ -14,13 +15,17 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class StationService {
     private final StationRepository stationRepository;
+    private final PathRepository pathRepository;
 
-    public StationService(StationRepository stationRepository) {
+
+    public StationService(final StationRepository stationRepository, final PathRepository pathRepository) {
         this.stationRepository = stationRepository;
+        this.pathRepository = pathRepository;
     }
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
+        pathRepository.removeAll();
         Station station = stationRepository.save(new Station(stationRequest.getName()));
         return createStationResponse(station);
     }
@@ -33,6 +38,7 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
+        pathRepository.removeAll();
         stationRepository.deleteById(id);
     }
 

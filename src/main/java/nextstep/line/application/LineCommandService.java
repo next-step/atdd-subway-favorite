@@ -9,6 +9,7 @@ import nextstep.line.payload.CreateLineRequest;
 import nextstep.line.payload.LineResponse;
 import nextstep.line.payload.UpdateLineRequest;
 import nextstep.line.repository.LineRepository;
+import nextstep.path.repository.PathRepository;
 import nextstep.station.domain.Station;
 import nextstep.station.exception.NonExistentStationException;
 import nextstep.station.repository.StationRepository;
@@ -25,10 +26,13 @@ public class LineCommandService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
+    private final PathRepository pathRepository;
 
-    public LineCommandService(final LineRepository lineRepository, final StationRepository stationRepository) {
+
+    public LineCommandService(final LineRepository lineRepository, final StationRepository stationRepository, final PathRepository pathRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.pathRepository = pathRepository;
     }
 
     public LineResponse saveLine(final CreateLineRequest request) {
@@ -41,17 +45,20 @@ public class LineCommandService {
                         new Section(upStation.getId(), downStation.getId(), request.getDistance())
                 ));
 
+        pathRepository.removeAll();
         return LineResponse.from(line, getLineStations(line));
     }
 
     public void modify(final Long id, final UpdateLineRequest request) {
         var line = getLineById(id);
         line.update(request.getName(), request.getColor());
+        pathRepository.removeAll();
     }
 
     public void delete(final Long id) {
         var line = getLineById(id);
         lineRepository.delete(line);
+        pathRepository.removeAll();
     }
 
     public void addSection(final Long id, final AddSectionRequest request) {
@@ -59,11 +66,13 @@ public class LineCommandService {
         var upStation = getStationById(request.getUpStationId());
         var downStation = getStationById(request.getDownStationId());
         line.addSection(upStation.getId(), downStation.getId(), request.getDistance());
+        pathRepository.removeAll();
     }
 
     public void removeSection(final Long id, final Long stationId) {
         Line line = getLineById(id);
         line.removeStation(stationId);
+        pathRepository.removeAll();
     }
 
     private Station getStationById(final Long id) {
