@@ -21,4 +21,9 @@ public class HttpStatusAssertion {
     public static void assertCreated(int status) {
         assertThat(status).isEqualTo(HttpStatus.CREATED.value());
     }
+
+    public static void assertForbidden(int status) {
+        assertThat(status).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
 }

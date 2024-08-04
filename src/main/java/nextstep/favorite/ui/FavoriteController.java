@@ -25,6 +25,7 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
+        request.validate();
         Long id = favoriteCommandService.createFavorite(loginMember.getId(), request);
         return ResponseEntity.created(URI.create("/favorites/" + id)).build();
     }
@@ -36,7 +37,7 @@ public class FavoriteController {
     }
 
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity deleteFavorite(
+    public ResponseEntity<Void> deleteFavorite(
             @AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
         favoriteCommandService.deleteFavorite(loginMember.getId(), id);
         return ResponseEntity.noContent().build();

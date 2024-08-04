@@ -49,7 +49,7 @@ public class FavoriteCommandService {
         Favorite favorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new FavoriteNotFoundException(ErrorMessage.FAVORITE_NOT_FOUND));
 
-        if (!favorite.hasAuthority(memberId)) {
+        if (!favorite.isAuthority(memberId)) {
             throw new AuthorizationException();
         }
         favoriteRepository.delete(favorite);
