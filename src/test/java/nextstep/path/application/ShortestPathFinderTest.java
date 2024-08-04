@@ -1,8 +1,10 @@
 package nextstep.path.application;
 
+import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.Section;
 import nextstep.path.domain.LineSectionEdge;
+import nextstep.path.exceptions.PathNotFoundException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class ShortestPathFinderTest {
@@ -92,6 +95,25 @@ class ShortestPathFinderTest {
                 .collect(Collectors.toList());
         
         assertThat(pathFinder.find(edges, 교대역, 서면역).isEmpty()).isTrue();
+    }
+
+    @DisplayName("없는 역으로 최단 경로 조회시 에러를 반환한다")
+    @Test
+    void whenNonConnectedLineThenReturnEmpty2() {
+        ShortestPathFinder<LineSectionEdge, Long> pathFinder = new ShortestPathFinder<>();
+        var lines = List.of(이호선, 신분당선, 삼호선);
+        List<LineSectionEdge> edges = lines.stream()
+                .flatMap(Line::sectionStream)
+                .map(LineSectionEdge::from)
+                .collect(Collectors.toList());
+
+        //없는역 조회시
+        var 없는역 = 0L;
+
+        //에러를 반환한다
+        assertThrows(PathNotFoundException.class, () ->
+                pathFinder.find(edges, 교대역, 없는역).isEmpty()
+        );
     }
 
 }
