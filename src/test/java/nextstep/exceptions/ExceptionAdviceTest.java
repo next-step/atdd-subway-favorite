@@ -24,7 +24,7 @@ class ExceptionAdviceTest {
 
     @DisplayName("BaseException에 @ResponseStatus 가 붙어있는 경우 value에 해당하는 Response Code를 반환한다")
     @Test
-    void test() {
+    void responseStatusTest() {
         ResponseEntity<Map<String, String>> response = exceptionAdvice.baseException(new TestException("권한 없음"));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }

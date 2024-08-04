@@ -41,7 +41,7 @@ public class Favorite {
         return id;
     }
 
-    public boolean hasAuthority(final Long memberId) {
+    public boolean isAuthority(final Long memberId) {
         return this.memberId.equals(memberId);
     }
 }
