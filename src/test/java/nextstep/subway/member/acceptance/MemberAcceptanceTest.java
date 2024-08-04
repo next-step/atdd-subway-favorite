@@ -25,7 +25,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
 
         // then
-        상태코드_CREATED(response);
+        정상_생성됨(response);
     }
 
     @DisplayName("회원 정보를 조회한다.")
@@ -52,7 +52,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_정보_수정_요청(createResponse, "new" + EMAIL, "new" + PASSWORD, AGE);
 
         // then
-        상태코드_OK(response);
+        정상_응답(response);
     }
 
     @DisplayName("회원 정보를 삭제한다.")
@@ -65,7 +65,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         var response = 회원_삭제_요청(createResponse);
 
         // then
-        상태코드_NO_CONTENT(response);
+        컨텐츠_없음(response);
     }
 
     /**
@@ -98,7 +98,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 내_정보_조회_응답 = 비로그인_내_정보_조회_요청();
 
         //then
-        상태코드_UNAUTHORIZED(내_정보_조회_응답);
+        권한_없음(내_정보_조회_응답);
     }
 
     @DisplayName("유효하지 않는 토큰으로 내 정보조회 시 401 Unauthorized 응답")
@@ -108,7 +108,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 내_정보_조회_응답 = 유효하지_않는_토큰_내_정보_조회_요청();
 
         //then
-        상태코드_UNAUTHORIZED(내_정보_조회_응답);
+        권한_없음(내_정보_조회_응답);
     }
 
     private static ExtractableResponse<Response> 유효하지_않는_토큰_내_정보_조회_요청() {

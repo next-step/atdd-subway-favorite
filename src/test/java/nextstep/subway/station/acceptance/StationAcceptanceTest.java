@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.subway.utils.AcceptanceTestUtil.상태코드_CREATED;
+import static nextstep.subway.utils.AcceptanceTestUtil.정상_생성됨;
 import static nextstep.subway.utils.AcceptanceTestUtil.역_생성_후_id_추출;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +31,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = createStation("강남역");
 
         // then
-        상태코드_CREATED(response);
+        정상_생성됨(response);
 
         // then
         List<String> stationNames = requestSpecificationWithLog()

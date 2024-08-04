@@ -67,7 +67,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when then
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
-        상태코드_CREATED(즐겨찾기_생성_응답_추출);
+        정상_생성됨(즐겨찾기_생성_응답_추출);
     }
 
     /**
@@ -84,7 +84,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
         // then
-        상태코드_BAD_REQUEST(즐겨찾기_생성_응답_추출);
+        잘못된_요청(즐겨찾기_생성_응답_추출);
     }
 
     /**
@@ -101,7 +101,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답_추출 = 즐겨찾기_생성(인증_토큰, 경로_매개변수);
 
         // then
-        상태코드_NOT_FOUND(즐겨찾기_생성_응답_추출);
+        존재하지_않는_자원(즐겨찾기_생성_응답_추출);
     }
 
     /**
@@ -156,7 +156,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제(첫번째_즐겨찾기_Id);
 
         // then
-        상태코드_NO_CONTENT(즐겨찾기_삭제_응답);
+        컨텐츠_없음(즐겨찾기_삭제_응답);
 
         ExtractableResponse<Response> 삭제_후_즐겨찾기_목록_응답 = 즐겨찾기_목록_조회(인증_토큰);
         List<FavoriteResponse> 삭제_후_즐겨찾기_목록 = 삭제_후_즐겨찾기_목록_응답.jsonPath().getList(".", FavoriteResponse.class);
@@ -178,7 +178,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 비로그인_생성_응답 = 비로그인_즐겨찾기_생성_요청(교대_양재_매개변수);
         // then
-        상태코드_UNAUTHORIZED(비로그인_생성_응답);
+        권한_없음(비로그인_생성_응답);
     }
 
     /**
@@ -191,7 +191,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 비로그인_조회_응답 = 비로그인_즐겨찾기_조회_요청();
         // then
-        상태코드_UNAUTHORIZED(비로그인_조회_응답);
+        권한_없음(비로그인_조회_응답);
     }
 
     /**
@@ -204,7 +204,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 비로그인_삭제_응답 = 비로그인_즐겨찾기_삭제_요청();
         // then
-        상태코드_UNAUTHORIZED(비로그인_삭제_응답);
+        권한_없음(비로그인_삭제_응답);
     }
 
     /**
@@ -219,7 +219,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 유효하지_않는_토큰_즐겨찾기_생성_요청(교대_양재_매개변수);
         // then
-        상태코드_UNAUTHORIZED(즐겨찾기_생성_응답);
+        권한_없음(즐겨찾기_생성_응답);
     }
 
     /**
@@ -232,7 +232,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_조회_응답 = 유효하지_않는_토큰_즐겨찾기_조회_요청();
         // then
-        상태코드_UNAUTHORIZED(즐겨찾기_조회_응답);
+        권한_없음(즐겨찾기_조회_응답);
     }
 
     /**
@@ -245,7 +245,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 유효하지_않는_토큰_즐겨찾기_삭제_요청();
         // then
-        상태코드_UNAUTHORIZED(즐겨찾기_삭제_응답);
+        권한_없음(즐겨찾기_삭제_응답);
     }
 
     private static ExtractableResponse<Response> 유효하지_않는_토큰_즐겨찾기_삭제_요청() {

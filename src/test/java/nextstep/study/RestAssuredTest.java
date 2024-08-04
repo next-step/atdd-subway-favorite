@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
-import static nextstep.subway.utils.AcceptanceTestUtil.상태코드_OK;
+import static nextstep.subway.utils.AcceptanceTestUtil.정상_응답;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class RestAssuredTest extends AcceptanceTest {
@@ -23,6 +23,6 @@ public class RestAssuredTest extends AcceptanceTest {
                 .then()
                 .extract();
 
-        상태코드_OK(response);
+        정상_응답(response);
     }
 }

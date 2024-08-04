@@ -64,7 +64,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_생성_Extract(분당선_요청_매개변수);
 
         // then
-        상태코드_NOT_FOUND(response);
+        존재하지_않는_자원(response);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_생성_Extract(분당선_요청_매개변수);
 
         // then
-        상태코드_NOT_FOUND(response);
+        존재하지_않는_자원(response);
     }
 
     @Test
@@ -140,7 +140,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 노선_조회_Extract(9999L);
 
         // then
-        상태코드_NOT_FOUND(response);
+        존재하지_않는_자원(response);
     }
 
 
@@ -160,7 +160,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> viewResponse = 노선_조회_Extract(lineId);
 
         // then
-        상태코드_OK(patchResponse);
+        정상_응답(patchResponse);
 
         assertThat(viewResponse.jsonPath().getString("name")).isEqualTo("다른분당선");
         assertThat(viewResponse.jsonPath().getString("color")).isEqualTo("bg-red-700");
@@ -178,7 +178,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> patchResponse = patchLineExtract(노선_수정_매개변수, 999L);
 
         // then
-        상태코드_NOT_FOUND(patchResponse);
+        존재하지_않는_자원(patchResponse);
     }
 
     @Test
@@ -190,8 +190,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = deleteLineExtract(lineId);
 
         // then
-        상태코드_NO_CONTENT(deleteResponse);
-        상태코드_NOT_FOUND(노선_조회_Extract(lineId));
+        컨텐츠_없음(deleteResponse);
+        존재하지_않는_자원(노선_조회_Extract(lineId));
     }
 
     @Test
@@ -201,7 +201,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = deleteLineExtract(999L);
 
         // then
-        상태코드_NOT_FOUND(deleteResponse);
+        존재하지_않는_자원(deleteResponse);
     }
 
     private ExtractableResponse<Response> getLineListExtract() {

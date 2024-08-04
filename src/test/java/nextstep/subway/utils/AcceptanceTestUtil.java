@@ -94,27 +94,27 @@ public final class AcceptanceTestUtil {
         return params;
     }
 
-    public static AbstractIntegerAssert<?> 상태코드_UNAUTHORIZED(ExtractableResponse<Response> response) {
+    public static AbstractIntegerAssert<?> 권한_없음(ExtractableResponse<Response> response) {
         return assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static AbstractIntegerAssert<?> 상태코드_OK(ExtractableResponse<Response> response) {
+    public static AbstractIntegerAssert<?> 정상_응답(ExtractableResponse<Response> response) {
         return assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static AbstractIntegerAssert<?> 상태코드_NO_CONTENT(ExtractableResponse<Response> response) {
+    public static AbstractIntegerAssert<?> 컨텐츠_없음(ExtractableResponse<Response> response) {
         return assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static AbstractIntegerAssert<?> 상태코드_CREATED(ExtractableResponse<Response> response) {
+    public static AbstractIntegerAssert<?> 정상_생성됨(ExtractableResponse<Response> response) {
         return assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static AbstractIntegerAssert<?> 상태코드_NOT_FOUND(ExtractableResponse<Response> response) {
+    public static AbstractIntegerAssert<?> 존재하지_않는_자원(ExtractableResponse<Response> response) {
         return assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    public static AbstractIntegerAssert<?> 상태코드_BAD_REQUEST(ExtractableResponse<Response> response) {
+    public static AbstractIntegerAssert<?> 잘못된_요청(ExtractableResponse<Response> response) {
         return assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
