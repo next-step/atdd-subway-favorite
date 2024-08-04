@@ -1,5 +1,6 @@
 package nextstep.member.presentation;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
@@ -7,13 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+@RequiredArgsConstructor
 @RestController
 public class MemberController {
-    private MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
 
     @PostMapping("/members")
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
