@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.member.presentation;
 
 import nextstep.member.domain.Member;
 

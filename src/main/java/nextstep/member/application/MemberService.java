@@ -1,10 +1,10 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.presentation.MemberRequest;
+import nextstep.member.presentation.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
+import nextstep.member.infrastructure.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
