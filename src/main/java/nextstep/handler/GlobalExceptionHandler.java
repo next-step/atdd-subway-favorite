@@ -17,45 +17,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(LineNotFoundException.class)
-    public ResponseEntity<ErrorResponse> LineNotFoundExceptionHandler(LineNotFoundException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<ErrorResponse> StationNotFoundExceptionHandler(StationNotFoundException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(StationException.class)
-    public ResponseEntity<ErrorResponse> StationExceptionHandler(StationException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(SectionException.class)
-    public ResponseEntity<ErrorResponse> SectionExceptionHandler(SectionException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(PathException.class)
-    public ResponseEntity<ErrorResponse> PathExceptionHandler(PathException e) {
+    @ExceptionHandler({
+            LineNotFoundException.class,
+            StationNotFoundException.class,
+            StationException.class,
+            SectionException.class,
+            PathException.class,
+            FavoriteException.class
+    })
+    public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity<ErrorResponse> UnAuthorizedExceptionHandler(UnAuthorizedException e) {
+    public ResponseEntity<ErrorResponse> unAuthorizedExceptionHandler(UnAuthorizedException e) {
         ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(FavoriteException.class)
-    public ResponseEntity<ErrorResponse> FavoriteExceptionHandler(FavoriteException e) {
-        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.getCollectedErrorResponse(e.getMessage()));
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
 }
