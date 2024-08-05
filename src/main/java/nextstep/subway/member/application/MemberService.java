@@ -1,10 +1,9 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.exception.NoSuchLineException;
 import nextstep.subway.exception.NoSuchMemberException;
 import nextstep.subway.member.application.dto.MemberRequest;
 import nextstep.subway.member.application.dto.MemberResponse;
-import nextstep.subway.member.domain.LoginMember;
+import nextstep.subway.auth.application.dto.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -52,5 +51,15 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(() -> new NoSuchMemberException("존재하지 않는 사용자입니다."));
+    }
+
+    @Transactional
+    public Member findByEmailOrCreateMember(String email) {
+        try {
+            return findMemberByEmailOrThrow(email);
+        } catch (NoSuchMemberException e) {
+            createMember(new MemberRequest(email));
+            return findMemberByEmailOrThrow(email);
+        }
     }
 }
