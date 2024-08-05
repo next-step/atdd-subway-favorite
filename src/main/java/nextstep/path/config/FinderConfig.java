@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class finderConfig {
+public class FinderConfig {
 
     @Value("${finder}")
     private String finderImplementation;
