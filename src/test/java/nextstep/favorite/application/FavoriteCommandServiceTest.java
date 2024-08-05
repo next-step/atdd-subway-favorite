@@ -5,7 +5,7 @@ import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exceptions.FavoriteAlreadyExistsException;
 import nextstep.favorite.payload.FavoriteRequest;
 import nextstep.path.exceptions.PathNotFoundException;
-import nextstep.path.repository.PathRepository;
+import nextstep.path.repository.PathResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,14 +20,14 @@ import static org.mockito.Mockito.when;
 class FavoriteCommandServiceTest {
 
     private FavoriteRepository favoriteRepository;
-    private PathRepository pathRepository;
+    private PathResolver pathResolver;
     private FavoriteCommandService favoriteCommandService;
 
     @BeforeEach
     void setUp() {
         favoriteRepository = mock(FavoriteRepository.class);
-        pathRepository = mock(PathRepository.class);
-        favoriteCommandService = new FavoriteCommandService(favoriteRepository, pathRepository);
+        pathResolver = mock(PathResolver.class);
+        favoriteCommandService = new FavoriteCommandService(favoriteRepository, pathResolver);
     }
 
     @Nested
@@ -40,7 +40,7 @@ class FavoriteCommandServiceTest {
             Long target = 2L;
 
             //When 만약 경로가 끊어진 경우
-            when(pathRepository.get(source, target)).thenReturn(Optional.empty());
+            when(pathResolver.get(source, target)).thenReturn(Optional.empty());
 
             //에러를 반환한다
             assertThrows(PathNotFoundException.class, () ->

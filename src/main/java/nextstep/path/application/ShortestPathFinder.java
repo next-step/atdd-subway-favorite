@@ -28,7 +28,7 @@ public class ShortestPathFinder<EDGE extends WeightedEdge<VERTEX>, VERTEX> {
         setWeight(edges);
         try {
             return Optional.ofNullable(shortestPath.getPath(source, target));
-        }catch (IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new PathNotFoundException(ErrorMessage.PATH_NOT_FOUND);
         }
     }

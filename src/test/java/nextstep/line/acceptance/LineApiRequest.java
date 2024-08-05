@@ -21,7 +21,7 @@ public class LineApiRequest {
                 .extract().response();
     }
 
-    public static Response getLines() {
+    public static Response 노선을_모두_조회한다() {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .basePath("/lines")
@@ -39,7 +39,7 @@ public class LineApiRequest {
                 .extract().response();
     }
 
-    public static Response update(final String url, final String name, final String color) {
+    public static Response 노선을_업데이트한다(final String url, final String name, final String color) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new UpdateLineRequest(name, color))
@@ -48,7 +48,7 @@ public class LineApiRequest {
                 .extract().response();
     }
 
-    public static Response delete(final String url) {
+    public static Response 노선을_삭제한다(final String url) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(url)

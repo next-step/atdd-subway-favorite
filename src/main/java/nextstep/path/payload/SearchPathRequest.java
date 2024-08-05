@@ -25,7 +25,4 @@ public class SearchPathRequest {
         return target;
     }
 
-    public boolean isStationSame() {
-        return source.equals(target);
-    }
 }

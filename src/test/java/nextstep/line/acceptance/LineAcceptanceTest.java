@@ -67,7 +67,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             노선을_생성한다("3호선", "bg-orange-600", 선릉역, 삼성역, 20L);
 
             //When 노선 목록을 조회하면
-            var jsonPath = getLines().jsonPath();
+            var jsonPath = 노선을_모두_조회한다().jsonPath();
 
             //Then 생성된 노선 목록이 모두 조회된다.
             assertAll(() -> {
@@ -125,7 +125,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
             var location = response.header(HttpHeaders.LOCATION);
 
             //When 노선을 수정한 뒤
-            var updateResponse = update(location, "3호선", "bg-orange-500");
+            var updateResponse = 노선을_업데이트한다(location, "3호선", "bg-orange-500");
 
             //When 조회하면
             var jsonPath = 노선을_조회한다(location).jsonPath();
@@ -143,7 +143,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void whenNotExistLineUpdateThenReturn400() {
             //when 존재하지 않는 노선을 수정하면
-            var 수정_결과 = update("/lines/0", "3호선", "bg-orange-500");
+            var 수정_결과 = 노선을_업데이트한다("/lines/0", "3호선", "bg-orange-500");
 
             //then 400 상태코드르 반환한다.
             assertBadRequest(수정_결과.statusCode());
@@ -163,10 +163,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
             var location = response.header(HttpHeaders.LOCATION);
 
             //When 그 중 한 노선을 삭제하면
-            var 삭제결과 = delete(location);
+            var 삭제결과 = 노선을_삭제한다(location);
 
             //Then 삭제한 노선은 목록에서 제외된다
-            var jsonPath = getLines().jsonPath();
+            var jsonPath = 노선을_모두_조회한다().jsonPath();
 
             assertAll(() -> {
                 assertNoContent(삭제결과.statusCode());
@@ -179,7 +179,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         @Test
         void whenDeleteNotExistLineThenReturn400() {
             //When 존재하지 않는 노선을 삭제하면
-            var 삭제_결과 = delete("/lines/0");
+            var 삭제_결과 = 노선을_삭제한다("/lines/0");
 
             //Then 400 를 발생시킨다
             assertBadRequest(삭제_결과.statusCode());

@@ -2,7 +2,7 @@ package nextstep.path.application;
 
 import nextstep.path.exceptions.PathNotFoundException;
 import nextstep.path.payload.SearchPathRequest;
-import nextstep.path.repository.PathRepository;
+import nextstep.path.repository.PathResolver;
 import nextstep.station.domain.Station;
 import nextstep.station.exception.NonExistentStationException;
 import nextstep.station.repository.StationRepository;
@@ -26,7 +26,7 @@ class PathQueryServiceTest {
 
     private PathQueryService pathQueryService;
 
-    private PathRepository pathRepository;
+    private PathResolver pathResolver;
 
     private Station 교대역;
     private Station 강남역;
@@ -53,8 +53,8 @@ class PathQueryServiceTest {
         전체역 = List.of(교대역, 강남역, 양재역, 남부터미널역);
 
         stationRepository = mock(StationRepository.class);
-        pathRepository = mock(PathRepository.class);
-        pathQueryService = new PathQueryService(stationRepository, pathRepository);
+        pathResolver = mock(PathResolver.class);
+        pathQueryService = new PathQueryService(stationRepository, pathResolver);
     }
 
 
@@ -83,7 +83,7 @@ class PathQueryServiceTest {
                             .collect(Collectors.toList());
                 });
 
-        when(pathRepository.get(request.getSource(), request.getTarget()))
+        when(pathResolver.get(request.getSource(), request.getTarget()))
                 .thenReturn(Optional.empty());
 
         assertThrows(PathNotFoundException.class, () ->
