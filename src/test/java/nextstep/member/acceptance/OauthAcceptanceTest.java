@@ -3,7 +3,6 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.AccessTokenRequest;
 import nextstep.member.test.GithubUser;
 import nextstep.utils.AcceptanceTest;
 import org.assertj.core.api.Assertions;
@@ -11,6 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import static nextstep.member.acceptance.MemberAssuredTemplate.자기자신정보요청;
+import static nextstep.member.acceptance.OauthAssuredTemplate.깃허브로그인;
 
 public class OauthAcceptanceTest extends AcceptanceTest {
 
@@ -25,11 +27,7 @@ public class OauthAcceptanceTest extends AcceptanceTest {
         // given
         String code = "asdfajsdkfjskldjkflj";
         // when
-        ExtractableResponse<Response> result = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new AccessTokenRequest(code))
-                .when()
-                .post("/login/github")
+        ExtractableResponse<Response> result = 깃허브로그인(code)
                 .then().extract();
         // then
         Assertions.assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -44,11 +42,7 @@ public class OauthAcceptanceTest extends AcceptanceTest {
     @Test
     void registerNewUser() {
         // given
-        ExtractableResponse<Response> loginResult = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new AccessTokenRequest(GithubUser.사용자1.getCode()))
-                .when()
-                .post("/login/github")
+        ExtractableResponse<Response> loginResult = 깃허브로그인(GithubUser.사용자1.getCode())
                 .then().extract();
 
         // when
@@ -68,5 +62,32 @@ public class OauthAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(memberResult.statusCode()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(memberResult.jsonPath().getString("email")).isEqualTo(GithubUser.사용자1.getEmail());
         Assertions.assertThat(memberResult.jsonPath().getInt("age")).isEqualTo(GithubUser.사용자1.getAge());
+    }
+
+    /**
+     * Given 이미 기존에 github 인증을 통해 가입한 상태입니다.
+     * When 새로 github 인증을 진행합니다.
+     * Then 정상적인 토큰을 전달받습니다.
+     */
+    @DisplayName("이미 가입한 유저의 경우 토큰을 생성한 후 응답합니다.")
+    @Test
+    void existUser() {
+        // given
+        String accessToken = 깃허브로그인(GithubUser.사용자1.getCode())
+                .then().extract().jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> memberResult = 자기자신정보요청(accessToken)
+                .then().extract();
+
+        Assertions.assertThat(memberResult.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(memberResult.jsonPath().getString("email")).isEqualTo(GithubUser.사용자1.getEmail());
+        Assertions.assertThat(memberResult.jsonPath().getInt("age")).isEqualTo(GithubUser.사용자1.getAge());
+
+        // when
+        ExtractableResponse<Response> loginResult = 깃허브로그인(GithubUser.사용자1.getCode())
+                .then().extract();
+        // then
+        Assertions.assertThat(loginResult.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(loginResult.jsonPath().getString("accessToken")).isNotBlank();
     }
 }

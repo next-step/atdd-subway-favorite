@@ -14,9 +14,9 @@ class GithubUserTest {
         // given
         String code = "asdfasdf";
         // when
+        String token = GithubUser.getTokenByCode(code);
         // then
-        Assertions.assertThatThrownBy(() -> GithubUser.getTokenByCode(code))
-                .isInstanceOf(AccessTokenException.class);
+        Assertions.assertThat(token).isBlank();
     }
 
     @DisplayName("인증코드에 맞는 사용자 accessToken 을 반환합니다.")
