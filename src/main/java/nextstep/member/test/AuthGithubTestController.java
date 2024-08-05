@@ -1,10 +1,8 @@
 package nextstep.member.test;
 
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
-import nextstep.member.application.dto.AccessTokenResponse;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +29,7 @@ public class AuthGithubTestController {
 
         GithubUser user = GithubUser.findUserByAccessToken(accessToken);
 
-        GithubProfileResponse response = new GithubProfileResponse(user.getEmail(), user.getId());
+        GithubProfileResponse response = new GithubProfileResponse(user.getEmail(), user.getAge());
         return ResponseEntity.ok(response);
     }
 

@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 public class ResourceResponse {
 
     private String email;
+    private Integer age;
 
-    public ResourceResponse(String email) {
+    public ResourceResponse(String email, Integer age) {
         this.email = email;
+        this.age = age;
     }
 }

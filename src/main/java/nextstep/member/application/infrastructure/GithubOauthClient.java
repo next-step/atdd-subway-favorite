@@ -9,7 +9,8 @@ import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
-import nextstep.member.domain.OauthTokenClient;
+import nextstep.member.domain.OauthClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,14 +21,26 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Service
-public class GithubOauthTokenClient implements OauthTokenClient {
+public class GithubOauthClient implements OauthClient {
+
+    @Value("${github.authorization.token.url}")
+    private String accessTokenUrl;
+
+    @Value("${github.authorization.client.id}")
+    private String clientId;
+
+    @Value("${github.authorization.clientSecret}")
+    private String clientSecret;
+
+    @Value("${github.authorization.resource.url}")
+    private String resourceUrl;
 
     @Override
-    public AccessTokenResponse requestToken(ClientInfo clientInfo, String code) {
+    public AccessTokenResponse requestToken(String code) {
         GithubAccessTokenRequest requestBody = new GithubAccessTokenRequest(
                 code,
-                clientInfo.getClientId(),
-                clientInfo.getClientSecret()
+                clientId,
+                clientSecret
         );
 
         HttpHeaders headers = new HttpHeaders();
@@ -40,7 +53,7 @@ public class GithubOauthTokenClient implements OauthTokenClient {
 
         try {
             GithubAccessTokenResponse githubAccessTokenResponse = restTemplate
-                    .exchange(clientInfo.getUrl(), HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                    .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                     .getBody();
             return new AccessTokenResponse(githubAccessTokenResponse.getAccessToken());
         } catch (NullPointerException exception) {
@@ -50,7 +63,7 @@ public class GithubOauthTokenClient implements OauthTokenClient {
     }
 
     @Override
-    public ResourceResponse requestResource(ClientInfo clientInfo, String accessToken) {
+    public ResourceResponse requestResource(String accessToken) {
 //        GithubResourceRequest githubResourceRequest = new GithubResourceRequest(accessToken);
 
         HttpHeaders headers = new HttpHeaders();
@@ -62,11 +75,11 @@ public class GithubOauthTokenClient implements OauthTokenClient {
         RestTemplate restTemplate = new RestTemplate();
 
         GithubProfileResponse githubProfileResponse = restTemplate
-                .exchange(clientInfo.getUrl(), HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .exchange(resourceUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
                 .getBody();
 
         try {
-            return new ResourceResponse(githubProfileResponse.getEmail());
+            return new ResourceResponse(githubProfileResponse.getEmail(), githubProfileResponse.getAge());
         } catch (NullPointerException exception) {
             log.error("request accessToken error ", exception);
             throw new AccessTokenException(MemberErrorMessage.NOT_VALID_USER_CODE);

@@ -4,9 +4,9 @@ import nextstep.member.application.dto.AccessTokenResponse;
 import nextstep.member.application.dto.ClientInfo;
 import nextstep.member.application.dto.ResourceResponse;
 
-public interface OauthTokenClient {
+public interface OauthClient {
 
-    AccessTokenResponse requestToken(ClientInfo clientInfo, String code);
+    AccessTokenResponse requestToken(String code);
 
-    ResourceResponse requestResource(ClientInfo clientInfo, String accessToken);
+    ResourceResponse requestResource(String accessToken);
 }
