@@ -1,29 +1,24 @@
 package nextstep.favorite.application;
 
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
+import lombok.RequiredArgsConstructor;
+import nextstep.favorite.presentation.FavoriteRequest;
+import nextstep.favorite.presentation.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.infrastructure.FavoriteRepository;
+import nextstep.member.domain.LoginMember;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+    public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        // TODO 존재하는 역에 대한 검증
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
-        this.favoriteRepository = favoriteRepository;
-    }
-
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+        Favorite createdFavorite = favoriteRepository.save(request.toFavorite(loginMember.getId()));
+        return createdFavorite.getId();
     }
 
     /**
