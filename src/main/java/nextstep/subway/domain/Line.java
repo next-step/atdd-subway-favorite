@@ -1,61 +1,60 @@
 package nextstep.subway.domain;
 
-import javax.persistence.*;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.subway.presentation.LineRequest;
 
+import javax.persistence.*;
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 20, nullable = false)
     private String name;
+
+    @Column(length = 20, nullable = false)
     private String color;
 
     @Embedded
     private Sections sections = new Sections();
-
-    public Line() {
-    }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Long getId() {
-        return id;
+    public static Line createLine(Station upStation, Station downStation, LineRequest lineRequest) {
+        Line createdLine = new Line(lineRequest.getName(), lineRequest.getColor());
+
+        createdLine.addSection(Section.createSection(
+                createdLine,
+                upStation,
+                downStation,
+                lineRequest.getDistance()
+        ));
+
+        return createdLine;
     }
 
-    public String getName() {
-        return name;
+    public void addSection(Section section) {
+        this.sections.addSection(section);
     }
 
-    public String getColor() {
-        return color;
+    public void deleteStation(Station station) {
+        this.sections.deleteStation(station);
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public void changeName(String name) {
+        this.name = name;
     }
 
-    public void update(String name, String color) {
-        if (name != null) {
-            this.name = name;
-        }
-        if (color != null) {
-            this.color = color;
-        }
-    }
-
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
-    public void deleteSection(Station station) {
-        sections.delete(station);
+    public void changeColor(String color) {
+        this.color = color;
     }
 }

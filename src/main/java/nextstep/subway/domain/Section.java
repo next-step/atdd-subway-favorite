@@ -1,70 +1,47 @@
 package nextstep.subway.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
-public class Section extends DefaultWeightedEdge {
+public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    @Column(nullable = false)
+    private SectionDistance sectionDistance;
 
-    public Section() {
-
-    }
-
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.sectionDistance = new SectionDistance(distance);
     }
 
-    public Long getId() {
-        return id;
-    }
+    public static Section createSection(Line line, Station upStation, Station downStation, int distance) {
+        assert line != null;
+        assert upStation != null;
+        assert downStation != null;
 
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public boolean isSameUpStation(Station station) {
-        return this.upStation == station;
-    }
-
-    public boolean isSameDownStation(Station station) {
-        return this.downStation == station;
-    }
-
-    public boolean hasDuplicateSection(Station upStation, Station downStation) {
-        return (this.upStation == upStation && this.downStation == downStation)
-                || (this.upStation == downStation && this.downStation == upStation);
+        return new Section(line, upStation, downStation, distance);
     }
 }
