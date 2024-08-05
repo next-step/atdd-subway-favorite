@@ -33,7 +33,7 @@ public class LineStep {
     }
 
     public static LineResponse 지하철_노선_생성(String name, String color, Long upStationId, Long downStationId, Long distance) {
-        CreateLineRequest createLineRequest = new CreateLineRequest(name, color, upStationId,
+        CreateLineRequest createLineRequest = CreateLineRequest.of(name, color, upStationId,
                 downStationId, distance);
 
         ExtractableResponse<Response> createdResponse = RestAssured.given().log().all()

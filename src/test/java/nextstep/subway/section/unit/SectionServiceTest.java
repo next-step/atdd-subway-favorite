@@ -7,7 +7,7 @@ import nextstep.section.exception.SectionException;
 import nextstep.section.service.SectionService;
 import nextstep.station.dto.StationResponse;
 import nextstep.station.exception.StationNotFoundException;
-import nextstep.utils.DatabaseCleanup;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,13 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static nextstep.subway.util.LineStep.지하철_노선_생성;
 import static nextstep.subway.util.StationStep.지하철_역_등록;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
-public class SectionServiceTest {
-
-    @Autowired
-    DatabaseCleanup databaseCleanup;
+public class SectionServiceTest extends AcceptanceTest {
 
     @Autowired
     SectionService sectionService;
@@ -40,8 +39,6 @@ public class SectionServiceTest {
 
     @BeforeEach
     public void setup() {
-
-        databaseCleanup.execute();
 
         강남역 = 지하철_역_등록("강남역");
         선릉역 = 지하철_역_등록("선릉역");
@@ -62,11 +59,11 @@ public class SectionServiceTest {
         var 삼성역_강남역_구간_생성_응답 = sectionService.createSection(신분당선.getId(), 삼성역_강남역_구간_생성_요청);
 
         // then
-        Assertions.assertEquals(삼성역_강남역_구간_생성_응답.getLineId(), 신분당선.getId());
-        Assertions.assertEquals(삼성역_강남역_구간_생성_응답.getUpStationResponse().getId(), 삼성역.getId());
-        Assertions.assertEquals(삼성역_강남역_구간_생성_응답.getUpStationResponse().getName(), 삼성역.getName());
-        Assertions.assertEquals(삼성역_강남역_구간_생성_응답.getDownStationResponse().getId(), 강남역.getId());
-        Assertions.assertEquals(삼성역_강남역_구간_생성_응답.getDownStationResponse().getName(), 강남역.getName());
+        assertThat(삼성역_강남역_구간_생성_응답.getLineId()).isEqualTo(신분당선.getId());
+        assertThat(삼성역_강남역_구간_생성_응답.getUpStationResponse().getId()).isEqualTo(삼성역.getId());
+        assertThat(삼성역_강남역_구간_생성_응답.getUpStationResponse().getName()).isEqualTo(삼성역.getName());
+        assertThat(삼성역_강남역_구간_생성_응답.getDownStationResponse().getId()).isEqualTo(강남역.getId());
+        assertThat(삼성역_강남역_구간_생성_응답.getDownStationResponse().getName()).isEqualTo(강남역.getName());
     }
 
     @Test
@@ -80,12 +77,12 @@ public class SectionServiceTest {
         var 선릉역_언주역_구간_생성_응답 = sectionService.createSection(신분당선.getId(), 선릉역_언주역_구간_생성_요청);
 
         // then
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getLineId(), 신분당선.getId());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getId(), 선릉역.getId());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getName(), 선릉역.getName());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getDownStationResponse().getId(), 언주역.getId());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getDownStationResponse().getName(), 언주역.getName());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getDistance(), 1L);
+        assertThat(선릉역_언주역_구간_생성_응답.getLineId()).isEqualTo(신분당선.getId());
+        assertThat(선릉역_언주역_구간_생성_응답.getUpStationResponse().getId()).isEqualTo(선릉역.getId());
+        assertThat(선릉역_언주역_구간_생성_응답.getUpStationResponse().getName()).isEqualTo(선릉역.getName());
+        assertThat(선릉역_언주역_구간_생성_응답.getDownStationResponse().getId()).isEqualTo(언주역.getId());
+        assertThat(선릉역_언주역_구간_생성_응답.getDownStationResponse().getName()).isEqualTo(언주역.getName());
+        assertThat(선릉역_언주역_구간_생성_응답.getDistance()).isEqualTo(1L);
     }
 
     @Test
@@ -98,12 +95,12 @@ public class SectionServiceTest {
         var 선릉역_언주역_구간_생성_응답 = sectionService.createSection(신분당선.getId(), 선릉역_언주역_구간_생성_요청);
 
         // then
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getLineId(), 신분당선.getId());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getId(), 선릉역.getId());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getName(), 선릉역.getName());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getDownStationResponse().getId(), 언주역.getId());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getDownStationResponse().getName(), 언주역.getName());
-        Assertions.assertEquals(선릉역_언주역_구간_생성_응답.getDistance(), 1L);
+        assertThat(선릉역_언주역_구간_생성_응답.getLineId()).isEqualTo(신분당선.getId());
+        assertThat(선릉역_언주역_구간_생성_응답.getUpStationResponse().getId()).isEqualTo(선릉역.getId());
+        assertThat(선릉역_언주역_구간_생성_응답.getUpStationResponse().getName()).isEqualTo(선릉역.getName());
+        assertThat(선릉역_언주역_구간_생성_응답.getDownStationResponse().getId()).isEqualTo(언주역.getId());
+        assertThat(선릉역_언주역_구간_생성_응답.getDownStationResponse().getName()).isEqualTo(언주역.getName());
+        assertThat(선릉역_언주역_구간_생성_응답.getDistance()).isEqualTo(1L);
     }
 
     @Test
@@ -113,7 +110,7 @@ public class SectionServiceTest {
         var 언주역_구간_생성_요청 = SectionRequest.of(선릉역.getId(), 언주역.getId(), 1L);
 
         // when & then
-        Assertions.assertThrows(LineNotFoundException.class, () -> sectionService.createSection(2L, 언주역_구간_생성_요청))
+        assertThrows(LineNotFoundException.class, () -> sectionService.createSection(2L, 언주역_구간_생성_요청))
                 .getMessage().equals("노선을 찾을 수 없습니다.");
 
     }
@@ -125,7 +122,7 @@ public class SectionServiceTest {
         var 언주역_구간_생성_요청 = SectionRequest.of(10L, 언주역.getId(), 1L);
 
         // when & then
-        Assertions.assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 언주역_구간_생성_요청))
+        assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 언주역_구간_생성_요청))
                 .getMessage().equals("역을 찾을 수 없습니다.");
     }
 
@@ -136,7 +133,7 @@ public class SectionServiceTest {
         var 언주역_구간_생성_요청 = SectionRequest.of(언주역.getId(), 10L, 1L);
 
         // when & then
-        Assertions.assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 언주역_구간_생성_요청))
+        assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 언주역_구간_생성_요청))
                 .getMessage().equals("역을 찾을 수 없습니다.");
     }
 
@@ -184,7 +181,7 @@ public class SectionServiceTest {
         sectionService.createSection(신분당선.getId(), 선릉역_언주역_구간_생성_요청);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> sectionService.deleteSection(신분당선.getId(), 논현역.getId()))
+        assertThrows(SectionException.class, () -> sectionService.deleteSection(신분당선.getId(), 논현역.getId()))
                 .getMessage().equals("구간을 찾을 수 없습니다.");
     }
 
@@ -196,7 +193,7 @@ public class SectionServiceTest {
         sectionService.createSection(신분당선.getId(), 선릉역_언주역_구간_생성_요청);
 
         // when & then
-        Assertions.assertThrows(LineNotFoundException.class, () -> sectionService.deleteSection(2L, 언주역.getId()))
+        assertThrows(LineNotFoundException.class, () -> sectionService.deleteSection(2L, 언주역.getId()))
                 .getMessage().equals("노선을 찾을 수 없습니다.");
     }
 }

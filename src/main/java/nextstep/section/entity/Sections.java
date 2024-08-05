@@ -115,16 +115,19 @@ public class Sections {
     }
 
     private void deleteMiddleSection(Section prevSection, Section nextSection, Section originalSection) {
-        if (prevSection != null) {
-            if (nextSection != null) {
-                prevSection.setNextSection(nextSection);
-                prevSection.setDownStation(nextSection.getUpStation());
-                prevSection.setDistance(originalSection.getDistance() + prevSection.getDistance());
-                nextSection.setPreviousSection(prevSection);
-            } else {
-                prevSection.setNextSection(null);
-            }
+        if (prevSection == null) {
+            return;
         }
+
+        if (nextSection != null) {
+            prevSection.setNextSection(nextSection);
+            prevSection.setDownStation(nextSection.getUpStation());
+            prevSection.setDistance(originalSection.getDistance() + prevSection.getDistance());
+            nextSection.setPreviousSection(prevSection);
+            return;
+        }
+
+        prevSection.setNextSection(null);
     }
 
     public Section getFirstSection() {

@@ -91,6 +91,7 @@ public class FavoriteServiceMockTest {
 
         사용자 = Member.of(1L, EMAIL, PASSWORD, AGE);
         로그인멤버 = new LoginMember(EMAIL);
+
     }
 
     @DisplayName("[createFavorite] 즐겨찾기를 생성한다.")
@@ -111,6 +112,21 @@ public class FavoriteServiceMockTest {
 
         // then
         verify(favoriteRepository, times(1)).save(any(Favorite.class));
+
+    }
+
+    @DisplayName("[createFavorite] 즐겨찾기를 생성 실패한다. 사용자 인증 정보가 없다.")
+    @Test
+    public void createFavorite_fail() {
+        // given
+        var 즐겨찾기_요청_강남역_역삼역 = FavoriteRequest.of(강남역.getId(), 역삼역.getId());
+
+        when(memberRepository.findByEmail(로그인멤버.getEmail())).thenReturn(Optional.ofNullable(null));
+
+        // when
+        assertAll(
+                () -> assertThrows(UnAuthorizedException.class, () -> favoriteService.createFavorite(로그인멤버, 즐겨찾기_요청_강남역_역삼역))
+        );
 
     }
 
@@ -136,7 +152,6 @@ public class FavoriteServiceMockTest {
         );
 
     }
-
 
     @DisplayName("[findFavorites] 로그인한 사용자 정보를 찾을 수 없다.")
     @Test

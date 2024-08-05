@@ -28,8 +28,6 @@ public class PathTest {
     Line 신분당선;
     double pathWeight = 10.0;
     Path path;
-    GraphPath<Long, DefaultWeightedEdge> mockGraphPath;
-
 
     @BeforeEach
     public void setup() {
@@ -37,10 +35,10 @@ public class PathTest {
         역삼역 = new Station(2L, "역삼역");
 
 
-        강남역_역삼역_구간 = new Section(강남역, 역삼역, 10L);
+        강남역_역삼역_구간 = Section.of(강남역, 역삼역, 10L);
         구간들 = new Sections(Collections.singletonList(강남역_역삼역_구간));
         신분당선 = new Line(1L, "신분당선", "red", 15L, 구간들);
-        path = new Path(List.of(강남역, 역삼역), pathWeight);
+        path = Path.of(List.of(강남역, 역삼역), pathWeight);
 
     }
 
@@ -75,7 +73,7 @@ public class PathTest {
     @Test
     void createPathResponse_fail1() {
         // given
-        var path = new Path(List.of(), pathWeight);
+        var path = Path.of(List.of(), pathWeight);
 
         // when & then
         assertThrows(PathException.class, () -> path.createPathResponse())

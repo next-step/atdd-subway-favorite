@@ -2,6 +2,7 @@ package nextstep.subway.path.acceptance;
 
 import nextstep.section.dto.SectionRequest;
 import nextstep.station.dto.StationResponse;
+import nextstep.utils.AcceptanceTest;
 import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,15 +20,14 @@ import static nextstep.subway.util.PathStep.경로_조회;
 import static nextstep.subway.util.PathStep.경로_조회_실패;
 import static nextstep.subway.util.SectionStep.지하철_구간_등록;
 import static nextstep.subway.util.StationStep.지하철_역_등록;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("지하철 노선 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
-public class pathAcceptanceTest {
-
-    @Autowired
-    DatabaseCleanup databaseCleanup;
+public class pathAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 교대역;
     private StationResponse 강남역;
@@ -47,8 +47,6 @@ public class pathAcceptanceTest {
      */
     @BeforeEach
     public void setup() {
-
-        databaseCleanup.execute();
 
         교대역 = 지하철_역_등록("교대역");
         강남역 = 지하철_역_등록("강남역");
@@ -78,8 +76,8 @@ public class pathAcceptanceTest {
         var 경로_조회_결과 = 경로_조회(교대역.getId(), 양재역.getId());
 
         // then
-        assertEquals(경로_조회_결과.getStationResponses(), List.of(교대역, 남부터미널역, 양재역));
-        assertEquals(경로_조회_결과.getDistance(), 5L);
+        assertThat(경로_조회_결과.getStationResponses()).isEqualTo(List.of(교대역, 남부터미널역, 양재역));
+        assertThat(경로_조회_결과.getDistance()).isEqualTo(5L);
     }
 
     /* Given: 지하철 역과 지하철 노선이 등록되어 있고,
@@ -92,10 +90,10 @@ public class pathAcceptanceTest {
         var 경로_조회_결과 = 경로_조회_실패(교대역.getId(), 교대역.getId());
 
         // then
-        Assertions.assertAll(
-                () -> assertEquals(경로_조회_결과.getStatus(), PATH_DUPLICATE_STATION.getStatus()),
-                () -> assertEquals(경로_조회_결과.getCode(), PATH_DUPLICATE_STATION.getCode()),
-                () -> assertEquals(경로_조회_결과.getDescription(), PATH_DUPLICATE_STATION.getDescription())
+        assertAll(
+                () -> assertThat(경로_조회_결과.getStatus()).isEqualTo(PATH_DUPLICATE_STATION.getStatus()),
+                () -> assertThat(경로_조회_결과.getCode()).isEqualTo(PATH_DUPLICATE_STATION.getCode()),
+                () -> assertThat(경로_조회_결과.getDescription()).isEqualTo(PATH_DUPLICATE_STATION.getDescription())
         );
 
     }
@@ -110,10 +108,10 @@ public class pathAcceptanceTest {
         var 경로_조회_결과 = 경로_조회_실패(교대역.getId(), 용산역.getId());
 
         // then
-        Assertions.assertAll(
-                () -> assertEquals(경로_조회_결과.getStatus(), PATH_NOT_FOUND.getStatus()),
-                () -> assertEquals(경로_조회_결과.getCode(), PATH_NOT_FOUND.getCode()),
-                () -> assertEquals(경로_조회_결과.getDescription(), PATH_NOT_FOUND.getDescription())
+        assertAll(
+                () -> assertThat(경로_조회_결과.getStatus()).isEqualTo(PATH_NOT_FOUND.getStatus()),
+                () -> assertThat(경로_조회_결과.getCode()).isEqualTo(PATH_NOT_FOUND.getCode()),
+                () -> assertThat(경로_조회_결과.getDescription()).isEqualTo(PATH_NOT_FOUND.getDescription())
         );
 
     }
@@ -132,10 +130,10 @@ public class pathAcceptanceTest {
         var 경로_조회_결과 = 경로_조회_실패(존재하지_않는_역_1, 존재하지_않는_역_2);
 
         // then
-        Assertions.assertAll(
-                () -> assertEquals(경로_조회_결과.getStatus(), STATION_NOT_FOUND.getStatus()),
-                () -> assertEquals(경로_조회_결과.getCode(), STATION_NOT_FOUND.getCode()),
-                () -> assertEquals(경로_조회_결과.getDescription(), STATION_NOT_FOUND.getDescription())
+        assertAll(
+                () -> assertThat(경로_조회_결과.getStatus()).isEqualTo(STATION_NOT_FOUND.getStatus()),
+                () -> assertThat(경로_조회_결과.getCode()).isEqualTo(STATION_NOT_FOUND.getCode()),
+                () -> assertThat(경로_조회_결과.getDescription()).isEqualTo(STATION_NOT_FOUND.getDescription())
         );
     }
 }

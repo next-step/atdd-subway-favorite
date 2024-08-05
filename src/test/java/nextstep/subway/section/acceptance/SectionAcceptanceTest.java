@@ -3,12 +3,10 @@ package nextstep.subway.section.acceptance;
 import nextstep.line.dto.LineResponse;
 import nextstep.section.dto.SectionRequest;
 import nextstep.station.dto.StationResponse;
-import nextstep.utils.DatabaseCleanup;
-import org.junit.jupiter.api.Assertions;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -22,10 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
-public class SectionAcceptanceTest {
-
-    @Autowired
-    DatabaseCleanup databaseCleanup;
+public class SectionAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 강남역;
     private StationResponse 선릉역;
@@ -36,8 +31,6 @@ public class SectionAcceptanceTest {
 
     @BeforeEach
     public void setup() {
-
-        databaseCleanup.execute();
 
         강남역 = 지하철_역_등록("강남역");
         선릉역 = 지하철_역_등록("선릉역");
@@ -136,7 +129,7 @@ public class SectionAcceptanceTest {
         var errorResponse = 지하철_구간_등록_실패(신분당선.getId(), SectionRequest.of(선릉역.getId(), 언주역.getId(), 10L));
 
         // then
-        Assertions.assertEquals(errorResponse.getCode(), SECTION_DISTANCE_LESS_THAN_EXISTING.getCode());
+        assertThat(errorResponse.getCode()).isEqualTo(SECTION_DISTANCE_LESS_THAN_EXISTING.getCode());
 
     }
 
@@ -150,7 +143,7 @@ public class SectionAcceptanceTest {
 
         // when & then
         var errorResponse = 지하철_구간_등록_실패(신분당선.getId(), SectionRequest.of(강남역.getId(), 선릉역.getId(), 10L));
-        Assertions.assertEquals(errorResponse.getCode(), SECTION_ALREADY_EXIST.getCode());
+        assertThat(errorResponse.getCode()).isEqualTo(SECTION_ALREADY_EXIST.getCode());
 
     }
 
@@ -164,7 +157,7 @@ public class SectionAcceptanceTest {
 
         // when & then
         var errorResponse = 지하철_구간_등록_실패(신분당선.getId(), SectionRequest.of(언주역.getId(), 논현역.getId(), 2L));
-        Assertions.assertEquals(errorResponse.getCode(), SECTION_NOT_FOUND.getCode());
+        assertThat(errorResponse.getCode()).isEqualTo(SECTION_NOT_FOUND.getCode());
 
     }
 
@@ -184,7 +177,7 @@ public class SectionAcceptanceTest {
 
         // then
         var 구간이_삭제된_신분당선 = 지하철_노선_조회(신분당선.getId());
-        Assertions.assertFalse(구간이_삭제된_신분당선.getStations().contains(강남역));
+        assertThat(구간이_삭제된_신분당선.getStations().contains(강남역)).isFalse();
 
     }
 
@@ -205,7 +198,7 @@ public class SectionAcceptanceTest {
 
         // then
         var 구간이_삭제된_신분당선 = 지하철_노선_조회(신분당선.getId());
-        Assertions.assertFalse(구간이_삭제된_신분당선.getStations().contains(선릉역));
+        assertThat(구간이_삭제된_신분당선.getStations().contains(선릉역)).isFalse();
 
     }
 
@@ -225,7 +218,7 @@ public class SectionAcceptanceTest {
 
         // then
         var 구간이_삭제된_신분당선 = 지하철_노선_조회(신분당선.getId());
-        Assertions.assertFalse(구간이_삭제된_신분당선.getStations().contains(삼성역));
+        assertThat(구간이_삭제된_신분당선.getStations().contains(삼성역)).isFalse();
 
     }
 
@@ -242,7 +235,7 @@ public class SectionAcceptanceTest {
 
         // when & then
         var errorResponse = 지하철_구간_삭제_실패(구간이_등록된_신분당선.getId(), 언주역.getId());
-        Assertions.assertEquals(errorResponse.getCode(), SECTION_NOT_FOUND.getCode());
+        assertThat(errorResponse.getCode()).isEqualTo(SECTION_NOT_FOUND.getCode());
 
     }
 
@@ -258,7 +251,7 @@ public class SectionAcceptanceTest {
 
         // when & then
         var errorResponse = 지하철_구간_삭제_실패(구간이_등록된_신분당선.getId(), 선릉역.getId());
-        Assertions.assertEquals(errorResponse.getCode(), SECTION_NOT_PERMISSION_COUNT_TOO_LOW.getCode());
+        assertThat(errorResponse.getCode()).isEqualTo(SECTION_NOT_PERMISSION_COUNT_TOO_LOW.getCode());
 
     }
 

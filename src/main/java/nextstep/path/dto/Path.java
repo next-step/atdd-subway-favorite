@@ -18,6 +18,10 @@ public class Path {
         this.weight = weight;
     }
 
+    public static Path of(List<Station> stations, double weight) {
+        return new Path(stations, weight);
+    }
+
     public PathResponse createPathResponse() {
         if (stations == null || stations.isEmpty()) {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));

@@ -27,6 +27,10 @@ public class CreateLineRequest {
         this.distance = distance;
     }
 
+    public static CreateLineRequest of(String name, String color, Long upStationId, Long downStationId, Long distance) {
+        return new CreateLineRequest(name, color, upStationId, downStationId, distance);
+    }
+
     public String getName() {
         return this.name;
     }

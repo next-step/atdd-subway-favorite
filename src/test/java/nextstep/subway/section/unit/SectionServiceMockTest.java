@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -84,7 +84,7 @@ public class SectionServiceMockTest {
         verify(stationRepository, times(1)).findById(3L);
         verify(lineRepository, times(1)).save(신분당선);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertEquals(삼성역_강남역_구간_생성_응답.getLineId(), 신분당선.getId()),
                 () -> assertEquals(삼성역_강남역_구간_생성_응답.getUpStationResponse().getId(), 삼성역.getId()),
                 () -> assertEquals(삼성역_강남역_구간_생성_응답.getUpStationResponse().getName(), 삼성역.getName()),
@@ -117,7 +117,7 @@ public class SectionServiceMockTest {
         verify(stationRepository, times(1)).findById(4L);
         verify(lineRepository, times(2)).save(신분당선);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertEquals(선릉역_언주역_구간_생성_응답.getLineId(), 신분당선.getId()),
                 () -> assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getId(), 선릉역.getId()),
                 () -> assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getName(), 선릉역.getName()),
@@ -148,7 +148,7 @@ public class SectionServiceMockTest {
         verify(stationRepository, times(1)).findById(4L);
         verify(lineRepository, times(1)).save(신분당선);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertEquals(선릉역_언주역_구간_생성_응답.getLineId(), 신분당선.getId()),
                 () -> assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getId(), 선릉역.getId()),
                 () -> assertEquals(선릉역_언주역_구간_생성_응답.getUpStationResponse().getName(), 선릉역.getName()),
@@ -168,7 +168,7 @@ public class SectionServiceMockTest {
         var 선릉역_언주역_구간_생성_요청 = SectionRequest.of(선릉역.getId(), 언주역.getId(), 1L);
 
         // when & then
-        Assertions.assertThrows(LineNotFoundException.class, () -> sectionService.createSection(2L, 선릉역_언주역_구간_생성_요청))
+        assertThrows(LineNotFoundException.class, () -> sectionService.createSection(2L, 선릉역_언주역_구간_생성_요청))
                 .getMessage().equals("노선을 찾을 수 없습니다.");
     }
 
@@ -182,7 +182,7 @@ public class SectionServiceMockTest {
         var 존재하지_않는역과_언주역_구간_생성_요청 = SectionRequest.of(10L, 언주역.getId(), 1L);
 
         // when & then
-        Assertions.assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 존재하지_않는역과_언주역_구간_생성_요청))
+        assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 존재하지_않는역과_언주역_구간_생성_요청))
                 .getMessage().equals("역을 찾을 수 없습니다.");
     }
 
@@ -197,7 +197,7 @@ public class SectionServiceMockTest {
         var 언주역과_존재하지_않는_역_구간_생성_요청 = SectionRequest.of(언주역.getId(), 10L, 1L);
 
         // when & then
-        Assertions.assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 언주역과_존재하지_않는_역_구간_생성_요청))
+        assertThrows(StationNotFoundException.class, () -> sectionService.createSection(신분당선.getId(), 언주역과_존재하지_않는_역_구간_생성_요청))
                 .getMessage().equals("역을 찾을 수 없습니다.");
     }
 
@@ -281,7 +281,7 @@ public class SectionServiceMockTest {
         sectionService.createSection(신분당선.getId(), 선릉역_언주역_구간_생성_요청);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> sectionService.deleteSection(신분당선.getId(), 논현역.getId()))
+        assertThrows(SectionException.class, () -> sectionService.deleteSection(신분당선.getId(), 논현역.getId()))
                 .getMessage().equals("구간을 찾을 수 없습니다.");
     }
 
@@ -298,7 +298,7 @@ public class SectionServiceMockTest {
         sectionService.createSection(신분당선.getId(), 선릉역_언주역_구간_생성_요청);
 
         // when & then
-        Assertions.assertThrows(LineNotFoundException.class, () -> sectionService.deleteSection(2L, 언주역.getId()))
+        assertThrows(LineNotFoundException.class, () -> sectionService.deleteSection(2L, 언주역.getId()))
                 .getMessage().equals("노선을 찾을 수 없습니다.");
     }
 

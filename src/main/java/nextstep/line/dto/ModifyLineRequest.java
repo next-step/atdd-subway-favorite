@@ -13,6 +13,10 @@ public class ModifyLineRequest {
         this.color = color;
     }
 
+    public static ModifyLineRequest of (String name, String color) {
+        return new ModifyLineRequest(name, color);
+    }
+
     public String getName() {
         return this.name;
     }

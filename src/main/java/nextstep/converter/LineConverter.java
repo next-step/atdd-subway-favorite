@@ -25,7 +25,7 @@ public class LineConverter {
     }
 
     public static LineResponse convertToLineResponseByLineAndStations(Line line, List<StationResponse> stationResponses) {
-        LineResponse lineResponse = new LineResponse(line.getId(), line.getName(), line.getColor(), line.getDistance());
+        LineResponse lineResponse = LineResponse.of(line.getId(), line.getName(), line.getColor(), line.getDistance());
         lineResponse.addStationResponses(stationResponses);
 
         return lineResponse;

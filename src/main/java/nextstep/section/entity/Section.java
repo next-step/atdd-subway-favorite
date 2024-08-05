@@ -38,12 +38,6 @@ public class Section {
     public Section() {
     }
 
-    public Section(Station upStation, Station downStation, Long distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-    }
-
     public Section(Long id, Station upStation, Station downStation, Long distance) {
         this.id = id;
         this.upStation = upStation;
@@ -64,7 +58,7 @@ public class Section {
             throw new SectionException(String.valueOf(SECTION_DISTANCE_TOO_SHORT));
         }
 
-        return new Section(upStation, downStation, distance);
+        return new Section(null, upStation, downStation, distance);
     }
 
     public Long getId() {

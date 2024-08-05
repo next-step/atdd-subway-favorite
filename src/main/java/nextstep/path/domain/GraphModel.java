@@ -29,13 +29,17 @@ public class GraphModel {
         this.target = target;
     }
 
+    public static GraphModel of(Long source, Long target) {
+        return new GraphModel(source, target);
+    }
+
     public Path findPath(List<Line> lines) {
         createGraphModel(lines);
         return findShortestPath(lines);
     }
 
     public void createGraphModel(List<Line> lines) {
-        if(lines.isEmpty()) {
+        if (lines.isEmpty()) {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));
         }
 
@@ -59,7 +63,7 @@ public class GraphModel {
 
         List<Station> stations = getStations(lines, graphPath.getVertexList());
 
-        return new Path(stations, graphPath.getWeight());
+        return Path.of(stations, graphPath.getWeight());
     }
 
     public List<Station> getStations(List<Line> lines, List<Long> stationIds) {
@@ -73,24 +77,37 @@ public class GraphModel {
     }
 
     public Station getStation(List<Line> lines, Long stationId) {
-        for (Line line : lines) {
-            Optional<Station> foundStation = findStationInLine(line, stationId);
-            if (foundStation.isPresent()) {
-                return foundStation.get();
-            }
-        }
-        throw new PathException(String.valueOf(PATH_NOT_FOUND));
+        return findStationInLines(lines, stationId)
+                .orElseThrow(() -> new PathException(String.valueOf(PATH_NOT_FOUND)));
+    }
+
+    private Optional<Station> findStationInLines(List<Line> lines, Long stationId) {
+        return lines.stream()
+                .map(line -> findStationInLine(line, stationId))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
     }
 
     private Optional<Station> findStationInLine(Line line, Long stationId) {
         List<Section> sectionList = line.getSections().getSections();
-        for (Section section : sectionList) {
-            if (section.getUpStation().getId().equals(stationId)) {
-                return Optional.ofNullable(section.getUpStation());
-            }
-            if (section.getDownStation().getId().equals(stationId)) {
-                return Optional.ofNullable(section.getDownStation());
-            }
+        return findStationInSections(sectionList, stationId);
+    }
+
+    private Optional<Station> findStationInSections(List<Section> sections, Long stationId) {
+        return sections.stream()
+                .map(section -> findStationInSection(section, stationId))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
+    }
+
+    private Optional<Station> findStationInSection(Section section, Long stationId) {
+        if (section.getUpStation().getId().equals(stationId)) {
+            return Optional.ofNullable(section.getUpStation());
+        }
+        if (section.getDownStation().getId().equals(stationId)) {
+            return Optional.ofNullable(section.getDownStation());
         }
         return Optional.empty();
     }
@@ -119,8 +136,8 @@ public class GraphModel {
         }
     }
 
-    public void validateDuplicate (Long source, Long target) {
-        if(source.equals(target)) {
+    public void validateDuplicate(Long source, Long target) {
+        if (source.equals(target)) {
             throw new PathException(String.valueOf(PATH_DUPLICATE_STATION));
         }
     }

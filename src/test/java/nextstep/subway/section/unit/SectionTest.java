@@ -9,8 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SectionTest {
 
@@ -41,7 +41,7 @@ public class SectionTest {
     @DisplayName("Section의 Distance는 1 이상의 값을 가져야한다.")
     public void section_distance() {
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> Section.of(역삼역, 강남역, 0L))
+        assertThrows(SectionException.class, () -> Section.of(역삼역, 강남역, 0L))
                 .getMessage().equals("구간의 길이는 최소 1 이상이어야 합니다.");
     }
 
@@ -53,7 +53,7 @@ public class SectionTest {
 
         // then
         Section 생성된_Section_조회 = 생성된_구간들.getSectionByUpStationId(역삼역.getId());
-        assertEquals(역삼역_강남역, 생성된_Section_조회);
+        assertThat(역삼역_강남역).isEqualTo(생성된_Section_조회);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class SectionTest {
 
         // then
         var 생성된_Section_조회 = 생성된_구간들.getSectionByUpStationId(강남역.getId());
-        assertEquals(중간_구간에_추가할_Section, 생성된_Section_조회);
+        assertThat(중간_구간에_추가할_Section).isEqualTo(생성된_Section_조회);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class SectionTest {
 
         // then
         var 생성된_Section_조회 = 생성된_구간들.getSectionByUpStationId(강남역.getId());
-        assertEquals(마지막_구간에_추가할_Section, 생성된_Section_조회);
+        assertThat(마지막_구간에_추가할_Section).isEqualTo(생성된_Section_조회);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class SectionTest {
         생성된_구간들.addSection(역삼역_강남역);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> 생성된_구간들.addSection(역삼역_강남역))
+        assertThrows(SectionException.class, () -> 생성된_구간들.addSection(역삼역_강남역))
                 .getMessage().equals("새로운 구간의 상행역과 하행역이 이미 등록되어 있습니다.");
 
     }
@@ -107,7 +107,7 @@ public class SectionTest {
         var 구간에_추가할_Section = Section.of(선정릉역, 선릉역, 2L);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> 생성된_구간들.addSection(구간에_추가할_Section))
+        assertThrows(SectionException.class, () -> 생성된_구간들.addSection(구간에_추가할_Section))
                 .getMessage().equals("구간을 찾을 수 없습니다.");
     }
 
@@ -119,7 +119,7 @@ public class SectionTest {
         var 구간에_추가할_Section = Section.of(역삼역, 선릉역, 2L);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> 생성된_구간들.addSection(구간에_추가할_Section))
+        assertThrows(SectionException.class, () -> 생성된_구간들.addSection(구간에_추가할_Section))
                 .getMessage().equals("새로운 구간의 길이는 기존의 구간 길이보다 길어야합니다.");
 
     }
@@ -136,7 +136,7 @@ public class SectionTest {
 
         // then
         var 삭제_후_강남역_선릉역_구간 = 생성된_구간들.getSectionByUpStationId(강남역.getId());
-        Assertions.assertAll(
+        assertAll(
                 () -> assertEquals(생성된_구간들.getSections().size(), 1),
                 () -> assertNull(삭제_후_강남역_선릉역_구간.getNextSection()),
                 () -> assertEquals(삭제_후_강남역_선릉역_구간.getUpStation(), 강남역),
@@ -161,18 +161,18 @@ public class SectionTest {
         var 삭제_후_역삼역_선릉역_구간 = 생성된_구간들.getSectionByUpStationId(역삼역.getId());
         var 삭제_후_선릉역_선정릉역_구간 = 생성된_구간들.getSectionByUpStationId(선릉역.getId());
 
-        assertEquals(생성된_구간들.getSections().size(), 2);
+        assertThat(생성된_구간들.getSections().size()).isEqualTo(2);
         assertNull(삭제_후_역삼역_선릉역_구간.getPreviousSection());
-        assertEquals(삭제_후_역삼역_선릉역_구간.getNextSection(), 삭제_후_선릉역_선정릉역_구간);
-        assertEquals(삭제_후_역삼역_선릉역_구간.getUpStation(), 역삼역);
-        assertEquals(삭제_후_역삼역_선릉역_구간.getDownStation(), 선릉역);
-        assertEquals(삭제_후_역삼역_선릉역_구간.getDistance(), 4L);
+        assertThat(삭제_후_역삼역_선릉역_구간.getNextSection()).isEqualTo(삭제_후_선릉역_선정릉역_구간);
+        assertThat(삭제_후_역삼역_선릉역_구간.getUpStation()).isEqualTo(역삼역);
+        assertThat(삭제_후_역삼역_선릉역_구간.getDownStation()).isEqualTo(선릉역);
+        assertThat(삭제_후_역삼역_선릉역_구간.getDistance()).isEqualTo(4L);
 
-        assertEquals(삭제_후_선릉역_선정릉역_구간.getPreviousSection(), 역삼역_강남역);
+        assertThat(삭제_후_선릉역_선정릉역_구간.getPreviousSection()).isEqualTo(역삼역_강남역);
         assertNull(삭제_후_선릉역_선정릉역_구간.getNextSection());
-        assertEquals(삭제_후_선릉역_선정릉역_구간.getUpStation(), 선릉역);
-        assertEquals(삭제_후_선릉역_선정릉역_구간.getDownStation(), 선정릉역);
-        assertEquals(삭제_후_선릉역_선정릉역_구간.getDistance(), 1L);
+        assertThat(삭제_후_선릉역_선정릉역_구간.getUpStation()).isEqualTo(선릉역);
+        assertThat(삭제_후_선릉역_선정릉역_구간.getDownStation()).isEqualTo(선정릉역);
+        assertThat(삭제_후_선릉역_선정릉역_구간.getDistance()).isEqualTo(1L);
     }
 
     @Test
@@ -188,12 +188,12 @@ public class SectionTest {
 
         // then
         var 삭제_후_강남역_선릉역_구간 = 생성된_구간들.getSectionByUpStationId(강남역.getId());
-        assertEquals(생성된_구간들.getSections().size(), 2);
+        assertThat(생성된_구간들.getSections().size()).isEqualTo(2);
         assertNull(삭제_후_강남역_선릉역_구간.getNextSection());
-        assertEquals(삭제_후_강남역_선릉역_구간.getPreviousSection(), 역삼역_강남역);
-        assertEquals(삭제_후_강남역_선릉역_구간.getUpStation(), 강남역);
-        assertEquals(삭제_후_강남역_선릉역_구간.getDownStation(), 선릉역);
-        assertEquals(삭제_후_강남역_선릉역_구간.getDistance(), 2L);
+        assertThat(삭제_후_강남역_선릉역_구간.getPreviousSection()).isEqualTo(역삼역_강남역);
+        assertThat(삭제_후_강남역_선릉역_구간.getUpStation()).isEqualTo(강남역);
+        assertThat(삭제_후_강남역_선릉역_구간.getDownStation()).isEqualTo(선릉역);
+        assertThat(삭제_후_강남역_선릉역_구간.getDistance()).isEqualTo(2L);
 
     }
 
@@ -204,7 +204,7 @@ public class SectionTest {
         생성된_구간들.addSection(역삼역_강남역);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> 생성된_구간들.removeSection(역삼역_강남역))
+        assertThrows(SectionException.class, () -> 생성된_구간들.removeSection(역삼역_강남역))
                 .getMessage().equals("구간은 최소 1개 이상이어야 합니다.");
 
     }
@@ -216,7 +216,7 @@ public class SectionTest {
         생성된_구간들.addSection(강남역_선릉역);
 
         // when & then
-        Assertions.assertThrows(SectionException.class, () -> 생성된_구간들.removeSection(선릉역_선정릉역))
+        assertThrows(SectionException.class, () -> 생성된_구간들.removeSection(선릉역_선정릉역))
                 .getMessage().equals("구간을 찾을 수 없습니다.");
 
     }

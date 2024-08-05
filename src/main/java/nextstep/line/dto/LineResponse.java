@@ -17,23 +17,33 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(String name, String color, List<StationResponse> stations, Long distance) {
+    public LineResponse(Long id, String name, String color, Long distance, List<StationResponse> stations) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.distance = distance;
         this.stations = stations;
     }
 
-    public LineResponse(Long id, String name, String color, Long distance) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.distance = distance;
+    public static LineResponse of(String name, String color, Long distance) {
+        return new LineResponse(null, name, color, distance, new ArrayList<>());
+    }
+
+    public static LineResponse of(String name, String color, Long distance, List<StationResponse> stations) {
+        return new LineResponse(null, name, color, distance, stations);
+    }
+
+    public static LineResponse of(Long id, String name, String color, Long distance) {
+        return new LineResponse(id, name, color, distance, new ArrayList<>());
+    }
+
+    public static LineResponse of(Long id, String name, String color, Long distance, List<StationResponse> stations) {
+        return new LineResponse(id, name, color, distance, stations);
     }
 
     public void addStationResponses(List<StationResponse> stationResponses) {
         for (StationResponse stationResponse : stationResponses) {
-            stations.add(stationResponse);
+            this.stations.add(stationResponse);
         }
     }
 

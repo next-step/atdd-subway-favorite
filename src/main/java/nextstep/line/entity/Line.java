@@ -8,7 +8,6 @@ import javax.persistence.*;
 public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "LINE_ID")
     private Long id;
 
     @Column(length = 20, nullable = false)
@@ -26,13 +25,6 @@ public class Line {
     protected Line() {
     }
 
-    public Line(String name, String color, Long distance, Sections sections) {
-        this.name = name;
-        this.color = color;
-        this.distance = distance;
-        this.sections = sections;
-    }
-
     public Line(Long id, String name, String color, Long distance, Sections sections) {
         this.id = id;
         this.name = name;
@@ -42,7 +34,7 @@ public class Line {
     }
 
     public static Line of(String name, String color, Long distance, Sections sections) {
-        return new Line(name, color, distance, sections);
+        return new Line(null, name, color, distance, sections);
     }
 
     public static Line of(Long id, String name, String color, Long distance, Sections sections) {

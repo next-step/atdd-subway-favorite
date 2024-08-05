@@ -3,6 +3,7 @@ package nextstep.subway.line.acceptance;
 import nextstep.line.dto.LineResponse;
 import nextstep.line.dto.LinesResponse;
 import nextstep.line.dto.ModifyLineRequest;
+import nextstep.utils.AcceptanceTest;
 import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,17 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 노선 관련 기능")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
-public class LineAcceptanceTest {
-
-    @Autowired
-    DatabaseCleanup databaseCleanup;
-
-    @BeforeEach
-    public void setup() {
-
-        databaseCleanup.execute();
-
-    }
+public class LineAcceptanceTest extends AcceptanceTest {
 
     /* Given: 새로운 지하철 노선 정보를 입력하고,
        When: 관리자가 노선을 생성하면,
@@ -42,7 +33,7 @@ public class LineAcceptanceTest {
         var 지하철_역_목록 = 여러_개의_지하철_역_생성(List.of("강남역", "역삼역"));
 
         // when
-        var 원본_지하철_노선 = new LineResponse("신분당선", "Red", List.of(지하철_역_목록.get(0), 지하철_역_목록.get(1)), 10L);
+        var 원본_지하철_노선 = LineResponse.of("신분당선", "Red", 10L, 지하철_역_목록);
         var 생성된_지하철_노선 = 지하철_노선_생성("신분당선", "Red", 지하철_역_목록.get(0).getId(), 지하철_역_목록.get(1).getId(), 10L);
         원본_지하철_노선.setId(생성된_지하철_노선.getId());
 
@@ -107,7 +98,7 @@ public class LineAcceptanceTest {
         var 생성된_지하철_역_목록 = 여러_개의_지하철_역_생성(List.of("강남역", "역삼역", "선릉역", "논현역"));
         var 지하철_노선_1 = 지하철_노선_생성("신분당선", "Red", 생성된_지하철_역_목록.get(0).getId(), 생성된_지하철_역_목록.get(1).getId(), 10L);
 
-        ModifyLineRequest 지하철_노선_변경_요청 = new ModifyLineRequest("바꾼_신분당선", "Blue");
+        ModifyLineRequest 지하철_노선_변경_요청 = ModifyLineRequest.of("바꾼_신분당선", "Blue");
 
         // when
         지하철_노선_수정(지하철_노선_1.getId(), 지하철_노선_변경_요청);

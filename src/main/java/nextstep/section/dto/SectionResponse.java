@@ -27,7 +27,6 @@ public class SectionResponse {
 
     public static SectionResponse of(Long lineId, Long sectionId, StationResponse upStationResponse, StationResponse downStationResponse, Long distance) {
         return new SectionResponse(lineId, sectionId, upStationResponse, downStationResponse, distance);
-
     }
 
     public Long getLineId() {
