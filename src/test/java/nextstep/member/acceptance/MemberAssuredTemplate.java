@@ -1,9 +1,7 @@
 package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.AccessTokenRequest;
 import org.springframework.http.MediaType;
 
 public class MemberAssuredTemplate {

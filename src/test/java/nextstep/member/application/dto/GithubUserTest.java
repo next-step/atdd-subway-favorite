@@ -1,7 +1,6 @@
 package nextstep.member.application.dto;
 
-import nextstep.member.AccessTokenException;
-import nextstep.member.test.GithubUser;
+import nextstep.member.acceptance.test.GithubUser;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,5 +27,4 @@ class GithubUserTest {
         // then
         Assertions.assertThat(result).isEqualTo(GithubUser.사용자1.getAccessToken());
     }
-
 }

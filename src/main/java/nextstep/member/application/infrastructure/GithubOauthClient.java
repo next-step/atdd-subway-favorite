@@ -3,9 +3,8 @@ package nextstep.member.application.infrastructure;
 import lombok.extern.slf4j.Slf4j;
 import nextstep.member.AccessTokenException;
 import nextstep.member.MemberErrorMessage;
-import nextstep.member.application.dto.AccessTokenResponse;
-import nextstep.member.application.dto.ClientInfo;
 import nextstep.member.application.dto.ResourceResponse;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
@@ -36,7 +35,7 @@ public class GithubOauthClient implements OauthClient {
     private String resourceUrl;
 
     @Override
-    public AccessTokenResponse requestToken(String code) {
+    public TokenResponse requestToken(String code) {
         GithubAccessTokenRequest requestBody = new GithubAccessTokenRequest(
                 code,
                 clientId,
@@ -55,7 +54,7 @@ public class GithubOauthClient implements OauthClient {
             GithubAccessTokenResponse githubAccessTokenResponse = restTemplate
                     .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                     .getBody();
-            return new AccessTokenResponse(githubAccessTokenResponse.getAccessToken());
+            return new TokenResponse(githubAccessTokenResponse.getAccessToken());
         } catch (NullPointerException exception) {
             log.error("request accessToken error ", exception);
             throw new AccessTokenException(MemberErrorMessage.NOT_VALID_USER_CODE);
@@ -64,8 +63,6 @@ public class GithubOauthClient implements OauthClient {
 
     @Override
     public ResourceResponse requestResource(String accessToken) {
-//        GithubResourceRequest githubResourceRequest = new GithubResourceRequest(accessToken);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "bearer " + accessToken);

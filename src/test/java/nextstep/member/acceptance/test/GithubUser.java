@@ -1,10 +1,7 @@
-package nextstep.member.test;
-
-import lombok.Getter;
+package nextstep.member.acceptance.test;
 
 import java.util.Arrays;
 
-@Getter
 public enum GithubUser {
     사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com", 10),
     사용자2("fau3nfin93dmn", "access_token_2", "email2@email.com", 20),
@@ -36,5 +33,21 @@ public enum GithubUser {
         return Arrays.stream(GithubUser.values()).filter(githubUser -> githubUser.accessToken.equals(accessToken))
                 .findFirst()
                 .orElse(GithubUser.잘못된사용자);
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Integer getAge() {
+        return age;
     }
 }

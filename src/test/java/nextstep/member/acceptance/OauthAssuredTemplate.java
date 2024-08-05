@@ -2,7 +2,7 @@ package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.AccessTokenRequest;
+import nextstep.member.application.dto.OauthTokenRequest;
 import org.springframework.http.MediaType;
 
 public class OauthAssuredTemplate {
@@ -11,7 +11,7 @@ public class OauthAssuredTemplate {
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new AccessTokenRequest(code))
+                .body(new OauthTokenRequest(code))
                 .when().post("/login/github");
     }
 }

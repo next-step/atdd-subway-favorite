@@ -3,9 +3,8 @@ package nextstep.member.ui;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberClientService;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.OauthService;
-import nextstep.member.application.dto.AccessTokenRequest;
-import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.OauthClientService;
+import nextstep.member.application.dto.OauthTokenRequest;
 import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
@@ -20,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class OauthController {
 
-    private final OauthService oauthService;
+    private final OauthClientService oauthClientService;
     private final MemberService memberService;
     private final MemberClientService memberClientService;
 
     @PostMapping("/github")
-    public ResponseEntity<TokenResponse> getAccessToken(@RequestBody AccessTokenRequest request) {
-        ResourceResponse resourceResponse = oauthService.authenticate(request.getCode());
+    public ResponseEntity<TokenResponse> getAccessToken(@RequestBody OauthTokenRequest request) {
+        ResourceResponse resourceResponse = oauthClientService.authenticate(request.getCode());
 
         Member member;
         try {

@@ -1,11 +1,13 @@
-package nextstep.member.test;
+package nextstep.member.acceptance.test;
 
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Profile("test")
 @RestController
 @RequestMapping("/login")
 public class AuthGithubTestController {

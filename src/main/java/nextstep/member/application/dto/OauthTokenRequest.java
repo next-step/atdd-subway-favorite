@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AccessTokenRequest {
+public class OauthTokenRequest {
 
     private String code;
 
-    public AccessTokenRequest(String code) {
+    public OauthTokenRequest(String code) {
         this.code = code;
     }
 }

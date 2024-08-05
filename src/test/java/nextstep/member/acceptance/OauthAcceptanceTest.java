@@ -3,7 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.test.GithubUser;
+import nextstep.member.acceptance.test.GithubUser;
 import nextstep.utils.AcceptanceTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
