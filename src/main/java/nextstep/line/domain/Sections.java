@@ -41,7 +41,7 @@ public class Sections {
 
 
     public List<Long> getSortedStationIds() {
-        return chainSorter.getSortedStationIds(this.sections);
+        return chainSorter.getSortedIds(this.sections);
     }
 
     public void removeStation(final Long stationId) {

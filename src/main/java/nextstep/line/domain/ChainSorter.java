@@ -17,31 +17,30 @@ public class ChainSorter<DATA, KEY> {
         this.target = target;
     }
 
-    public List<KEY> getSortedStationIds(final List<DATA> sections) {
-        List<KEY> stationIds = new ArrayList<>();
-        Map<KEY, KEY> upDownMap = sections.stream()
+    public List<KEY> getSortedIds(final List<DATA> sections) {
+        List<KEY> ids = new ArrayList<>();
+        Map<KEY, KEY> sourceTargetMap = sections.stream()
                 .collect(Collectors.toMap(source, target));
-        Set<KEY> downStationIds = sections.stream()
+        Set<KEY> targetIds = sections.stream()
                 .map(target).collect(Collectors.toSet());
 
-        KEY currentStationId = getFirstUpStationId(upDownMap, downStationIds);
+        KEY currentId = getFirstSourceId(sourceTargetMap, targetIds);
 
-        stationIds.add(currentStationId);
-        for (int i = 0; i < upDownMap.size(); i++) {
-            KEY nextStationId = upDownMap.get(currentStationId);
-            stationIds.add(nextStationId);
-            currentStationId = nextStationId;
+        ids.add(currentId);
+        for (int i = 0; i < sourceTargetMap.size(); i++) {
+            KEY nextId = sourceTargetMap.get(currentId);
+            ids.add(nextId);
+            currentId = nextId;
         }
-        return stationIds;
+        return ids;
     }
 
-    private KEY getFirstUpStationId(final Map<KEY, KEY> upDownMap, final Set<KEY> downStationIds) {
-        for (KEY upStationId : upDownMap.keySet()) {
-            if (!downStationIds.contains(upStationId)) {
-                return upStationId;
-            }
-        }
-        throw new IllegalStateException("첫번째 역을 찾을 수 없습니다.");
+    private KEY getFirstSourceId(final Map<KEY, KEY> sourceTargetMap, final Set<KEY> targetIds) {
+        return sourceTargetMap.keySet()
+                .stream()
+                .filter(it->!targetIds.contains(it))
+                .findFirst()
+                .orElseThrow(()-> new IllegalStateException("첫번째 역을 찾을 수 없습니다."));
     }
 
 }

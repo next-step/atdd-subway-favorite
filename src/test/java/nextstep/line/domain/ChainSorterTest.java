@@ -29,7 +29,7 @@ class ChainSorterTest {
     void returnSortedStation() {
         ChainSorter<Section, Long> sectionSorter = new ChainSorter<>(Section::getUpStationId, Section::getDownStationId);
         //when 정렬 메소드 실행시
-        var sortedStationIds = sectionSorter.getSortedStationIds(sections);
+        var sortedStationIds = sectionSorter.getSortedIds(sections);
         //then 순서대로 반환한다
         assertThat(sortedStationIds).containsExactly(1L, 2L, 3L, 4L, 5L);
     }
