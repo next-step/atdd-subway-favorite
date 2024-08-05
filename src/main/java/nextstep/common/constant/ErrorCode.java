@@ -15,7 +15,7 @@ public enum ErrorCode {
     SECTION_LAST_STATION_NOT_FOUND(400, "SECTION_LAST_STATION_NOT_FOUND", "마지막 구간을 찾을 수 없습니다."),
     SECTION_UP_STATION_NOT_FOUND(400, "SECTION_UP_STATION_NOT_FOUND", "상행 구간의 역을 찾을 수 없습니다."),
     SECTION_DOWN_STATION_NOT_FOUND(400, "SECTION_DOWN_STATION_NOT_FOUND", "하행 구간의 역을 찾을 수 없습니다."),
-    SECTION_DISTANCE_TOO_SHORT(400, "SECTION_DISTANCE_TOO_SHORT", "구간의 길이는 최소 1 이상이어햐 합니다."),
+    SECTION_DISTANCE_TOO_SHORT(400, "SECTION_DISTANCE_TOO_SHORT", "구간의 길이는 최소 1 이상이어야 합니다."),
     SECTION_DISTANCE_LESS_THAN_EXISTING(400, "SECTION_DISTANCE_LESS_THAN_EXISTING", "새로운 구간의 길이는 기존의 구간 길이보다 길어야합니다."),
     SECTION_NOT_MATCH(400, "SECTION_NOT_MATCH", "새로운 구간의 상행역은 등록되어 있는 하행 종점역이어야 합니다."),
     SECTION_ALREADY_EXIST(400, "SECTION_ALREADY_EXIST", "새로운 구간의 상행역과 하행역이 이미 등록되어 있습니다."),
