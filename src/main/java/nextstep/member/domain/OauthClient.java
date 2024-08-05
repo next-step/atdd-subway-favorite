@@ -1,11 +1,11 @@
 package nextstep.member.domain;
 
 import nextstep.member.application.dto.ResourceResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.ApplicationTokenResponse;
 
 public interface OauthClient {
 
-    TokenResponse requestToken(String code);
+    ApplicationTokenResponse requestToken(String code);
 
     ResourceResponse requestResource(String accessToken);
 }

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import nextstep.member.AccessTokenException;
 import nextstep.member.MemberErrorMessage;
 import nextstep.member.application.dto.ResourceResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
@@ -35,7 +35,7 @@ public class GithubOauthClient implements OauthClient {
     private String resourceUrl;
 
     @Override
-    public TokenResponse requestToken(String code) {
+    public ApplicationTokenResponse requestToken(String code) {
         GithubAccessTokenRequest requestBody = new GithubAccessTokenRequest(
                 code,
                 clientId,
@@ -54,7 +54,7 @@ public class GithubOauthClient implements OauthClient {
             GithubAccessTokenResponse githubAccessTokenResponse = restTemplate
                     .exchange(accessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
                     .getBody();
-            return new TokenResponse(githubAccessTokenResponse.getAccessToken());
+            return new ApplicationTokenResponse(githubAccessTokenResponse.getAccessToken());
         } catch (NullPointerException exception) {
             log.error("request accessToken error ", exception);
             throw new AccessTokenException(MemberErrorMessage.NOT_VALID_USER_CODE);

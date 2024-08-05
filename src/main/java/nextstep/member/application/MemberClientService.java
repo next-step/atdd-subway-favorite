@@ -3,8 +3,8 @@ package nextstep.member.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.ApplicationTokenRequest;
+import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.domain.MemberClient;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +21,9 @@ public class MemberClientService {
         return memberClient.enrollMember(memberRequest);
     }
 
-    public TokenResponse getMemberToken(String email) {
-        TokenRequest tokenRequest = new TokenRequest(email, OAUTH_DEFAULT_PASSWORD);
-        return memberClient.getMemberToken(tokenRequest);
+    public ApplicationTokenResponse getMemberToken(String email) {
+        ApplicationTokenRequest applicationTokenRequest = new ApplicationTokenRequest(email, OAUTH_DEFAULT_PASSWORD);
+        return memberClient.getMemberToken(applicationTokenRequest);
     }
 
 }

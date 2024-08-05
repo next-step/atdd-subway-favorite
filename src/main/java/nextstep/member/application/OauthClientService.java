@@ -3,7 +3,7 @@ package nextstep.member.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.ResourceResponse;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.domain.OauthClient;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class OauthClientService {
     private final OauthClient oauthClient;
 
     public ResourceResponse authenticate(String code) {
-        TokenResponse accessToken = getAccessToken(code);
+        ApplicationTokenResponse accessToken = getAccessToken(code);
         if (accessToken.getAccessToken().isBlank()) {
             throw new AuthenticationException();
         }
@@ -27,7 +27,7 @@ public class OauthClientService {
         return resource;
     }
 
-    private TokenResponse getAccessToken(String code) {
+    private ApplicationTokenResponse getAccessToken(String code) {
         return oauthClient.requestToken(code);
     }
 
