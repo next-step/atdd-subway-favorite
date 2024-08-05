@@ -42,7 +42,7 @@ public class FavoriteCommandService {
     private void assertDuplicateFavorite(final Long memberId, final Long source, final Long target) {
         favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId, source, target)
                 .ifPresent(it -> {
-                    throw new FavoriteAlreadyExistsException(ErrorMessage.PATH_ALREADY_EXISTS);
+                    throw new FavoriteAlreadyExistsException(ErrorMessage.FAVORITE_ALREADY_EXISTS);
                 });
     }
 

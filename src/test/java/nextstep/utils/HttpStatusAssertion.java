@@ -22,6 +22,9 @@ public class HttpStatusAssertion {
         assertThat(status).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    public static void assertUnauthorized(int status) {
+        assertThat(status).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
     public static void assertForbidden(int status) {
         assertThat(status).isEqualTo(HttpStatus.FORBIDDEN.value());
     }

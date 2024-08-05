@@ -77,7 +77,7 @@ public class LineCommandService {
 
     private Station getStationById(final Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new NonExistentStationException(ErrorMessage.NON_EXISTENT_STATION));
+                .orElseThrow(() -> new NonExistentStationException(ErrorMessage.NON_EXISTENT_STATION, id));
     }
 
     private Line getLineById(final Long id) {

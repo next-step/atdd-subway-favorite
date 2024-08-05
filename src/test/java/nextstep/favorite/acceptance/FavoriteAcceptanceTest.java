@@ -58,9 +58,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         @DisplayName("target 과 source가 같은경우 생성되지 않는다")
         @Test
-        void whenSourceAndTargetSame() {
+        void whenSourceAndTargetSameReturn400() {
             Response response = 즐겨찾기를_생성한다(joy, lineFixture.교대역(), lineFixture.교대역());
             assertBadRequest(response.statusCode());
+        }
+
+        @DisplayName("로그인 유저가 아닌 경우 401 인증 에러 코드를 반환한다")
+        @Test
+        void whenTokenNotValidReturn401() {
+            Response response = 즐겨찾기를_생성한다("", lineFixture.교대역(), lineFixture.교대역());
+            assertUnauthorized(response.statusCode());
         }
 
     }
