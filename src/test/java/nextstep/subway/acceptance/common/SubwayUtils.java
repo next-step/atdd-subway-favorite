@@ -14,6 +14,11 @@ public class SubwayUtils {
         return response.jsonPath().getString("name");
     }
 
+    public static List<Long> responseToIds(ExtractableResponse<Response> response) {
+        return response.jsonPath().getList("id", Long.class);
+    }
+
+
     public static List<String> responseToNames(ExtractableResponse<Response> response) {
         return response.jsonPath().getList("name", String.class);
     }

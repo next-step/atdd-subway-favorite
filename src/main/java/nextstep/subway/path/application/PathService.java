@@ -26,4 +26,17 @@ public class PathService {
 
         return pathFinder.find(lines, source, target);
     }
+
+    public boolean existsPath(Long sourceId, Long targetId) {
+        Station source = stationRepository.findByIdOrThrow(sourceId);
+        Station target = stationRepository.findByIdOrThrow(targetId);
+        List<Line> lines = lineRepository.findAll();
+
+        try {
+            pathFinder.find(lines, source, target);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

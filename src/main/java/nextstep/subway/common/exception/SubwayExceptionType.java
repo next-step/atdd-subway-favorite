@@ -25,7 +25,13 @@ public enum SubwayExceptionType {
     SOURCE_AND_TARGET_SAME(HttpStatus.BAD_REQUEST.value(),
         "Source and Target cannot be the same"),
 
-    PATH_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "Path not found between the given stations");
+    PATH_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "Path not found between the given stations"),
+
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "Entity Not Found. email: %s"),
+
+    FAVORITE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "Entity Not Found. favoriteId: %s"),
+    DUPLICATE_FAVORITE(HttpStatus.BAD_REQUEST.value(), "Favorite already exists. memberId: %s, sourceStationId: %s, targetStationId: %s"),
+    UNAUTHORIZED_FAVORITE_ACCESS(HttpStatus.FORBIDDEN.value(), "Unauthorized access to favorite. memberId: %s, favoriteId: %s");
 
 
     private final int code;
