@@ -7,25 +7,26 @@ import java.util.List;
 
 public class PathResponse {
 
-    private List<StationResponse> stationResponseList = new ArrayList<>();
+    private List<StationResponse> stationResponses = new ArrayList<>();
     private Double distance;
 
     public PathResponse() {}
 
-    public PathResponse(List<StationResponse> stationResponseList, Double distance) {
-        this.stationResponseList = stationResponseList;
+    public PathResponse(List<StationResponse> stationResponses, Double distance) {
+        this.stationResponses = stationResponses;
         this.distance = distance;
     }
 
-    public PathResponse of (List<StationResponse> stationResponseList, Double distance) {
-        return new PathResponse(stationResponseList, distance);
+    public PathResponse of (List<StationResponse> stationResponses, Double distance) {
+        return new PathResponse(stationResponses, distance);
     }
 
-    public List<StationResponse> getStationResponseList() {
-        return stationResponseList;
+    public List<StationResponse> getStationResponses() {
+        return stationResponses;
     }
 
     public Double getDistance() {
         return distance;
     }
+
 }

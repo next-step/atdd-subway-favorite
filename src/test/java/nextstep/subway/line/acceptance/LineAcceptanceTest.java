@@ -66,10 +66,10 @@ public class LineAcceptanceTest {
         var 지하철_노선_목록 = 지하철_전체_노선_조회();
 
         // then
-        assertThat(지하철_노선_목록.getLineResponseList().size()).isEqualTo(2);
-        for (int i = 0; i < 비교할_지하철_노선_목록.getLineResponseList().size(); i++) {
-            LineResponse 비교할_지하철_노선 = 비교할_지하철_노선_목록.getLineResponseList().get(i);
-            LineResponse 지하철_노선 = 지하철_노선_목록.getLineResponseList().get(i);
+        assertThat(지하철_노선_목록.getLineResponses().size()).isEqualTo(2);
+        for (int i = 0; i < 비교할_지하철_노선_목록.getLineResponses().size(); i++) {
+            LineResponse 비교할_지하철_노선 = 비교할_지하철_노선_목록.getLineResponses().get(i);
+            LineResponse 지하철_노선 = 지하철_노선_목록.getLineResponses().get(i);
 
             assertThat(비교할_지하철_노선.equals(지하철_노선)).isTrue();
         }
@@ -86,13 +86,13 @@ public class LineAcceptanceTest {
         var 생성된_지하철_역_목록 = 여러_개의_지하철_역_생성(List.of("강남역", "역삼역", "선릉역", "논현역"));
         var 비교할_지하철_노선_목록 = new LinesResponse();
         var 지하철_노선_1 = 지하철_노선_생성("신분당선", "Red", 생성된_지하철_역_목록.get(0).getId(), 생성된_지하철_역_목록.get(1).getId(), 10L);
-        비교할_지하철_노선_목록.getLineResponseList().add(지하철_노선_1);
+        비교할_지하철_노선_목록.getLineResponses().add(지하철_노선_1);
 
         // when
         var 지하철_노선 = 지하철_노선_조회(지하철_노선_1.getId());
 
         // then
-        var 비교할_지하철_노선 = 비교할_지하철_노선_목록.getLineResponseList().get(0);
+        var 비교할_지하철_노선 = 비교할_지하철_노선_목록.getLineResponses().get(0);
         assertThat(비교할_지하철_노선.equals(지하철_노선)).isTrue();
 
     }
@@ -134,7 +134,7 @@ public class LineAcceptanceTest {
 
         // then
         var 지하철_노선_목록 = 지하철_전체_노선_조회();
-        var 지하철_노선_정보 = 지하철_노선_목록.getLineResponseList();
+        var 지하철_노선_정보 = 지하철_노선_목록.getLineResponses();
         assertThat(지하철_노선_정보).doesNotContain(지하철_노선_1);
     }
 

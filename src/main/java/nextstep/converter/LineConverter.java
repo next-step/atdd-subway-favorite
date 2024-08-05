@@ -2,7 +2,6 @@ package nextstep.converter;
 
 import nextstep.line.dto.LineResponse;
 import nextstep.line.entity.Line;
-import nextstep.section.entity.Sections;
 import nextstep.station.dto.StationResponse;
 
 import java.util.List;

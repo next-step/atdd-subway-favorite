@@ -10,34 +10,34 @@ import java.util.List;
 import static nextstep.common.constant.ErrorCode.PATH_NOT_FOUND;
 
 public class Path {
-    private final List<Station> stationList;
+    private final List<Station> stations;
     private final double weight;
 
-    public Path(List<Station> stationList, double weight) {
-        this.stationList = stationList;
+    public Path(List<Station> stations, double weight) {
+        this.stations = stations;
         this.weight = weight;
     }
 
     public PathResponse createPathResponse() {
-        if (stationList == null || stationList.isEmpty()) {
+        if (stations == null || stations.isEmpty()) {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));
         }
 
-        List<StationResponse> stationResponseList = new ArrayList<>();
-        for (Station station : stationList) {
-            stationResponseList.add(new StationResponse(station.getId(), station.getName()));
+        List<StationResponse> stationResponses = new ArrayList<>();
+        for (Station station : stations) {
+            stationResponses.add(new StationResponse(station.getId(), station.getName()));
         }
 
-        return new PathResponse(stationResponseList, weight);
+        return new PathResponse(stationResponses, weight);
     }
 
-    public List<Station> getStationList() {
-        return stationList;
+    public List<Station> getStations() {
+        return stations;
     }
 
     public double getWeight() {
         return weight;
     }
 
-
 }
+

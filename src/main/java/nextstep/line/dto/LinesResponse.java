@@ -6,21 +6,21 @@ import java.util.Objects;
 
 public class LinesResponse {
 
-    private List<LineResponse> lineResponseList = new ArrayList<>();
+    private List<LineResponse> lineResponses = new ArrayList<>();
 
     public LinesResponse() {
     }
 
     public LinesResponse(List<LineResponse> lineResponse) {
-        this.lineResponseList = lineResponse;
+        this.lineResponses = lineResponse;
     }
 
     public void addLineResponse(LineResponse lineResponse) {
-        this.lineResponseList.add(lineResponse);
+        this.lineResponses.add(lineResponse);
     }
 
-    public List<LineResponse> getLineResponseList() {
-        return this.lineResponseList;
+    public List<LineResponse> getLineResponses() {
+        return this.lineResponses;
     }
 
     @Override
@@ -32,11 +32,11 @@ public class LinesResponse {
             return false;
         }
         LinesResponse that = (LinesResponse) obj;
-        return Objects.equals(lineResponseList, that.lineResponseList);
+        return Objects.equals(lineResponses, that.lineResponses);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineResponseList);
+        return Objects.hash(lineResponses);
     }
 }

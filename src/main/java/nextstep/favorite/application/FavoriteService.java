@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static nextstep.common.constant.ErrorCode.UNAUTHORIZED_ACCESS;
-import static nextstep.converter.FavoriteConverter.favoriteListToFavoriteResponseList;
+import static nextstep.converter.FavoriteConverter.favoritesToFavoriteResponses;
 
 @Service
 public class FavoriteService {
@@ -49,7 +49,7 @@ public class FavoriteService {
         Member member = memberService.findMemberByEmail(loginMember.getEmail());
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
 
-        return favoriteListToFavoriteResponseList(favorites);
+        return favoritesToFavoriteResponses(favorites);
     }
 
     @Transactional

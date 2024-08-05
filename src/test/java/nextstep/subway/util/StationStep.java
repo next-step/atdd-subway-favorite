@@ -22,9 +22,9 @@ public class StationStep {
 
     }
 
-    public static List<StationResponse> 여러_개의_지하철_역_생성(List<String> stationList) {
+    public static List<StationResponse> 여러_개의_지하철_역_생성(List<String> stations) {
         List<StationResponse> createStationResponseList = new ArrayList<>();
-        for (String station : stationList) {
+        for (String station : stations) {
             StationResponse createStationResponse = 지하철_역_등록(station);
             createStationResponseList.add(createStationResponse);
         }

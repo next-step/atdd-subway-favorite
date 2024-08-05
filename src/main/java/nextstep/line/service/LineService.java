@@ -89,7 +89,7 @@ public class LineService {
 
     public Line getLineByIdOrThrow(Long lineId) {
         return lineRepository.findById(lineId)
-                .orElseThrow(() -> new LineNotFoundException(String.valueOf(LINE_NOT_FOUND)));
+                .orElseThrow(() -> new LineNotFoundException(LINE_NOT_FOUND + " id: " + lineId));
     }
 
     public Line saveLine(Line line) {

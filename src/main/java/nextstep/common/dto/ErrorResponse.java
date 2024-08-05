@@ -27,3 +27,4 @@ public class ErrorResponse {
         return description;
     }
 }
+

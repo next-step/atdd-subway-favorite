@@ -30,8 +30,8 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        List<FavoriteResponse> favoriteResponseList = favoriteService.findFavorites(loginMember);
-        return ResponseEntity.ok().body(favoriteResponseList);
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(loginMember);
+        return ResponseEntity.ok().body(favoriteResponses);
     }
 
     @DeleteMapping("/favorites/{id}")

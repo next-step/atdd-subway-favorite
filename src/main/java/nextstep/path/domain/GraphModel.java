@@ -29,17 +29,17 @@ public class GraphModel {
         this.target = target;
     }
 
-    public Path findPath(List<Line> lineList) {
-        createGraphModel(lineList);
-        return findShortestPath(lineList);
+    public Path findPath(List<Line> lines) {
+        createGraphModel(lines);
+        return findShortestPath(lines);
     }
 
-    public void createGraphModel(List<Line> lineList) {
-        if(lineList.isEmpty()) {
+    public void createGraphModel(List<Line> lines) {
+        if(lines.isEmpty()) {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));
         }
 
-        for (Line line : lineList) {
+        for (Line line : lines) {
             addSectionsToGraph(line);
         }
 
@@ -47,7 +47,7 @@ public class GraphModel {
         containsVertex(target);
     }
 
-    private Path findShortestPath(List<Line> lineList) {
+    private Path findShortestPath(List<Line> lines) {
         validateDuplicate(source, target);
         DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath =
                 new DijkstraShortestPath<>(graph);
@@ -57,23 +57,23 @@ public class GraphModel {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));
         }
 
-        List<Station> stationList = getStationList(lineList, graphPath.getVertexList());
+        List<Station> stations = getStations(lines, graphPath.getVertexList());
 
-        return new Path(stationList, graphPath.getWeight());
+        return new Path(stations, graphPath.getWeight());
     }
 
-    public List<Station> getStationList(List<Line> lineList, List<Long> stationIdList) {
+    public List<Station> getStations(List<Line> lines, List<Long> stationIds) {
         List<Station> stationList = new ArrayList<>();
-        for (Long stationId : stationIdList) {
-            Station station = getStation(lineList, stationId);
+        for (Long stationId : stationIds) {
+            Station station = getStation(lines, stationId);
             stationList.add(station);
         }
 
         return stationList;
     }
 
-    public Station getStation(List<Line> lineList, Long stationId) {
-        for (Line line : lineList) {
+    public Station getStation(List<Line> lines, Long stationId) {
+        for (Line line : lines) {
             Optional<Station> foundStation = findStationInLine(line, stationId);
             if (foundStation.isPresent()) {
                 return foundStation.get();

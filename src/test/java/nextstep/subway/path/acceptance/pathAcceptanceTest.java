@@ -78,7 +78,7 @@ public class pathAcceptanceTest {
         var 경로_조회_결과 = 경로_조회(교대역.getId(), 양재역.getId());
 
         // then
-        assertEquals(경로_조회_결과.getStationResponseList(), List.of(교대역, 남부터미널역, 양재역));
+        assertEquals(경로_조회_결과.getStationResponses(), List.of(교대역, 남부터미널역, 양재역));
         assertEquals(경로_조회_결과.getDistance(), 5L);
     }
 

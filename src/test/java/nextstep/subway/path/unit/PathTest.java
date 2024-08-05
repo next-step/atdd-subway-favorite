@@ -49,7 +49,7 @@ public class PathTest {
     public void getVertexList_getWeight() {
         // then
         assertAll(
-                () -> assertEquals(List.of(강남역, 역삼역), path.getStationList()),
+                () -> assertEquals(List.of(강남역, 역삼역), path.getStations()),
                 () -> assertEquals(pathWeight, path.getWeight())
         );
     }
@@ -67,7 +67,7 @@ public class PathTest {
                 () -> assertEquals(List.of(
                         new StationResponse(강남역.getId(), 강남역.getName()),
                         new StationResponse(역삼역.getId(), 역삼역.getName())
-                ), pathResponse.getStationResponseList())
+                ), pathResponse.getStationResponses())
         );
     }
 

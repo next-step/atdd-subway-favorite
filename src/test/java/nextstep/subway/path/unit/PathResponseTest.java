@@ -27,7 +27,7 @@ public class PathResponseTest {
 
         // then
         assertAll(
-                () -> assertEquals(stationResponses, pathResponse.getStationResponseList()),
+                () -> assertEquals(stationResponses, pathResponse.getStationResponses()),
                 () -> assertEquals(distance, pathResponse.getDistance())
         );
 

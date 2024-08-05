@@ -15,16 +15,16 @@ public class FavoriteConverter {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    public static List<FavoriteResponse> favoriteListToFavoriteResponseList(final List<Favorite> favoriteList) {
-        List<FavoriteResponse> favoriteResponseList = new ArrayList<>();
+    public static List<FavoriteResponse> favoritesToFavoriteResponses(final List<Favorite> favorites) {
+        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
 
-        for (Favorite favorite : favoriteList) {
+        for (Favorite favorite : favorites) {
             StationResponse sourceStationResponse = stationToStationResponse(favorite.getSourceStation());
             StationResponse targetStationResponse = stationToStationResponse(favorite.getTargetStation());;
             FavoriteResponse favoriteResponse = FavoriteResponse.of(favorite.getId(), sourceStationResponse, targetStationResponse);
-            favoriteResponseList.add(favoriteResponse);
+            favoriteResponses.add(favoriteResponse);
         }
 
-        return favoriteResponseList;
+        return favoriteResponses;
     }
 }

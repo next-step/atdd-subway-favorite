@@ -116,7 +116,7 @@ public class GraphModelTest {
         assertAll(
                 () -> assertNotNull(path),
                 () -> assertEquals(5.0, path.getWeight()),
-                () -> assertEquals(List.of(강남역, 역삼역), path.getStationList())
+                () -> assertEquals(List.of(강남역, 역삼역), path.getStations())
         );
     }
 
@@ -149,7 +149,7 @@ public class GraphModelTest {
         var graphModel = new GraphModel(1L, 2L);
 
         // when
-        var 생성된_StationList = graphModel.getStationList(지하철_리스트, List.of(강남역.getId(), 역삼역.getId()));
+        var 생성된_StationList = graphModel.getStations(지하철_리스트, List.of(강남역.getId(), 역삼역.getId()));
 
         // then
         assertAll(
@@ -168,7 +168,7 @@ public class GraphModelTest {
         var graphModel = new GraphModel(1L, 2L);
 
         // when & then
-        assertThrows(PathException.class, () -> graphModel.getStationList(지하철_리스트, List.of(강남역.getId(), 논현역.getId())))
+        assertThrows(PathException.class, () -> graphModel.getStations(지하철_리스트, List.of(강남역.getId(), 논현역.getId())))
                 .getMessage().equals(PATH_NOT_FOUND.getDescription());
     }
 
