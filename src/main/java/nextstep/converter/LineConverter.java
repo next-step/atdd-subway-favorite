@@ -32,12 +32,4 @@ public class LineConverter {
         return lineResponse;
     }
 
-    public static List<Long> convertToStationIds(Sections sections) {
-        return sections.getSections().stream()
-                .flatMap(sectionValue -> sectionValue.getStations().stream())
-                .map(station -> station.getId())
-                .distinct()
-                .collect(toList());
-    }
-
 }
