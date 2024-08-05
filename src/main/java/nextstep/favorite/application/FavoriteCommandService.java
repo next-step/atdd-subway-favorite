@@ -32,7 +32,7 @@ public class FavoriteCommandService {
         assertDuplicateFavorite(memberId, source, target);
 
         pathRepository.get(source, target)
-                .orElseThrow(() -> new PathNotFoundException(ErrorMessage.PATH_ALREADY_EXISTS));
+                .orElseThrow(() -> new PathNotFoundException(ErrorMessage.PATH_NOT_FOUND));
 
         Favorite favorite = new Favorite(memberId, source, target);
         Favorite saved = favoriteRepository.save(favorite);
@@ -42,7 +42,7 @@ public class FavoriteCommandService {
     private void assertDuplicateFavorite(final Long memberId, final Long source, final Long target) {
         favoriteRepository.findByMemberIdAndSourceStationIdAndTargetStationId(memberId, source, target)
                 .ifPresent(it -> {
-                    throw new FavoriteAlreadyExistsException(ErrorMessage.PATH_NOT_FOUND);
+                    throw new FavoriteAlreadyExistsException(ErrorMessage.PATH_ALREADY_EXISTS);
                 });
     }
 

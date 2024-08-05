@@ -16,7 +16,7 @@ public enum ErrorMessage {
     
     //즐겨찾기
     FAVORITE_NOT_FOUND("즐겨찾기를 찾을 수 없습니다"),
-    PATH_ALREADY_EXISTS("즐겨찾기를 찾을 수 없습니다"),
+    PATH_ALREADY_EXISTS("즐겨찾기가 이미 존재합니다"),
 
     
     //회원 관련
