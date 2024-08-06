@@ -3,6 +3,9 @@ package nextstep.favorite.ui;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.ui.AuthenticationPrincipal;
+import nextstep.path.ui.exception.SameSourceAndTargetException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,22 +21,25 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity createFavorite(@RequestBody FavoriteRequest request) {
-        favoriteService.createFavorite(request);
+    public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
+        if (favoriteRequest.sameSourceAndTarget()) {
+            throw new SameSourceAndTargetException();
+        }
+        favoriteService.createFavorite(loginMember.getEmail(), favoriteRequest);
         return ResponseEntity
                 .created(URI.create("/favorites/" + 1L))
                 .build();
     }
 
     @GetMapping("/favorites")
-    public ResponseEntity<List<FavoriteResponse>> getFavorites() {
-        List<FavoriteResponse> favorites = favoriteService.findFavorites();
-        return ResponseEntity.ok().body(favorites);
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok()
+                .body(favoriteService.findFavorites(loginMember.getEmail()));
     }
 
     @DeleteMapping("/favorites/{id}")
-    public ResponseEntity deleteFavorite(@PathVariable Long id) {
-        favoriteService.deleteFavorite(id);
+    public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+        favoriteService.deleteFavorite(id, loginMember.getEmail());
         return ResponseEntity.noContent().build();
     }
 }

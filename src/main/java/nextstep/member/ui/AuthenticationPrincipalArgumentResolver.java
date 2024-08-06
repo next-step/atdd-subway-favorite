@@ -1,5 +1,6 @@
 package nextstep.member.ui;
 
+import io.jsonwebtoken.JwtException;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.member.domain.LoginMember;
@@ -23,14 +24,26 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String authorization = webRequest.getHeader("Authorization");
-        if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
+        String token = getToken(webRequest);
+
+        try {
+            String email = jwtTokenProvider.getPrincipal(token);
+            return new LoginMember(email);
+        } catch (JwtException e) {
             throw new AuthenticationException();
         }
-        String token = authorization.split(" ")[1];
+    }
 
-        String email = jwtTokenProvider.getPrincipal(token);
+    private String getToken(NativeWebRequest webRequest) {
+        String authorization = webRequest.getHeader("Authorization");
+        if (isUnauthorized(authorization)) {
+            throw new AuthenticationException();
+        }
 
-        return new LoginMember(email);
+        return authorization.split(" ")[1];
+    }
+
+    private boolean isUnauthorized(String authorization) {
+        return authorization == null || !"bearer".equalsIgnoreCase(authorization.split(" ")[0]);
     }
 }
