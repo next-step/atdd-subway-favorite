@@ -1,6 +1,7 @@
 package nextstep.member.domain;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +21,10 @@ public class Member {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public Member(String email) {
+        this.email = email;
     }
 
     public Long getId() {

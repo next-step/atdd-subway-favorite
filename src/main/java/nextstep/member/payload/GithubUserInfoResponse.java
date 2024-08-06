@@ -6,6 +6,14 @@ public class GithubUserInfoResponse {
 
     private String name;
 
+    public GithubUserInfoResponse() {
+    }
+
+    public GithubUserInfoResponse(final String email, final String name) {
+        this.email = email;
+        this.name = name;
+    }
+
     public String getEmail() {
         return email;
     }

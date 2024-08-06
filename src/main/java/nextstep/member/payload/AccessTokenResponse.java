@@ -13,6 +13,10 @@ public class AccessTokenResponse {
     public AccessTokenResponse() {
     }
 
+    public AccessTokenResponse(final String access_token) {
+        this.access_token = access_token;
+    }
+
     public String getAccess_token() {
         return access_token;
     }
