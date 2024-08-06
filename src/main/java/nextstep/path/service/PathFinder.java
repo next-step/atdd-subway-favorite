@@ -23,13 +23,13 @@ public class PathFinder {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse retrieveStationPath(Long source, Long target) {
+    public PathResponse retrieveStationPath(final Long source, final Long target) {
         validateStationExist(source, target);
         List<Line> lineList = lineService.getAllLines();
         return pathService.findPath(source, target, lineList);
     }
 
-    private void validateStationExist(Long source, Long target) {
+    private void validateStationExist(final Long source, final Long target) {
         stationService.getStationByIdOrThrow(source);
         stationService.getStationByIdOrThrow(target);
     }

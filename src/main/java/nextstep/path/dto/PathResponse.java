@@ -10,14 +10,15 @@ public class PathResponse {
     private List<StationResponse> stationResponses = new ArrayList<>();
     private Double distance;
 
-    public PathResponse() {}
+    public PathResponse() {
+    }
 
     public PathResponse(List<StationResponse> stationResponses, Double distance) {
         this.stationResponses = stationResponses;
         this.distance = distance;
     }
 
-    public PathResponse of (List<StationResponse> stationResponses, Double distance) {
+    public PathResponse of(final List<StationResponse> stationResponses, final Double distance) {
         return new PathResponse(stationResponses, distance);
     }
 

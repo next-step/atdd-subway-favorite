@@ -11,12 +11,12 @@ public class FavoriteRequest {
     public FavoriteRequest() {
     }
 
-    public FavoriteRequest(Long source, Long target) {
+    public FavoriteRequest(final Long source, final Long target) {
         this.source = source;
         this.target = target;
     }
 
-    public static FavoriteRequest of(Long source, Long target) {
+    public static FavoriteRequest of(final Long source, final Long target) {
         return new FavoriteRequest(source, target);
     }
 

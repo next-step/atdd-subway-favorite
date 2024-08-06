@@ -28,7 +28,7 @@ public class Sections {
         return sections;
     }
 
-    public void addSection(Section section) {
+    public void addSection(final Section section) {
         if (sections.isEmpty()) {
             sections.add(section);
             return;
@@ -44,14 +44,14 @@ public class Sections {
         addMiddleSections(section);
     }
 
-    private void addFirstSection(Section section) {
+    private void addFirstSection(final Section section) {
         Section originalFirstSection = getSectionByUpStationId(section.getDownStation().getId());
         originalFirstSection.setPreviousSection(section);
         section.setNextSection(originalFirstSection);
         sections.add(section);
     }
 
-    private void addMiddleSections(Section section) {
+    private void addMiddleSections(final Section section) {
         Section originalPrevSection = getSectionByDownStationId(section.getUpStation().getId());
         Section originalPrevSNextSection = originalPrevSection.getNextSection();
         originalPrevSection.setNextSection(section);
@@ -66,7 +66,7 @@ public class Sections {
         sections.add(section);
     }
 
-    private void updateSectionData(Section newSection, Section nextSection) {
+    private void updateSectionData(final Section newSection, final Section nextSection) {
         checkSectionDistance(nextSection, newSection);
         newSection.setPreviousSection(nextSection.getPreviousSection());
         newSection.setNextSection(nextSection);
@@ -75,7 +75,7 @@ public class Sections {
         nextSection.setDistance(nextSection.getDistance() - newSection.getDistance());
     }
 
-    public void removeSection(Section section) {
+    public void removeSection(final Section section) {
         if (sections.size() <= 1) {
             throw new SectionException(String.valueOf(SECTION_NOT_PERMISSION_COUNT_TOO_LOW));
         }
@@ -90,7 +90,7 @@ public class Sections {
         sections.remove(section);
     }
 
-    private void isExistSection (Section section) {
+    private void isExistSection (final Section section) {
         Optional<Section> findSection = sections.stream().filter(sectionValue -> sectionValue.equals(section))
                 .findAny();
         if(findSection.isEmpty()) {
@@ -98,7 +98,7 @@ public class Sections {
         }
     }
 
-    public Section getRemoveTargetSection(Long stationId) {
+    public Section getRemoveTargetSection(final Long stationId) {
         Optional<Section> isNotLastSection = getOptionalSectionByUpStationId(stationId);
         if (isNotLastSection.isEmpty()) {
             return getSectionByDownStationId(stationId);
@@ -106,7 +106,7 @@ public class Sections {
         return isNotLastSection.get();
     }
 
-    private void deleteFirstSection(Section prevSection, Section nextSection) {
+    private void deleteFirstSection(final Section prevSection, final Section nextSection) {
         if (prevSection == null) {
             if (nextSection != null) {
                 nextSection.setPreviousSection(null);
@@ -114,7 +114,7 @@ public class Sections {
         }
     }
 
-    private void deleteMiddleSection(Section prevSection, Section nextSection, Section originalSection) {
+    private void deleteMiddleSection(final Section prevSection, final Section nextSection, final Section originalSection) {
         if (prevSection == null) {
             return;
         }
@@ -144,27 +144,27 @@ public class Sections {
                 .orElseThrow(() -> new SectionException(String.valueOf(SECTION_LAST_STATION_NOT_FOUND)));
     }
 
-    public Optional<Section> getOptionalSectionByUpStationId(Long upStationId) {
+    public Optional<Section> getOptionalSectionByUpStationId(final Long upStationId) {
         return sections.stream()
                 .filter(section -> section.getUpStation().getId() == upStationId)
                 .findFirst();
     }
 
-    public Section getSectionByUpStationId(Long upStationId) {
+    public Section getSectionByUpStationId(final Long upStationId) {
         return sections.stream()
                 .filter(section -> section.getUpStation().getId() == upStationId)
                 .findFirst()
                 .orElseThrow(() -> new SectionException(String.valueOf(SECTION_NOT_FOUND)));
     }
 
-    public Section getSectionByDownStationId(Long downStationId) {
+    public Section getSectionByDownStationId(final Long downStationId) {
         return sections.stream()
                 .filter(section -> section.getDownStation().getId() == downStationId)
                 .findFirst()
                 .orElseThrow(() -> new SectionException(String.valueOf(SECTION_NOT_FOUND)));
     }
 
-    public void checkDuplicateSectionByStation(Station upStation, Station downStation) {
+    public void checkDuplicateSectionByStation(final Station upStation, final Station downStation) {
         boolean isUpStationExist = getSectionByUpStation(upStation);
         boolean isDownStationExist = getSectionByDownStation(downStation);
 
@@ -173,21 +173,21 @@ public class Sections {
         }
     }
 
-    public void checkSectionDistance(Section originalSection, Section section) {
+    public void checkSectionDistance(final Section originalSection, final Section section) {
         if (originalSection.getDistance() <= section.getDistance()) {
             throw new SectionException(String.valueOf(SECTION_DISTANCE_LESS_THAN_EXISTING));
         }
     }
 
-    public boolean getSectionByUpStation(Station upStation) {
+    public boolean getSectionByUpStation(final Station upStation) {
         return sections.stream().anyMatch(section -> section.getUpStation().equals(upStation));
     }
 
-    public boolean getSectionByDownStation(Station downStation) {
+    public boolean getSectionByDownStation(final Station downStation) {
         return sections.stream().anyMatch(section -> section.getDownStation().equals(downStation));
     }
 
-    public boolean isFirstSectionAdd(Long downStationId) {
+    public boolean isFirstSectionAdd(final Long downStationId) {
         return sections.stream()
                 .filter(section -> section.getDownStation().getId() == downStationId)
                 .findFirst()

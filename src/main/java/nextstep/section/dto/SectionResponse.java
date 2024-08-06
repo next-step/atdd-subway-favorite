@@ -25,7 +25,7 @@ public class SectionResponse {
         this.distance = distance;
     }
 
-    public static SectionResponse of(Long lineId, Long sectionId, StationResponse upStationResponse, StationResponse downStationResponse, Long distance) {
+    public static SectionResponse of(final Long lineId, final Long sectionId, final StationResponse upStationResponse, final StationResponse downStationResponse, final Long distance) {
         return new SectionResponse(lineId, sectionId, upStationResponse, downStationResponse, distance);
     }
 

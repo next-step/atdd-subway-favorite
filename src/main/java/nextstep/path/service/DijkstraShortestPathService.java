@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DijkstraShortestPathService implements PathService {
     @Override
-    public PathResponse findPath(Long source, Long target, List<Line> lineList) {
+    public PathResponse findPath(final Long source, final Long target, final List<Line> lineList) {
         GraphModel graphModel = new GraphModel(source, target);
         Path path = graphModel.findPath(lineList);
         return path.createPathResponse();

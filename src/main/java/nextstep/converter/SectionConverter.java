@@ -15,10 +15,10 @@ public class SectionConverter {
         throw new UnsupportedOperationException("Utility class");
     }
 
-    public static SectionResponse convertToSectionResponseByLineAndSection(Line line, Section section) {
+    public static SectionResponse convertToSectionResponseByLineAndSection(final Line line, final Section section) {
 
-        return SectionResponse.of(line.getId(), section.getId(), new StationResponse(section.getUpStation().getId(), section.getUpStation().getName()),
-                new StationResponse(section.getDownStation().getId(), section.getDownStation().getName()), section.getDistance());
+        return SectionResponse.of(line.getId(), section.getId(), StationResponse.of(section.getUpStation().getId(), section.getUpStation().getName()),
+                StationResponse.of(section.getDownStation().getId(), section.getDownStation().getName()), section.getDistance());
 
     }
 }

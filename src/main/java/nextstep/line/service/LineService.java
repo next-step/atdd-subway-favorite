@@ -10,7 +10,6 @@ import nextstep.line.repository.LineRepository;
 import nextstep.section.entity.Section;
 import nextstep.section.entity.Sections;
 import nextstep.station.dto.StationResponse;
-
 import nextstep.station.entity.Station;
 import nextstep.station.service.StationService;
 import org.springframework.stereotype.Service;
@@ -87,7 +86,7 @@ public class LineService {
         lineRepository.delete(line);
     }
 
-    public Line getLineByIdOrThrow(Long lineId) {
+    public Line getLineByIdOrThrow(final Long lineId) {
         return lineRepository.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException(LINE_NOT_FOUND + " id: " + lineId));
     }

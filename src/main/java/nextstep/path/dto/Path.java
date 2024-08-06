@@ -18,7 +18,7 @@ public class Path {
         this.weight = weight;
     }
 
-    public static Path of(List<Station> stations, double weight) {
+    public static Path of(final List<Station> stations, final double weight) {
         return new Path(stations, weight);
     }
 

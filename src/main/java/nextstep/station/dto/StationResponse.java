@@ -14,7 +14,7 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse of(Long id, String name) {
+    public static StationResponse of(final Long id, final String name) {
         return new StationResponse(id, name);
     }
 

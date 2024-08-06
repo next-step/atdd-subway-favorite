@@ -25,23 +25,23 @@ public class LineResponse {
         this.stations = stations;
     }
 
-    public static LineResponse of(String name, String color, Long distance) {
+    public static LineResponse of(final String name, final String color, final Long distance) {
         return new LineResponse(null, name, color, distance, new ArrayList<>());
     }
 
-    public static LineResponse of(String name, String color, Long distance, List<StationResponse> stations) {
+    public static LineResponse of(final String name, final String color, final Long distance, final List<StationResponse> stations) {
         return new LineResponse(null, name, color, distance, stations);
     }
 
-    public static LineResponse of(Long id, String name, String color, Long distance) {
+    public static LineResponse of(final Long id, final String name, final String color, final Long distance) {
         return new LineResponse(id, name, color, distance, new ArrayList<>());
     }
 
-    public static LineResponse of(Long id, String name, String color, Long distance, List<StationResponse> stations) {
+    public static LineResponse of(final Long id, final String name, final String color, final Long distance, final List<StationResponse> stations) {
         return new LineResponse(id, name, color, distance, stations);
     }
 
-    public void addStationResponses(List<StationResponse> stationResponses) {
+    public void addStationResponses(final List<StationResponse> stationResponses) {
         for (StationResponse stationResponse : stationResponses) {
             this.stations.add(stationResponse);
         }

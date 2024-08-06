@@ -27,7 +27,7 @@ public class CreateLineRequest {
         this.distance = distance;
     }
 
-    public static CreateLineRequest of(String name, String color, Long upStationId, Long downStationId, Long distance) {
+    public static CreateLineRequest of(final String name, final String color, final Long upStationId, final Long downStationId, final Long distance) {
         return new CreateLineRequest(name, color, upStationId, downStationId, distance);
     }
 

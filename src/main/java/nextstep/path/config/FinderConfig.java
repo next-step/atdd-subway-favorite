@@ -8,12 +8,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FinderConfig {
 
+    private final String DIJKSTRA = "dijkstra";
     @Value("${finder}")
     private String finderImplementation;
 
     @Bean
     public DijkstraShortestPathService dijkstraShortestPathService() {
-        if ("dijkstra".equalsIgnoreCase(finderImplementation)) {
+        if (DIJKSTRA.equalsIgnoreCase(finderImplementation)) {
             return new DijkstraShortestPathService();
         }
 

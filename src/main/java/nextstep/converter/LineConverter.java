@@ -17,14 +17,14 @@ public class LineConverter {
     public static LineResponse convertToLineResponseByLine(final Line line) {
         List<StationResponse> stationResponses = line.getSections().getSections().stream()
                 .flatMap(section -> section.getStations().stream())
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(station -> StationResponse.of(station.getId(), station.getName()))
                 .distinct()
                 .collect(toList());
 
         return convertToLineResponseByLineAndStations(line, stationResponses);
     }
 
-    public static LineResponse convertToLineResponseByLineAndStations(Line line, List<StationResponse> stationResponses) {
+    public static LineResponse convertToLineResponseByLineAndStations(final Line line, final List<StationResponse> stationResponses) {
         LineResponse lineResponse = LineResponse.of(line.getId(), line.getName(), line.getColor(), line.getDistance());
         lineResponse.addStationResponses(stationResponses);
 

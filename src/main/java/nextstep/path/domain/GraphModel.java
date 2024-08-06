@@ -29,16 +29,16 @@ public class GraphModel {
         this.target = target;
     }
 
-    public static GraphModel of(Long source, Long target) {
+    public static GraphModel of(final Long source, final Long target) {
         return new GraphModel(source, target);
     }
 
-    public Path findPath(List<Line> lines) {
+    public Path findPath(final List<Line> lines) {
         createGraphModel(lines);
         return findShortestPath(lines);
     }
 
-    public void createGraphModel(List<Line> lines) {
+    public void createGraphModel(final List<Line> lines) {
         if (lines.isEmpty()) {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));
         }
@@ -51,7 +51,7 @@ public class GraphModel {
         containsVertex(target);
     }
 
-    private Path findShortestPath(List<Line> lines) {
+    private Path findShortestPath(final List<Line> lines) {
         validateDuplicate(source, target);
         DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPath =
                 new DijkstraShortestPath<>(graph);
@@ -66,7 +66,7 @@ public class GraphModel {
         return Path.of(stations, graphPath.getWeight());
     }
 
-    public List<Station> getStations(List<Line> lines, List<Long> stationIds) {
+    public List<Station> getStations(final List<Line> lines, final List<Long> stationIds) {
         List<Station> stationList = new ArrayList<>();
         for (Long stationId : stationIds) {
             Station station = getStation(lines, stationId);
@@ -76,12 +76,12 @@ public class GraphModel {
         return stationList;
     }
 
-    public Station getStation(List<Line> lines, Long stationId) {
+    public Station getStation(final List<Line> lines, final Long stationId) {
         return findStationInLines(lines, stationId)
                 .orElseThrow(() -> new PathException(String.valueOf(PATH_NOT_FOUND)));
     }
 
-    private Optional<Station> findStationInLines(List<Line> lines, Long stationId) {
+    private Optional<Station> findStationInLines(final List<Line> lines, final Long stationId) {
         return lines.stream()
                 .map(line -> findStationInLine(line, stationId))
                 .filter(Optional::isPresent)
@@ -89,12 +89,12 @@ public class GraphModel {
                 .findFirst();
     }
 
-    private Optional<Station> findStationInLine(Line line, Long stationId) {
+    private Optional<Station> findStationInLine(final Line line, final Long stationId) {
         List<Section> sectionList = line.getSections().getSections();
         return findStationInSections(sectionList, stationId);
     }
 
-    private Optional<Station> findStationInSections(List<Section> sections, Long stationId) {
+    private Optional<Station> findStationInSections(final List<Section> sections, final Long stationId) {
         return sections.stream()
                 .map(section -> findStationInSection(section, stationId))
                 .filter(Optional::isPresent)

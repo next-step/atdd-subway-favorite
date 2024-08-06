@@ -19,7 +19,7 @@ public class SectionRequest {
         this.distance = distance;
     }
 
-    public static SectionRequest of(Long upStationId, Long downStationId, Long distance) {
+    public static SectionRequest of(final Long upStationId, final Long downStationId, final Long distance) {
         return new SectionRequest(upStationId, downStationId, distance);
     }
 

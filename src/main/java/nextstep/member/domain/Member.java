@@ -29,11 +29,11 @@ public class Member {
         this.age = age;
     }
 
-    public static Member of(String email, String password, Integer age) {
+    public static Member of(final String email, final String password, final Integer age) {
         return new Member(email, password, age);
     }
 
-    public static Member of(Long id, String email, String password, Integer age) {
+    public static Member of(final Long id, final String email, final String password, final Integer age) {
         return new Member(id, email, password, age);
     }
 

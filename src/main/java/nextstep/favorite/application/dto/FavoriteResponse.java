@@ -10,15 +10,16 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
-    public FavoriteResponse () {}
+    public FavoriteResponse() {
+    }
 
-    public FavoriteResponse (Long id, StationResponse source, StationResponse target) {
+    public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;
     }
 
-    public static FavoriteResponse of (Long id, StationResponse sourceStationResponse, StationResponse targetStationResponse) {
+    public static FavoriteResponse of(final Long id, final StationResponse sourceStationResponse, final StationResponse targetStationResponse) {
         return new FavoriteResponse(id, sourceStationResponse, targetStationResponse);
     }
 

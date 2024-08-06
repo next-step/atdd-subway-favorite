@@ -28,7 +28,7 @@ public class SectionService {
     }
 
     @Transactional
-    public SectionResponse createSection(Long lineId, SectionRequest sectionRequest) {
+    public SectionResponse createSection(final Long lineId, final SectionRequest sectionRequest) {
         Line line = lineService.getLineByIdOrThrow(lineId);
         Sections sections = line.getSections();
 
@@ -43,7 +43,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void deleteSection(Long lineId, Long stationId) {
+    public void deleteSection(final Long lineId, final Long stationId) {
         Line line = lineService.getLineByIdOrThrow(lineId);
 
         Sections sections = line.getSections();
@@ -55,7 +55,7 @@ public class SectionService {
         lineService.saveLine(line);
     }
 
-    public void deleteSection(Section section) {
+    public void deleteSection(final Section section) {
         sectionRepository.delete(section);
     }
 

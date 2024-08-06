@@ -19,11 +19,11 @@ public class Station {
         this.name = name;
     }
 
-    public static Station of(String name) {
+    public static Station of(final String name) {
         return new Station(null, name);
     }
 
-    public static Station of(Long id, String name) {
+    public static Station of(final Long id, final String name) {
         return new Station(id, name);
     }
 

@@ -12,7 +12,7 @@ public class TokenRequest {
         this.password = password;
     }
 
-    public static TokenRequest of (String email, String password) {
+    public static TokenRequest of(final String email, final String password) {
         return new TokenRequest(email, password);
     }
 

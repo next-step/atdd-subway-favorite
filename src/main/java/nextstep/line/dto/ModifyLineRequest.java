@@ -13,7 +13,7 @@ public class ModifyLineRequest {
         this.color = color;
     }
 
-    public static ModifyLineRequest of (String name, String color) {
+    public static ModifyLineRequest of(final String name, final String color) {
         return new ModifyLineRequest(name, color);
     }
 

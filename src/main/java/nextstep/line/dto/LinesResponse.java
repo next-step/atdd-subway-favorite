@@ -15,7 +15,7 @@ public class LinesResponse {
         this.lineResponses = lineResponse;
     }
 
-    public void addLineResponse(LineResponse lineResponse) {
+    public void addLineResponse(final LineResponse lineResponse) {
         this.lineResponses.add(lineResponse);
     }
 

@@ -33,19 +33,19 @@ public class Line {
         this.sections = sections;
     }
 
-    public static Line of(String name, String color, Long distance, Sections sections) {
+    public static Line of(final String name, final String color, final Long distance, final Sections sections) {
         return new Line(null, name, color, distance, sections);
     }
 
-    public static Line of(Long id, String name, String color, Long distance, Sections sections) {
+    public static Line of(final Long id, final String name, final String color, final Long distance, final Sections sections) {
         return new Line(id, name, color, distance, sections);
     }
 
-    public void changeColor(String color) {
+    public void changeColor(final String color) {
         this.color = color;
     }
 
-    public void changeName(String name) {
+    public void changeName(final String name) {
         this.name = name;
     }
 
