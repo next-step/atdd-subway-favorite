@@ -1,4 +1,4 @@
-package nextstep.auth.domain.infrastructure.jwt;
+package nextstep.auth.infrastructure.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,6 @@
 package nextstep.auth.infrastructure.composite;
 
 import autoparams.AutoSource;
-import nextstep.auth.domain.infrastructure.composite.CompositeSocialOAuthAuthenticator;
 import nextstep.fake.github.GithubStaticUsers;
 import nextstep.auth.domain.command.AuthenticateSocialOAuthCommand;
 import nextstep.auth.domain.entity.SocialOAuthProvider;
@@ -12,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CompositeSocialOAuthAuthenticatorTest extends BaseTestSetup {
+class CompositeSocialOAuthUserFetcherTest extends BaseTestSetup {
 
     @Autowired
-    CompositeSocialOAuthAuthenticator sut;
+    CompositeSocialOAuthUserFetcher sut;
 
     @ParameterizedTest
     @AutoSource
@@ -24,7 +23,7 @@ class CompositeSocialOAuthAuthenticatorTest extends BaseTestSetup {
         AuthenticateSocialOAuthCommand.ByAuthCode command = new AuthenticateSocialOAuthCommand.ByAuthCode(SocialOAuthProvider.GITHUB, expected.getCode());
 
         // when
-        SocialOAuthUser actual = sut.authenticate(command);
+        SocialOAuthUser actual = sut.fetch(command);
 
         // then
         assertThat(actual.getProvider()).isEqualTo(SocialOAuthProvider.GITHUB);

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class AuthCommander {
     private final EmailPasswordVerifier emailPasswordVerifier;
     private final SocialOAuthUserVerifier socialOAuthUserVerifier;
-    private final SocialOAuthAuthenticator socialOAuthAuthenticator;
+    private final SocialOAuthUserFetcher socialOAuthUserFetcher;
     private final TokenGenerator tokenGenerator;
 
     public String authenticateEmailPassword(String email, String password) {
@@ -19,7 +19,7 @@ public class AuthCommander {
     }
 
     public String authenticateSocialOAuth(AuthenticateSocialOAuthCommand.ByAuthCode command) {
-        SocialOAuthUser socialOAuthUser = socialOAuthAuthenticator.authenticate(command);
+        SocialOAuthUser socialOAuthUser = socialOAuthUserFetcher.fetch(command);
         TokenPrincipal tokenPrincipal = socialOAuthUserVerifier.verify(socialOAuthUser);
         return tokenGenerator.createToken(tokenPrincipal);
     }

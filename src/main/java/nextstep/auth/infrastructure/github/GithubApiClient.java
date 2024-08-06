@@ -1,6 +1,6 @@
-package nextstep.auth.domain.infrastructure.github;
+package nextstep.auth.infrastructure.github;
 
-import nextstep.auth.domain.infrastructure.github.dto.GithubProfileResponse;
+import nextstep.auth.infrastructure.github.dto.GithubProfileResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestHeader;

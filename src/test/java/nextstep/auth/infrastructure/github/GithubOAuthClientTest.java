@@ -1,11 +1,9 @@
 package nextstep.auth.infrastructure.github;
 
 import autoparams.AutoSource;
-import nextstep.auth.domain.infrastructure.github.GithubConfig;
-import nextstep.auth.domain.infrastructure.github.GithubOAuthClient;
 import nextstep.fake.github.GithubStaticUsers;
-import nextstep.auth.domain.infrastructure.github.dto.GithubAccessTokenRequest;
-import nextstep.auth.domain.infrastructure.github.dto.GithubAccessTokenResponse;
+import nextstep.auth.infrastructure.github.dto.GithubAccessTokenRequest;
+import nextstep.auth.infrastructure.github.dto.GithubAccessTokenResponse;
 import nextstep.util.BaseTestSetup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

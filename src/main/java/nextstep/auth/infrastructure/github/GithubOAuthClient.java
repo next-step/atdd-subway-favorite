@@ -1,7 +1,7 @@
-package nextstep.auth.domain.infrastructure.github;
+package nextstep.auth.infrastructure.github;
 
-import nextstep.auth.domain.infrastructure.github.dto.GithubAccessTokenRequest;
-import nextstep.auth.domain.infrastructure.github.dto.GithubAccessTokenResponse;
+import nextstep.auth.infrastructure.github.dto.GithubAccessTokenRequest;
+import nextstep.auth.infrastructure.github.dto.GithubAccessTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

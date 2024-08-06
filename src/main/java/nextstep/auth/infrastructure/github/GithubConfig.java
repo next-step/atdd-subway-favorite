@@ -1,4 +1,4 @@
-package nextstep.auth.domain.infrastructure.github;
+package nextstep.auth.infrastructure.github;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

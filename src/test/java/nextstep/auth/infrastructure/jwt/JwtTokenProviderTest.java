@@ -2,7 +2,6 @@ package nextstep.auth.infrastructure.jwt;
 
 import autoparams.AutoSource;
 import nextstep.auth.domain.entity.TokenPrincipal;
-import nextstep.auth.domain.infrastructure.jwt.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;

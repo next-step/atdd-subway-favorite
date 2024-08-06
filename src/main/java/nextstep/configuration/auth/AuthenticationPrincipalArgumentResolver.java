@@ -3,7 +3,7 @@ package nextstep.configuration.auth;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.domain.entity.LoginMember;
 import nextstep.auth.domain.entity.TokenPrincipal;
-import nextstep.auth.domain.infrastructure.jwt.JwtTokenProvider;
+import nextstep.auth.infrastructure.jwt.JwtTokenProvider;
 import nextstep.base.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

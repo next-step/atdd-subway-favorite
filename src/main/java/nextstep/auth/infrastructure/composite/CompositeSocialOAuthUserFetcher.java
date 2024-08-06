@@ -1,27 +1,27 @@
-package nextstep.auth.domain.infrastructure.composite;
+package nextstep.auth.infrastructure.composite;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.domain.command.AuthenticateSocialOAuthCommand;
-import nextstep.auth.domain.command.SocialOAuthAuthenticator;
+import nextstep.auth.domain.command.SocialOAuthUserFetcher;
 import nextstep.auth.domain.entity.SocialOAuthProvider;
 import nextstep.auth.domain.entity.SocialOAuthUser;
 import nextstep.auth.domain.exception.AuthDomainException;
 import nextstep.auth.domain.exception.AuthDomainExceptionType;
-import nextstep.auth.domain.infrastructure.github.GithubAuthenticator;
+import nextstep.auth.infrastructure.github.GithubUserFetcher;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Primary
 @Component
 @RequiredArgsConstructor
-public class CompositeSocialOAuthAuthenticator implements SocialOAuthAuthenticator {
+public class CompositeSocialOAuthUserFetcher implements SocialOAuthUserFetcher {
 
-    private final GithubAuthenticator githubAuthenticator;
+    private final GithubUserFetcher githubAuthenticator;
 
     @Override
-    public SocialOAuthUser authenticate(AuthenticateSocialOAuthCommand.ByAuthCode command) {
+    public SocialOAuthUser fetch(AuthenticateSocialOAuthCommand.ByAuthCode command) {
         if (command.getProvider() == SocialOAuthProvider.GITHUB) {
-            return githubAuthenticator.authenticate(command);
+            return githubAuthenticator.fetch(command);
         }
 
         throw new AuthDomainException(AuthDomainExceptionType.INVALID_SOCIAL_LOGIN_PROVIDER);

@@ -1,7 +1,6 @@
 package nextstep.auth.infrastructure.github;
 
 import autoparams.AutoSource;
-import nextstep.auth.domain.infrastructure.github.GithubAuthenticator;
 import nextstep.fake.github.GithubStaticUsers;
 import nextstep.auth.domain.command.AuthenticateSocialOAuthCommand;
 import nextstep.auth.domain.entity.SocialOAuthProvider;
@@ -12,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class GithubAuthenticatorTest extends BaseTestSetup {
+class GithubUserFetcherTest extends BaseTestSetup {
 
     @Autowired
-    GithubAuthenticator sut;
+    GithubUserFetcher sut;
 
     @ParameterizedTest
     @AutoSource
@@ -24,7 +23,7 @@ class GithubAuthenticatorTest extends BaseTestSetup {
         AuthenticateSocialOAuthCommand.ByAuthCode command = new AuthenticateSocialOAuthCommand.ByAuthCode(SocialOAuthProvider.GITHUB, githubStaticUsers.getCode());
 
         // when
-        SocialOAuthUser actual = sut.authenticate(command);
+        SocialOAuthUser actual = sut.fetch(command);
 
         // then
         assertThat(actual.getProvider()).isEqualTo(SocialOAuthProvider.GITHUB);

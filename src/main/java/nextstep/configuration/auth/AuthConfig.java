@@ -1,7 +1,7 @@
 package nextstep.configuration.auth;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.auth.domain.infrastructure.jwt.JwtTokenProvider;
+import nextstep.auth.infrastructure.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 

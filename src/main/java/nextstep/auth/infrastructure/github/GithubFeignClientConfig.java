@@ -1,4 +1,4 @@
-package nextstep.auth.domain.infrastructure.github;
+package nextstep.auth.infrastructure.github;
 
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
