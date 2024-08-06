@@ -1,5 +1,6 @@
 package nextstep.station.application;
 
+import nextstep.station.application.exception.NotExistStationException;
 import nextstep.station.domain.StationRepository;
 import nextstep.station.application.dto.StationRequest;
 import nextstep.station.application.dto.StationResponse;
@@ -29,6 +30,11 @@ public class StationService {
         return stationRepository.findAll().stream()
                 .map(this::createStationResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Station lookUp(Long id) {
+        return stationRepository.findById(id)
+                .orElseThrow(NotExistStationException::new);
     }
 
     @Transactional

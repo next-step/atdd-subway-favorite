@@ -44,7 +44,7 @@ public class PathService {
                 .orElseThrow(NotExistStationException::new);
     }
 
-    private void validateContains(List<Section> sections, Station start, Station end) {
+    public void validateContains(List<Section> sections, Station start, Station end) {
         boolean containsStart = containsStationToSections(sections, start);
         boolean containsEnd = containsStationToSections(sections, end);
 

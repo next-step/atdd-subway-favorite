@@ -4,16 +4,21 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.station.application.StationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FavoriteService {
+
     private FavoriteRepository favoriteRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
+    private StationService stationService;
+
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
+        this.stationService = stationService;
     }
 
     /**
@@ -21,9 +26,10 @@ public class FavoriteService {
      *
      * @param request
      */
-    public void createFavorite(FavoriteRequest request) {
+    public FavoriteResponse createFavorite(String userEmail, FavoriteRequest favoriteRequest) {
         Favorite favorite = new Favorite();
         favoriteRepository.save(favorite);
+        return null;
     }
 
     /**
