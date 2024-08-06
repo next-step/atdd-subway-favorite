@@ -25,14 +25,14 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
+    public static Response 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
-                .extract();
+                .extract()
+                .response();
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
@@ -59,7 +59,7 @@ public class MemberSteps {
                 .then().log().all().extract();
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(Response response, String email, int age) {
         assertThat(response.jsonPath().getString("id")).isNotNull();
         assertThat(response.jsonPath().getString("email")).isEqualTo(email);
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);

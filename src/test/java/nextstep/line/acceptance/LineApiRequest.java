@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 
 public class LineApiRequest {
 
-
     public static Response 노선을_생성한다(final String name, final String color, final Long upStationId, final Long downStationId, final Long distance) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
