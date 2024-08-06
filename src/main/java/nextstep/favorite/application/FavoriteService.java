@@ -4,48 +4,61 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.line.domain.Section;
+import nextstep.line.domain.SectionRepository;
+import nextstep.member.application.MemberService;
+import nextstep.member.domain.Member;
+import nextstep.path.domain.ShortestPath;
 import nextstep.station.application.StationService;
+import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
 
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final SectionRepository sectionRepository;
+    private final StationService stationService;
+    private final MemberService memberService;
 
-    private StationService stationService;
-
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, SectionRepository sectionRepository, StationService stationService, MemberService memberService) {
         this.favoriteRepository = favoriteRepository;
+        this.sectionRepository = sectionRepository;
         this.stationService = stationService;
+        this.memberService = memberService;
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public FavoriteResponse createFavorite(String userEmail, FavoriteRequest favoriteRequest) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
-        return null;
+    public FavoriteResponse createFavorite(String memberEmail, FavoriteRequest favoriteRequest) {
+        Station start = stationService.lookUp(favoriteRequest.getSource());
+        Station end = stationService.lookUp(favoriteRequest.getTarget());
+
+        List<Section> sections = sectionRepository.findAll();
+        ShortestPath path = ShortestPath.from(sections);
+
+        path.validateContains(start, end);
+        path.validateConnected(start, end);
+
+        Member member = memberService.findMemberByEmail(memberEmail);
+        Favorite favorite = favoriteRepository.save(new Favorite(start, end, member));
+        return FavoriteResponse.from(favorite);
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(String memberEmail) {
+        Member member = memberService.findMemberByEmail(memberEmail);
+
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+        return createFavoriteResponses(favorites);
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
+    private List<FavoriteResponse> createFavoriteResponses(List<Favorite> favorites) {
+        return favorites.stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
     }

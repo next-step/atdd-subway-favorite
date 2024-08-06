@@ -9,6 +9,7 @@ import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,12 @@ public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
-    public static List<String> getNames(ExtractableResponse<Response> response) {
-        return response.jsonPath()
-                .getList("name", String.class);
+    public static List<String> getStationNames(ExtractableResponse<Response> response) {
+        List<String> names = new ArrayList<>();
+        List<String> sourceNames = response.jsonPath().getList("source.name", String.class);
+        List<String> targetNames = response.jsonPath().getList("target.name", String.class);
+        names.addAll(sourceNames);
+        names.addAll(targetNames);
+        return names;
     }
 }

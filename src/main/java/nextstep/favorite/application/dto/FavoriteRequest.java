@@ -7,6 +7,10 @@ public class FavoriteRequest {
     public FavoriteRequest() {
     }
 
+    public boolean sameSourceAndTarget() {
+        return source.equals(target);
+    }
+
     public FavoriteRequest(Long source, Long target) {
         this.source = source;
         this.target = target;

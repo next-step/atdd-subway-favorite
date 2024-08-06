@@ -20,7 +20,7 @@ import static nextstep.favorite.acceptance.FavoriteAcceptanceTestFixture.*;
 import static nextstep.utils.AssertUtil.assertResponseCode;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("즐겨찾기 관련 기능")
+@DisplayName("즐겨찾기 관련 인수테스트")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Autowired
@@ -47,7 +47,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = stationRepository.save(Station.from("강남역"));
         성수역 = stationRepository.save(Station.from("성수역"));
         lineRepository.save(신분당선(강남역, 성수역));
-        favoriteRepository.save(new Favorite(강남역, 성수역, member));
         token = 로그인(member.getEmail(), member.getPassword());
     }
 
@@ -64,7 +63,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertResponseCode(response, HttpStatus.CREATED);
-        assertThat(getNames(즐겨찾기_조회_요청(token))).containsExactlyInAnyOrder(강남역.getName(), 성수역.getName());
+        assertThat(getStationNames(즐겨찾기_조회_요청(token))).containsExactly(강남역.getName(), 성수역.getName());
     }
 
     /**
@@ -75,11 +74,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 조회 요청은, 로그인한 사용자가 즐겨찾기 조회 요청하면 나의 즐겨찾기 목록이 응답된다.")
     @Test
     void findFavoriteTest() {
+        // given
+        favoriteRepository.save(new Favorite(강남역, 성수역, member));
+
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(token);
 
         // then
-        assertResponseCode(response, HttpStatus.CREATED);
-        assertThat(getNames(response)).containsExactlyInAnyOrder(강남역.getName(), 성수역.getName());
+        assertResponseCode(response, HttpStatus.OK);
+        assertThat(getStationNames(response)).containsExactly(강남역.getName(), 성수역.getName());
     }
 }
