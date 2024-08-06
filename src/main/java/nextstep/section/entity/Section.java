@@ -58,7 +58,7 @@ public class Section {
             throw new SectionException(String.valueOf(SECTION_DISTANCE_TOO_SHORT));
         }
 
-        return new Section(null, upStation, downStation, distance);
+        return Section.of(upStation, downStation, distance);
     }
 
     public Long getId() {
