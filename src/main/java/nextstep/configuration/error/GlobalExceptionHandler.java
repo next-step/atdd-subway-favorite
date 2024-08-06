@@ -16,13 +16,6 @@ public class GlobalExceptionHandler {
 
     }
 
-//    @ExceptionHandler({ BaseDomainException.class })
-//    protected  ResponseEntity<ErrorResponse> handleSubwayException(final SubwayDomainException exception) {
-//        return ResponseEntity.status(exception.getExceptionType().getStatus())
-//                .body(ErrorResponse.fromSubwayException(exception));
-//
-//    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
