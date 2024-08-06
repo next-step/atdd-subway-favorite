@@ -90,10 +90,10 @@ public class Sections {
         sections.remove(section);
     }
 
-    private void isExistSection (final Section section) {
+    private void isExistSection(final Section section) {
         Optional<Section> findSection = sections.stream().filter(sectionValue -> sectionValue.equals(section))
                 .findAny();
-        if(findSection.isEmpty()) {
+        if (findSection.isEmpty()) {
             throw new SectionException(String.valueOf(SECTION_NOT_PERMISSION_COUNT_TOO_LOW));
         }
     }
@@ -107,10 +107,8 @@ public class Sections {
     }
 
     private void deleteFirstSection(final Section prevSection, final Section nextSection) {
-        if (prevSection == null) {
-            if (nextSection != null) {
-                nextSection.setPreviousSection(null);
-            }
+        if (prevSection == null && nextSection != null) {
+            nextSection.setPreviousSection(null);
         }
     }
 
