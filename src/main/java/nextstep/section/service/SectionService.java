@@ -55,6 +55,7 @@ public class SectionService {
         lineService.saveLine(line);
     }
 
+    @Transactional
     public void deleteSection(final Section section) {
         sectionRepository.delete(section);
     }
