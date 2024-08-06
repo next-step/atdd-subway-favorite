@@ -35,7 +35,7 @@ public class LineSectionTest {
         assertThat(lineSection.getLine()).isEqualTo(신분당선);
         assertThat(lineSection.getUpStation()).isEqualTo(신사역);
         assertThat(lineSection.getDownStation()).isEqualTo(논현역);
-        assertThat(lineSection.getDistance()).isEqualTo(10L);
+        assertThat(lineSection.getDistance().getDistance()).isEqualTo(10L);
     }
 
     @DisplayName("hasSameUpStation 테스트")
@@ -65,6 +65,6 @@ public class LineSectionTest {
 
         // then
         assertThat(lineSection.getDownStation()).isEqualTo(신논현역);
-        assertThat(lineSection.getDistance()).isEqualTo(15L);
+        assertThat(lineSection.getDistance().getDistance()).isEqualTo(15L);
     }
 }
