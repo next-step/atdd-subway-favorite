@@ -1,7 +1,7 @@
-package nextstep.favorite.domain;
+package nextstep.subway.favorite.domain;
 
 import java.util.List;
-import nextstep.favorite.exception.FavoriteNotFoundException;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,8 +1,8 @@
-package nextstep.favorite.application.dto;
+package nextstep.subway.favorite.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nextstep.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.application.dto.StationResponse;
 
 @Getter
