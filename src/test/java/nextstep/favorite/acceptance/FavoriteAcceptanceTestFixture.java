@@ -41,6 +41,17 @@ public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
                 .build();
     }
 
+    public static Line 이호선(Station upStation, Station downStation) {
+        return Line.builder()
+                .id(2L)
+                .name("이호선")
+                .color("blue")
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(9)
+                .build();
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String token, Long source, Long target) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
@@ -55,6 +66,14 @@ public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().delete(String.format("/favorites/%s", id))
                 .then().log().all()
                 .extract();
     }

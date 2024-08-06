@@ -84,4 +84,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertResponseCode(response, HttpStatus.OK);
         assertThat(getStationNames(response)).containsExactly(강남역.getName(), 성수역.getName());
     }
+
+    /**
+     * Given: 지하철 역과 구간이 존재하며, 추가된 즐겨찾기가 존재하고,
+     * When: 로그인한 사용자가 즐겨찾기 삭제 요청을 보내면,
+     * Then: 즐겨찾기를 조회 했을 때 즐겨찾기 목록에 삭제된 즐겨찾기가 존재하지 않는다.
+     */
+    @DisplayName("즐겨찾기 삭제 요청은, 로그인한 사용자가 즐겨찾기 조회 요청하면 나의 즐겨찾기 목록이 응답된다.")
+    @Test
+    void deleteFavoriteTest() {
+        // given
+        Station 교대역 = stationRepository.save(Station.from("교대역"));
+        Station 홍대역 = stationRepository.save(Station.from("홍대역"));
+        lineRepository.save(이호선(교대역, 홍대역));
+        Favorite 강남역_성수역 = favoriteRepository.save(new Favorite(강남역, 성수역, member));
+        favoriteRepository.save(new Favorite(교대역, 홍대역, member));
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(token, 강남역_성수역.getId());
+
+        // then
+        assertResponseCode(response, HttpStatus.NO_CONTENT);
+        assertThat(getStationNames(즐겨찾기_조회_요청(token))).doesNotContain(강남역.getName(), 성수역.getName());
+    }
 }

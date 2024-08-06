@@ -2,6 +2,7 @@ package nextstep.favorite.application;
 
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.line.domain.Section;
@@ -12,11 +13,13 @@ import nextstep.path.domain.ShortestPath;
 import nextstep.station.application.StationService;
 import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -31,6 +34,7 @@ public class FavoriteService {
         this.memberService = memberService;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(String memberEmail, FavoriteRequest favoriteRequest) {
         Station start = stationService.lookUp(favoriteRequest.getSource());
         Station end = stationService.lookUp(favoriteRequest.getTarget());
@@ -59,7 +63,11 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
+    @Transactional
+    public void deleteFavorite(Long id, String memberEmail) {
+        Member member = memberService.findMemberByEmail(memberEmail);
+        favoriteRepository.findByIdAndMemberId(id, member.getId())
+                .orElseThrow(NotExistFavoriteException::new);
         favoriteRepository.deleteById(id);
     }
 }

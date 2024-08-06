@@ -2,6 +2,7 @@ package nextstep.favorite.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.favorite.application.FavoriteService;
+import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.path.application.exception.NotAddedStationsToPathsException;
 import nextstep.path.application.exception.NotConnectedPathsException;
@@ -22,7 +23,9 @@ import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,8 +57,7 @@ public class FavoriteControllerTest {
     @Test
     void addFavoriteNotLoginTest() throws Exception {
         // given
-        Map<String, String> favoriteRequestMap = Map.of("source", "1", "target", "2");
-        String jsonContent = mapToJson(favoriteRequestMap);
+        String jsonContent = 즐겨찾기에_추가할_경로("2");
 
         // when & then
         mockMvc.perform(post("/favorites")
@@ -74,8 +76,7 @@ public class FavoriteControllerTest {
     @MethodSource("exceptionProvider")
     void addFavoritesServiceExceptionTest(Class<? extends Exception> exceptionClass) throws Exception {
         // given
-        Map<String, String> favoriteRequestMap = Map.of("source", "1", "target", "2");
-        String jsonContent = mapToJson(favoriteRequestMap);
+        String jsonContent = 즐겨찾기에_추가할_경로("2");
         when(favoriteService.createFavorite(anyString(), any())).thenThrow(exceptionClass);
 
         // when & then
@@ -95,8 +96,7 @@ public class FavoriteControllerTest {
     @MethodSource("exceptionProvider")
     void addFavoritesTest() throws Exception {
         // given
-        Map<String, String> favoriteRequestMap = Map.of("source", "1", "target", "1");
-        String jsonContent = mapToJson(favoriteRequestMap);
+        String jsonContent = 즐겨찾기에_추가할_경로("1");
 
         // when & then
         mockMvc.perform(post("/favorites")
@@ -104,5 +104,23 @@ public class FavoriteControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonContent))
                 .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("즐겨찾기 삭제 함수는, 존재하지 않는 즐겨찾기를 삭제하려 하면 400 에러가 발생한다.")
+    @ParameterizedTest
+    @MethodSource("exceptionProvider")
+    void deleteFavoriteTest() throws Exception {
+        // given
+        doThrow(NotExistFavoriteException.class).when(favoriteService)
+                .deleteFavorite(any(), any());
+
+        // when & then
+        mockMvc.perform(delete(String.format("/favorites/%s", 0))
+                        .header("Authorization", token))
+                .andExpect(status().isBadRequest());
+    }
+
+    private String 즐겨찾기에_추가할_경로(String number) throws Exception {
+        return mapToJson(Map.of("source", "1", "target", number));
     }
 }

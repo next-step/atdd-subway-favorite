@@ -1,5 +1,6 @@
 package nextstep.handler;
 
+import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.line.application.exception.DuplicateStationException;
 import nextstep.line.application.exception.LastOneSectionException;
 import nextstep.line.application.exception.NotExistLineException;
@@ -26,7 +27,8 @@ public class GlobalExceptionHandler {
             DuplicateStationException.class,
             SameSourceAndTargetException.class,
             NotConnectedPathsException.class,
-            NotAddedStationsToPathsException.class
+            NotAddedStationsToPathsException.class,
+            NotExistFavoriteException.class
     })
     public ResponseEntity<String> handleBadRequestException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

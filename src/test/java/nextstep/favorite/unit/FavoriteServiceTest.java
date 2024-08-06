@@ -3,6 +3,7 @@ package nextstep.favorite.unit;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
+import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.line.domain.Section;
@@ -22,11 +23,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static nextstep.utils.UnitTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DisplayName("즐겨찾기 서비스 테스트")
@@ -130,5 +134,36 @@ public class FavoriteServiceTest {
         return favorites.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    @DisplayName("즐겨찾기 삭제 함수는, favoriteRepository의 즐겨찾기 삭제 함수가 실행된다.")
+    @Test
+    void deleteFavoritesTest() {
+        // given
+        final Long favoriteId = 1L;
+
+        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
+        when(favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()))
+                .thenReturn(Optional.of(new Favorite(favoriteId, 강남역, 양재역, member)));
+
+        // when
+        favoriteService.deleteFavorite(favoriteId, member.getEmail());
+
+        // then
+        verify(favoriteRepository).deleteById(favoriteId);
+    }
+
+    @DisplayName("즐겨찾기 삭제 함수는, 존재하지 않는 즐겨찾기를 삭제하려 하면 NotExistFavoriteException이 발생한다.")
+    @Test
+    void deleteFavoriteNotExistFavoriteExceptionTest() {
+        // given
+        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
+        when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(Optional.empty());
+
+        // when
+        ThrowingCallable actual = () -> favoriteService.deleteFavorite(1L, member.getEmail());
+
+        // then
+        assertThatThrownBy(actual).isInstanceOf(NotExistFavoriteException.class);
     }
 }
