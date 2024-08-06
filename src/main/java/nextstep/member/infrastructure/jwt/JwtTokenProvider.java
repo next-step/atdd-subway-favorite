@@ -2,8 +2,10 @@ package nextstep.member.infrastructure.jwt;
 
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import nextstep.member.domain.entity.TokenPrincipal;
+import nextstep.auth.LoginMember;
+import nextstep.auth.TokenAuthorizer;
 import nextstep.member.domain.command.TokenGenerator;
+import nextstep.member.domain.entity.TokenPrincipal;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -12,7 +14,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenProvider implements TokenGenerator {
+public class JwtTokenProvider implements TokenGenerator, TokenAuthorizer {
 
     private final JwtConfig jwtConfig;
     private static String CLAIMS_EMAIL = "EMAIL";
@@ -50,6 +52,12 @@ public class JwtTokenProvider implements TokenGenerator {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    @Override
+    public LoginMember authorize(String token) {
+        TokenPrincipal principal = this.getPrincipal(token);
+        return new LoginMember(principal.getSubject(), principal.getEmail());
     }
 }
 

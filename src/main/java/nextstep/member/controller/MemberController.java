@@ -1,11 +1,11 @@
 package nextstep.member.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.configuration.auth.AuthenticationPrincipal;
+import nextstep.auth.AuthenticationPrincipal;
 import nextstep.member.domain.command.MemberService;
 import nextstep.member.controller.dto.MemberRequest;
 import nextstep.member.controller.dto.MemberResponse;
-import nextstep.configuration.auth.LoginMember;
+import nextstep.auth.LoginMember;
 import nextstep.member.domain.query.MemberReader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

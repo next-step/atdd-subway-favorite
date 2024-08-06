@@ -1,20 +1,16 @@
-package nextstep.configuration.auth;
+package nextstep.auth;
 
-import nextstep.member.domain.entity.TokenPrincipal;
+import lombok.RequiredArgsConstructor;
 import nextstep.base.exception.AuthenticationException;
-import nextstep.member.infrastructure.jwt.JwtTokenProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@RequiredArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final TokenAuthorizer tokenAuthorizer;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -28,9 +24,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             throw new AuthenticationException();
         }
         String token = authorization.split(" ")[1];
-
-        TokenPrincipal principal = jwtTokenProvider.getPrincipal(token);
-
-        return new LoginMember(principal.getSubject(), principal.getEmail());
+        return this.tokenAuthorizer.authorize(token);
     }
 }

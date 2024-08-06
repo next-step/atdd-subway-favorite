@@ -1,4 +1,4 @@
-package nextstep.configuration.auth;
+package nextstep.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

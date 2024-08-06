@@ -1,7 +1,6 @@
 package nextstep.configuration.error;
 
 import nextstep.base.exception.BaseDomainException;
-import nextstep.subway.domain.exception.SubwayDomainException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,6 +18,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.fromSubwayException(new SubwayDomainException()));
+                .body(ErrorResponse.fromBaseException(new BaseDomainException()));
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.member.infrastructure.jwt;
 
 import autoparams.AutoSource;
+import nextstep.auth.LoginMember;
 import nextstep.member.domain.entity.TokenPrincipal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,6 +38,24 @@ class JwtTokenProviderTest {
 
             // then
             assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        }
+    }
+
+    @DisplayName("authorize")
+    @Nested
+    class Authorize {
+        @ParameterizedTest
+        @AutoSource
+        public void sut_returns_login_member(JwtTokenProvider sut, TokenPrincipal expected) {
+            // given
+            String token = sut.createToken(expected);
+
+            // when
+            LoginMember actual = sut.authorize(token);
+
+            // then
+            assertThat(actual.getId()).isEqualTo(expected.getSubject());
+            assertThat(actual.getEmail()).isEqualTo(expected.getEmail());
         }
     }
 }

@@ -1,10 +1,8 @@
 package nextstep.subway.controller;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.configuration.auth.AuthenticationPrincipal;
-import nextstep.configuration.auth.LoginMember;
-import nextstep.member.domain.entity.Member;
-import nextstep.member.domain.query.MemberReader;
+import nextstep.auth.AuthenticationPrincipal;
+import nextstep.auth.LoginMember;
 import nextstep.subway.controller.dto.CreateFavoriteRequest;
 import nextstep.subway.domain.command.FavoriteCommand;
 import nextstep.subway.domain.command.FavoriteCommander;
