@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class TokenController {
+public class AuthController {
     private final EmailPasswordAuthenticator emailPasswordAuthenticator;
     private final SocialOAuthUserAuthenticator socialOAuthUserAuthenticator;
 
