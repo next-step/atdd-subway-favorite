@@ -20,7 +20,7 @@ import static nextstep.subway.acceptance.StationSteps.지하철_역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 관련 기능")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Sql(scripts = "classpath:truncate-tables.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class PathFinderAcceptanceTest {
 
@@ -104,7 +104,7 @@ public class PathFinderAcceptanceTest {
         ExtractableResponse<Response> response = 경로_찾기(교대역_ID, 동떨어진역_ID);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.body().asString()).contains("경로를 찾을 수 없습니다");
     }
 }

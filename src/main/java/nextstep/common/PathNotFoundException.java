@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class PathNotFoundException extends SubwayException {
     public PathNotFoundException(Long sourceId, Long targetId) {
-        super(createMessage(sourceId, targetId), HttpStatus.INTERNAL_SERVER_ERROR);
+        super(createMessage(sourceId, targetId), HttpStatus.BAD_REQUEST);
     }
 
     private static String createMessage(Long sourceId, Long targetId) {
