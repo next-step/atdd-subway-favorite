@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FinderConfig {
 
-    private final String DIJKSTRA = "dijkstra";
+    private static final String DIJKSTRA = "dijkstra";
+
     @Value("${finder}")
     private String finderImplementation;
 
