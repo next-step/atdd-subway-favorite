@@ -42,7 +42,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         즐겨찾기_요청_강남역_역삼역 = FavoriteRequest.of(강남역.getId(), 역삼역.getId());
 
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(Member.of(EMAIL, PASSWORD, AGE));
         accessToken = 로그인_후_토큰_발급(EMAIL, PASSWORD);
 
     }

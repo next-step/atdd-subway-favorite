@@ -48,7 +48,7 @@ public class StationStep {
         Long stationId_response = response.body().jsonPath().getLong("id");
         String stationName_response = response.body().jsonPath().getString("name");
 
-        return new StationResponse(stationId_response, stationName_response);
+        return StationResponse.of(stationId_response, stationName_response);
     }
 
 

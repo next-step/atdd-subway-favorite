@@ -18,7 +18,7 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public PathResponse of(final List<StationResponse> stationResponses, final Double distance) {
+    public static PathResponse of(final List<StationResponse> stationResponses, final Double distance) {
         return new PathResponse(stationResponses, distance);
     }
 

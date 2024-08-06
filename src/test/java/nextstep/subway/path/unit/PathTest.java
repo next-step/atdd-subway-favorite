@@ -7,8 +7,6 @@ import nextstep.section.entity.Section;
 import nextstep.section.entity.Sections;
 import nextstep.station.dto.StationResponse;
 import nextstep.station.entity.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,13 +29,13 @@ public class PathTest {
 
     @BeforeEach
     public void setup() {
-        강남역 = new Station(1L, "강남역");
-        역삼역 = new Station(2L, "역삼역");
+        강남역 = Station.of(1L, "강남역");
+        역삼역 = Station.of(2L, "역삼역");
 
 
         강남역_역삼역_구간 = Section.of(강남역, 역삼역, 10L);
         구간들 = new Sections(Collections.singletonList(강남역_역삼역_구간));
-        신분당선 = new Line(1L, "신분당선", "red", 15L, 구간들);
+        신분당선 = Line.of(1L, "신분당선", "red", 15L, 구간들);
         path = Path.of(List.of(강남역, 역삼역), pathWeight);
 
     }
@@ -63,8 +61,8 @@ public class PathTest {
                 () -> assertNotNull(pathResponse),
                 () -> assertEquals(pathWeight, pathResponse.getDistance()),
                 () -> assertEquals(List.of(
-                        new StationResponse(강남역.getId(), 강남역.getName()),
-                        new StationResponse(역삼역.getId(), 역삼역.getName())
+                        StationResponse.of(강남역.getId(), 강남역.getName()),
+                        StationResponse.of(역삼역.getId(), 역삼역.getName())
                 ), pathResponse.getStationResponses())
         );
     }

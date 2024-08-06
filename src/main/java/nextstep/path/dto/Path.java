@@ -29,10 +29,10 @@ public class Path {
 
         List<StationResponse> stationResponses = new ArrayList<>();
         for (Station station : stations) {
-            stationResponses.add(new StationResponse(station.getId(), station.getName()));
+            stationResponses.add(StationResponse.of(station.getId(), station.getName()));
         }
 
-        return new PathResponse(stationResponses, weight);
+        return PathResponse.of(stationResponses, weight);
     }
 
     public List<Station> getStations() {

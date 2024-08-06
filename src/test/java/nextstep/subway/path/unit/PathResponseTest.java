@@ -17,8 +17,8 @@ public class PathResponseTest {
     void getStationResponseList_getDistance() {
         // given
         var stationResponses = List.of(
-                new StationResponse(1L, "Station1"),
-                new StationResponse(2L, "Station2")
+                StationResponse.of(1L, "Station1"),
+                StationResponse.of(2L, "Station2")
         );
         var distance = 20.0;
 

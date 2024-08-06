@@ -45,7 +45,7 @@ public class StationService {
     }
 
     private StationResponse createStationResponse(final Station station) {
-        return new StationResponse(
+        return StationResponse.of(
                 station.getId(),
                 station.getName()
         );

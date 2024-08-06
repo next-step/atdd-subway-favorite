@@ -102,7 +102,7 @@ public class GraphModel {
                 .findFirst();
     }
 
-    private Optional<Station> findStationInSection(Section section, Long stationId) {
+    private Optional<Station> findStationInSection(final Section section, final Long stationId) {
         if (section.getUpStation().getId().equals(stationId)) {
             return Optional.ofNullable(section.getUpStation());
         }
@@ -112,7 +112,7 @@ public class GraphModel {
         return Optional.empty();
     }
 
-    public void addSectionsToGraph(Line line) {
+    public void addSectionsToGraph(final Line line) {
         List<Section> sectionList = line.getSections().getSections();
 
         if (sectionList.isEmpty()) {
@@ -123,20 +123,20 @@ public class GraphModel {
         }
     }
 
-    public void addEdge(Long newSource, Long newTarget, double weight) {
+    public void addEdge(final Long newSource, final Long newTarget, double weight) {
         validateDuplicate(newSource, newTarget);
         graph.addVertex(newSource);
         graph.addVertex(newTarget);
         graph.setEdgeWeight(graph.addEdge(newSource, newTarget), weight);
     }
 
-    public void containsVertex(Long vertexId) {
+    public void containsVertex(final Long vertexId) {
         if (!graph.containsVertex(vertexId)) {
             throw new PathException(String.valueOf(PATH_NOT_FOUND));
         }
     }
 
-    public void validateDuplicate(Long source, Long target) {
+    public void validateDuplicate(final Long source, final Long target) {
         if (source.equals(target)) {
             throw new PathException(String.valueOf(PATH_DUPLICATE_STATION));
         }
