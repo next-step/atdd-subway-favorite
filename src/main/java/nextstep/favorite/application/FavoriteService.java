@@ -7,6 +7,7 @@ import nextstep.favorite.presentation.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.infrastructure.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
 import nextstep.subway.domain.Station;
 import nextstep.common.exception.StationNotFoundException;
@@ -14,6 +15,7 @@ import nextstep.subway.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,27 +27,24 @@ public class FavoriteService {
     public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
         Station sourceStation = findStationByIdOrThrow(request.getSourceStationId());
         Station targetStation = findStationByIdOrThrow(request.getTargetStationId());
-        memberRepository.findByEmail(loginMember.getEmail())
-                .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
+        Member member = findMemberByIdOrThrow(loginMember);
 
         Favorite favorite = Favorite.of(
+                member.getId(),
                 sourceStation.getId(),
-                targetStation.getId(),
-                loginMember.getId()
+                targetStation.getId()
         );
 
         Favorite createdFavorite = favoriteRepository.save(favorite);
         return createdFavorite.getId();
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = findMemberByIdOrThrow(loginMember);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+        return favorites.stream()
+                .map(this::createFavoriteResponse)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -59,5 +58,15 @@ public class FavoriteService {
     private Station findStationByIdOrThrow(Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(() -> new StationNotFoundException(stationId));
+    }
+
+    private Member findMemberByIdOrThrow(LoginMember loginMember) {
+        return memberRepository.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
+    }
+    private FavoriteResponse createFavoriteResponse(Favorite favorite) {
+        Station sourceStation = findStationByIdOrThrow(favorite.getSourceStationId());
+        Station targetStation = findStationByIdOrThrow(favorite.getTargetStationId());
+        return FavoriteResponse.of(favorite, sourceStation, targetStation);
     }
 }

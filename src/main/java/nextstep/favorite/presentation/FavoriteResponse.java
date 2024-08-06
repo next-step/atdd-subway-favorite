@@ -1,12 +1,23 @@
 package nextstep.favorite.presentation;
 
 import lombok.Builder;
+import lombok.Getter;
 import nextstep.favorite.domain.Favorite;
+import nextstep.subway.domain.Station;
+import nextstep.subway.presentation.StationResponse;
 
-/**
- * TODO: StationResponse를 포함하는 클래스로 만듭니다.
- */
-
+@Builder
+@Getter
 public class FavoriteResponse {
-    private Long favoriteId;
+    private Long id;
+    private StationResponse source;
+    private StationResponse target;
+
+    public static FavoriteResponse of(Favorite favorites, Station sourceStation, Station targetStation) {
+        return FavoriteResponse.builder()
+                .id(favorites.getId())
+                .source(StationResponse.of(sourceStation))
+                .target(StationResponse.of(targetStation))
+                .build();
+    }
 }

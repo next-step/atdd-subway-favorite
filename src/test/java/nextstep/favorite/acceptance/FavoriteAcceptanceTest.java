@@ -12,7 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
+import java.util.Map;
+
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
+import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
 import static nextstep.subway.acceptance.StationSteps.지하철_역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -100,5 +104,44 @@ public class FavoriteAcceptanceTest {
 
         // then
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Given 회원 가입한 사용자가 있고,
+     * And 회원 가입한 사용자가 로그인을 한 상태이고,
+     * And 해당 회원이 즐겨찾기를 등록한 상태일 때
+     * When 즐겨찾기를 조회 하면
+     * Then 회원이 등록한 즐겨찾기가 조회된다.
+     */
+    @Test
+    @DisplayName("사용자는 자신이 등록한 즐겨찾기를 조회할 수 있다.")
+    void getFavorites() {
+        // given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        ExtractableResponse<Response> 로그인_토큰_응답 = 로그인_토큰_요청(EMAIL, PASSWORD);
+        String accessToken = 로그인_토큰_응답.jsonPath().getString("accessToken");
+
+        // 즐겨찾기 생성
+        즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(accessToken);
+
+        // then
+        assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<Map<String, Object>> favorites = 즐겨찾기_조회_응답.jsonPath().getList(".");
+        assertThat(favorites).hasSize(1);
+
+        Map<String, Object> favorite = favorites.get(0);
+        assertThat(favorite).containsKeys("id", "source", "target");
+
+        Map<String, Object> source = (Map<String, Object>) favorite.get("source");
+        Map<String, Object> target = (Map<String, Object>) favorite.get("target");
+
+        assertThat(source.get("id")).isEqualTo(강남역_ID.intValue());
+        assertThat(source.get("name")).isEqualTo("강남역");
+        assertThat(target.get("id")).isEqualTo(신사역_ID.intValue());
+        assertThat(target.get("name")).isEqualTo("신사역");
     }
 }
