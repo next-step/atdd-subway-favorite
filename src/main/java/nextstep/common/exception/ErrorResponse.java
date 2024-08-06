@@ -1,4 +1,4 @@
-package nextstep.common;
+package nextstep.common.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

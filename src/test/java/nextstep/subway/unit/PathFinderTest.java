@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
 import nextstep.subway.domain.*;
-import nextstep.common.PathNotFoundException;
+import nextstep.common.exception.PathNotFoundException;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,7 +1,7 @@
 package nextstep.favorite.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.common.MemberNotFoundException;
+import nextstep.common.exception.MemberNotFoundException;
 import nextstep.favorite.presentation.FavoriteRequest;
 import nextstep.favorite.presentation.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
@@ -9,7 +9,7 @@ import nextstep.favorite.infrastructure.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.infrastructure.MemberRepository;
 import nextstep.subway.domain.Station;
-import nextstep.common.StationNotFoundException;
+import nextstep.common.exception.StationNotFoundException;
 import nextstep.subway.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package nextstep.subway.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nextstep.common.StationNotFoundException;
+import nextstep.common.exception.StationNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
