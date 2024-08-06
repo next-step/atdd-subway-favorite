@@ -3,9 +3,11 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
+import nextstep.utils.GithubResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +53,28 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    @DisplayName("깃헙 로그인")
+    @Test
+    public void githubAuth() {
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponse.사용자1.getCode());
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/github")
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        String accessToken = response.as(TokenResponse.class).getAccessToken();
+        assertThat(accessToken).isNotBlank();
+        assertThat(accessToken).isEqualTo(GithubResponse.사용자1.getAccessToken());
+
     }
 }
 
