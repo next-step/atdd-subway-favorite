@@ -2,15 +2,17 @@ package nextstep.favorite.application;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.common.exception.MemberNotFoundException;
-import nextstep.favorite.presentation.FavoriteRequest;
-import nextstep.favorite.presentation.FavoriteResponse;
+import nextstep.common.exception.PathNotFoundException;
+import nextstep.common.exception.StationNotFoundException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.infrastructure.FavoriteRepository;
+import nextstep.favorite.presentation.FavoriteRequest;
+import nextstep.favorite.presentation.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
+import nextstep.subway.domain.PathFinderService;
 import nextstep.subway.domain.Station;
-import nextstep.common.exception.StationNotFoundException;
 import nextstep.subway.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +25,24 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
     private final MemberRepository memberRepository;
+    private final PathFinderService pathFinderService;
 
     public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
         Station sourceStation = findStationByIdOrThrow(request.getSourceStationId());
         Station targetStation = findStationByIdOrThrow(request.getTargetStationId());
         Member member = findMemberByIdOrThrow(loginMember);
 
-        Favorite favorite = Favorite.of(
+        if (!pathFinderService.isValidPath(sourceStation.getId(), targetStation.getId())) {
+            throw new PathNotFoundException(sourceStation.getId(), targetStation.getId());
+        }
+
+        Favorite requestedFavorite = Favorite.of(
                 member.getId(),
                 sourceStation.getId(),
                 targetStation.getId()
         );
 
-        Favorite createdFavorite = favoriteRepository.save(favorite);
+        Favorite createdFavorite = favoriteRepository.save(requestedFavorite);
         return createdFavorite.getId();
     }
 
@@ -49,6 +56,7 @@ public class FavoriteService {
 
     /**
      * TODO: 요구사항 설명에 맞게 수정합니다.
+     *
      * @param id
      */
     public void deleteFavorite(Long id) {
@@ -64,6 +72,7 @@ public class FavoriteService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
     }
+
     private FavoriteResponse createFavoriteResponse(Favorite favorite) {
         Station sourceStation = findStationByIdOrThrow(favorite.getSourceStationId());
         Station targetStation = findStationByIdOrThrow(favorite.getTargetStationId());

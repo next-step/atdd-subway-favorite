@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LineSteps {
-    static ExtractableResponse<Response> 지하철_노선_생성(LineRequest lineRequest) {
+    public static ExtractableResponse<Response> 지하철_노선_생성(LineRequest lineRequest) {
         return RestAssured.given().log().all()
                 .body(lineRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

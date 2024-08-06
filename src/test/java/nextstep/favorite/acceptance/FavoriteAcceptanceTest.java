@@ -4,6 +4,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
+import nextstep.subway.presentation.LineRequest;
+import nextstep.subway.presentation.SectionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,8 @@ import java.util.Map;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회;
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
+import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성;
+import static nextstep.subway.acceptance.SectionSteps.지하철_구간_생성;
 import static nextstep.subway.acceptance.StationSteps.지하철_역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,6 +35,9 @@ public class FavoriteAcceptanceTest {
     public static final Integer AGE = 20;
     private Long 강남역_ID;
     private Long 신사역_ID;
+    private Long 양재역_ID;
+    private Long 교대역_ID;
+    private Long 신분당선_ID;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -39,6 +46,14 @@ public class FavoriteAcceptanceTest {
     void setup() {
         강남역_ID = 지하철_역_생성("강남역").body().jsonPath().getLong("id");
         신사역_ID = 지하철_역_생성("신사역").body().jsonPath().getLong("id");
+        양재역_ID = 지하철_역_생성("양재역").body().jsonPath().getLong("id");
+        교대역_ID = 지하철_역_생성("교대역").body().jsonPath().getLong("id");
+
+        LineRequest 신분당선_request = new LineRequest("신분당선", "bg-red-600", 강남역_ID, 양재역_ID, 10);
+        신분당선_ID = 지하철_노선_생성(신분당선_request).body().jsonPath().getLong("id");
+
+        SectionRequest 신분당성_구간_request = new SectionRequest(강남역_ID, 신사역_ID, 5);
+        지하철_구간_생성(신분당선_ID, 신분당성_구간_request);
     }
 
     /**

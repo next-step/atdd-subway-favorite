@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import nextstep.subway.presentation.SectionRequest;
 
 public class SectionSteps {
-    static ExtractableResponse<Response> 지하철_구간_생성(Long lineId, SectionRequest sectionRequest) {
+    public static ExtractableResponse<Response> 지하철_구간_생성(Long lineId, SectionRequest sectionRequest) {
         return RestAssured.given().log().all()
                 .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
