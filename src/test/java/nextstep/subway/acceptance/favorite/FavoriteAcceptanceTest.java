@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("즐겨찾기 관련 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 교대역_id;
     private Long 강남역_id;
@@ -50,6 +50,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        super.setUp();
         교대역_id = 지하철역_생성_후_id_추출(교대역);
         강남역_id = 지하철역_생성_후_id_추출(강남역);
         양재역_id = 지하철역_생성_후_id_추출(양재역);
@@ -79,6 +80,42 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(즐겨찾기_생성_응답.header("Location")).isNotNull();
+    }
+
+    /**
+     * Given 중복된 즐겨찾기가 존재할 때
+     * When 동일한 즐겨찾기를 생성하려고 하면
+     * Then 중복 예외가 발생한다.
+     */
+    @DisplayName("중복된 즐겨찾기를 생성하려고 하면 예외를 발생시킨다")
+    @Test
+    void createDuplicateFavorite() {
+        // given
+        즐겨찾기_생성(교대역_id, 양재역_id, 로그인_토큰);
+
+        // when
+        ExtractableResponse<Response> 중복_즐겨찾기_생성_응답 = 즐겨찾기_생성(교대역_id, 양재역_id, 로그인_토큰);
+
+        // then
+        assertThat(중복_즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    /**
+     * Given 존재하지 않는 경로로
+     * When 즐겨찾기를 생성하면
+     * Then 경로가 존재하지 않음 예외가 발생한다.
+     */
+    @DisplayName("존재하지 않는 경로로 즐겨찾기를 생성하면 실패한다.")
+    @Test
+    void createFavoriteWithNonExistentPath() {
+        // given
+        Long 존재하지_않는_역_id = 999L;
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(교대역_id, 존재하지_않는_역_id, 로그인_토큰);
+
+        // then
+        assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     /**
@@ -122,4 +159,45 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(즐겨찾기_목록.size()).isEqualTo(0);
     }
 
+    /**
+     * Given 다른 사용자의 즐겨찾기가 존재할 때
+     * When 해당 즐겨찾기를 삭제하려고 하면
+     * Then 권한 없음 예외가 발생한다.
+     */
+    @DisplayName("다른 사용자의 즐겨찾기를 삭제하려고 하면 실패한다.")
+    @Test
+    void deleteFavoriteOfOtherUser() {
+        // given
+        String otherUserEmail = "other@example.com";
+        String otherUserPassword = "password";
+
+        회원_생성_요청(otherUserEmail, otherUserPassword, AGE);
+        String 다른_사용자_토큰 = 로그인_후_토큰_반환(otherUserEmail, otherUserPassword);
+
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(교대역_id, 양재역_id, 다른_사용자_토큰);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제(responseToLocation(즐겨찾기_생성_응답), 로그인_토큰);
+
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    /**
+     * Given 즐겨찾기 데이터가 존재하지 않을 때
+     * When 해당 즐겨찾기를 삭제하려고 하면
+     * Then 존재하지 않는 데이터 예외가 발생한다.
+     */
+    @DisplayName("삭제하려는 데이터가 존재하지 않는 경우 예외를 발생시킨다")
+    @Test
+    void deleteNonExistentFavorite() {
+        // given
+        String 존재하지_않는_즐겨찾기_location = "/favorites/999";
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제(존재하지_않는_즐겨찾기_location, 로그인_토큰);
+
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
