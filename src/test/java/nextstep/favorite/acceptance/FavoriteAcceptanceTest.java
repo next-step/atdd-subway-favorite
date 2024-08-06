@@ -17,8 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 import java.util.Map;
 
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
-import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회;
+import static nextstep.favorite.acceptance.FavoriteSteps.*;
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성;
 import static nextstep.subway.acceptance.SectionSteps.지하철_구간_생성;
@@ -59,8 +58,8 @@ public class FavoriteAcceptanceTest {
     /**
      * Given 지하철 역이 등록되어 있고,
      * And 회원 가입한 사용자가 있고,
-     * And 회원 가입한 사용자가 로그인을 한 상태일 떄,
-     * When 시작 역과 종착역을 즐겨찾기로 등록하면
+     * And 해당 사용자가 로그인을 한 상태일 떄,
+     * When 해당 사용자가 시작 역과 종착역을 즐겨찾기로 등록하면
      * Then 자신의 즐겨찾기가 등록된다.
      */
     @Test
@@ -81,8 +80,8 @@ public class FavoriteAcceptanceTest {
     /**
      * Given 지하철 역이 등록되어 있고,
      * And 회원 가입한 사용자가 있고,
-     * And 회원 가입한 사용자가 로그인을 하지 않은 상태일 떄,
-     * When 시작 역과 종착역을 즐겨찾기로 등록하면
+     * And 해당 사용자가 로그인을 하지 않은 상태일 떄,
+     * When 해당 사용자가 시작 역과 종착역을 즐겨찾기로 등록하면
      * Then 등록에 실패하고 인증 오류가 발생한다.
      */
     @Test
@@ -101,8 +100,8 @@ public class FavoriteAcceptanceTest {
     /**
      * Given 지하철 역이 등록되어 있지 않고,
      * And 회원 가입한 사용자가 있고,
-     * And 회원 가입한 사용자가 로그인을 한 상태일 떄,
-     * When 시작 역과 종착역을 즐겨찾기로 등록하면
+     * And 해당 사용자가 로그인을 한 상태일 떄,
+     * When 해당 사용자가 시작 역과 종착역을 즐겨찾기로 등록하면
      * Then 등록에 오류가 발생한다.
      */
     @Test
@@ -123,10 +122,10 @@ public class FavoriteAcceptanceTest {
 
     /**
      * Given 회원 가입한 사용자가 있고,
-     * And 회원 가입한 사용자가 로그인을 한 상태이고,
-     * And 해당 회원이 즐겨찾기를 등록한 상태일 때
-     * When 즐겨찾기를 조회 하면
-     * Then 회원이 등록한 즐겨찾기가 조회된다.
+     * And 해당 사용자가 로그인을 한 상태이고,
+     * And 해당 사용자가 즐겨찾기를 등록한 상태일 때
+     * When 해당 사용자의 즐겨찾기를 조회 하면
+     * Then 해당 사용자가 등록한 즐겨찾기가 조회된다.
      */
     @Test
     @DisplayName("사용자는 자신이 등록한 즐겨찾기를 조회할 수 있다.")
@@ -158,5 +157,72 @@ public class FavoriteAcceptanceTest {
         assertThat(source.get("name")).isEqualTo("강남역");
         assertThat(target.get("id")).isEqualTo(신사역_ID.intValue());
         assertThat(target.get("name")).isEqualTo("신사역");
+    }
+
+    /**
+     * Given 회원 가입한 사용자가 있고,
+     * And 해당 사용자가 로그인을 한 상태이고,
+     * And 해당 사용자가 즐겨찾기를 등록한 상태일 때
+     * When 해당 사용자가 즐겨찾기를 삭제 하면
+     * Then 헤딩 사용자가 등록한 즐겨찾기가 삭제된다.
+     */
+    @Test
+    @DisplayName("사용자는 자신이 등록한 즐겨찾기를 삭제할 수 있다.")
+    void deleteFavorite() {
+        // given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        ExtractableResponse<Response> 로그인_토큰_응답 = 로그인_토큰_요청(EMAIL, PASSWORD);
+        String accessToken = 로그인_토큰_응답.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
+        String location = 즐겨찾기_생성_응답.header("Location");
+        Long favoriteId = extractIdFromLocation(location);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(accessToken, favoriteId);
+
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(accessToken);
+        List<Map<String, Object>> favorites = 즐겨찾기_조회_응답.jsonPath().getList(".");
+        assertThat(favorites).isEmpty();
+    }
+
+    /**
+     * Given 회원 가입한 사용자가 있고,
+     * And 헤딩 사용자가 로그인을 한 상태이고,
+     * And 해당 사용자가 즐겨찾기를 등록한 상태일 때
+     * When 다른 사용자가 해당 사용자의 즐겨찾기를 삭제 하면
+     * Then 즐겨찾기가 삭제가 실패하고 권한 오류가 발생한다.
+     */
+    @Test
+    @DisplayName("다른 사용자의 즐겨찾기를 삭제하려고 하면 인증 오류가 발생한다.")
+    void deleteOtherUsersFavorite() {
+        // given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        ExtractableResponse<Response> 로그인_토큰_응답 = 로그인_토큰_요청(EMAIL, PASSWORD);
+        String accessToken = 로그인_토큰_응답.jsonPath().getString("accessToken");
+
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
+        String location = 즐겨찾기_생성_응답.header("Location");
+        Long favoriteId = extractIdFromLocation(location);
+
+        String otherEmail = "other@email.com";
+        String otherPassword = "otherpassword";
+        memberRepository.save(new Member(otherEmail, otherPassword, AGE));
+        ExtractableResponse<Response> 다른_사용자_로그인_토큰_응답 = 로그인_토큰_요청(otherEmail, otherPassword);
+        String otherAccessToken = 다른_사용자_로그인_토큰_응답.jsonPath().getString("accessToken");
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(otherAccessToken, favoriteId);
+
+        // then
+        assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    private Long extractIdFromLocation(String location) {
+        String[] splitLocation = location.split("/");
+        return Long.parseLong(splitLocation[splitLocation.length - 1]);
     }
 }

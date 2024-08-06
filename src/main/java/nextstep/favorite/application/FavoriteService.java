@@ -1,9 +1,7 @@
 package nextstep.favorite.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.common.exception.MemberNotFoundException;
-import nextstep.common.exception.PathNotFoundException;
-import nextstep.common.exception.StationNotFoundException;
+import nextstep.common.exception.*;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.infrastructure.FavoriteRepository;
 import nextstep.favorite.presentation.FavoriteRequest;
@@ -54,13 +52,17 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     *
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    public void deleteFavorite(Long favoriteId, LoginMember loginMember) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
+
+        Member member = findMemberByIdOrThrow(loginMember);
+
+        if (!favorite.getMemberId().equals(member.getId())) {
+            throw new UnauthorizedDeletionException(favoriteId);
+        }
+
+        favoriteRepository.deleteById(favoriteId);
     }
 
     private Station findStationByIdOrThrow(Long stationId) {
