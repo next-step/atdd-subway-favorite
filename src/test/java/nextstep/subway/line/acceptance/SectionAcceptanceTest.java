@@ -3,12 +3,10 @@ package nextstep.subway.line.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.common.SubwayErrorMessage;
-import nextstep.subway.line.LineAssuredTemplate;
 import nextstep.subway.line.SectionAssuredTemplate;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineStationsResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAssuredTemplate;
 import nextstep.subway.station.StationFixtures;
 import nextstep.utils.AcceptanceTest;
 import org.assertj.core.api.Assertions;
@@ -17,6 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import static nextstep.subway.line.LineAssuredTemplate.*;
+import static nextstep.subway.line.SectionAssuredTemplate.deleteSection;
+import static nextstep.subway.station.StationAssuredTemplate.*;
 
 @DisplayName("지하철 노선 구간 관리 기능")
 public class SectionAcceptanceTest extends AcceptanceTest {
@@ -28,13 +30,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        this.강남역_id = StationAssuredTemplate.createStation(StationFixtures.FIRST_UP_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
-        this.역삼역_id = StationAssuredTemplate.createStation(StationFixtures.FIRST_DOWN_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
-        this.선릉역_id =  StationAssuredTemplate.createStation(StationFixtures.SECOND_UP_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
-        this.이호선_id = LineAssuredTemplate.createLine(new LineRequest("신분당선", "red", 강남역_id, 역삼역_id, 10L))
+        this.강남역_id = createStationWithId(StationFixtures.FIRST_UP_STATION.getName());
+        this.역삼역_id = createStationWithId(StationFixtures.FIRST_DOWN_STATION.getName());
+        this.선릉역_id =  createStationWithId(StationFixtures.SECOND_UP_STATION.getName());
+        this.이호선_id = createLine(new LineRequest("신분당선", "red", 강남역_id, 역삼역_id, 10L))
                 .then().extract().jsonPath().getLong("id");
     }
 
@@ -49,11 +48,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         // given
         SectionAssuredTemplate.addSection(이호선_id, new SectionRequest(역삼역_id, 선릉역_id, 20L));
 
-        long newUpStation = StationAssuredTemplate.createStation(StationFixtures.THIRD_UP_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newUpStation = createStationWithId(StationFixtures.THIRD_UP_STATION.getName());
 
-        long newDownStation = StationAssuredTemplate.createStation(StationFixtures.THIRD_DOWN_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newDownStation = createStationWithId(StationFixtures.THIRD_DOWN_STATION.getName());
 
         // when
         ExtractableResponse<Response> result = SectionAssuredTemplate.addSection(이호선_id, new SectionRequest(newUpStation, newDownStation, 30L))
@@ -73,10 +70,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void invalidSection() {
         // given
-        long newUpStationId = StationAssuredTemplate.createStation(StationFixtures.SECOND_UP_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
-        long newDownStationId = StationAssuredTemplate.createStation(StationFixtures.SECOND_DOWN_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newUpStationId = createStationWithId(StationFixtures.SECOND_UP_STATION.getName());
+        long newDownStationId = createStationWithId(StationFixtures.SECOND_DOWN_STATION.getName());
 
         // when
         SectionRequest sectionRequest = new SectionRequest(newUpStationId, newDownStationId, 10L);
@@ -113,17 +108,14 @@ public class SectionAcceptanceTest extends AcceptanceTest {
      * When 해당 노선에 신규 구간을 추가합니다.
      * Then 노선 조회 시 추가된 신규 구간이 정상적으로 응답으로 보입니다.
      */
-    // TODO: 7/17/24 좀 더 다양한 케이스에서 성공하는지 확인해야함, 특히 응답의 순서에 주의할 필요 있음
     @DisplayName("새로운 구간을 등록합니다.")
     @Test
     void addSection() {
         // given
         SectionAssuredTemplate.addSection(이호선_id, new SectionRequest(역삼역_id, 선릉역_id, 10L));
-        long newDownStationId = StationAssuredTemplate.createStation(StationFixtures.SECOND_DOWN_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newDownStationId = createStationWithId(StationFixtures.SECOND_DOWN_STATION.getName());
 
-        long newUpStationId = StationAssuredTemplate.createStation(StationFixtures.THIRD_UP_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newUpStationId = createStationWithId(StationFixtures.THIRD_UP_STATION.getName());
 
         // when
         // 1. upStation 기준으로 구간 추가
@@ -133,7 +125,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
         SectionAssuredTemplate.addSection(이호선_id, new SectionRequest(newUpStationId, 강남역_id, 20L));
 
         // then
-        ExtractableResponse<Response> result = LineAssuredTemplate.searchOneLine(이호선_id)
+        ExtractableResponse<Response> result = searchOneLine(이호선_id)
                 .then().log().all().extract();
 
         Assertions.assertThat(result.jsonPath().getList("stations", LineStationsResponse.class)).hasSize(5)
@@ -157,7 +149,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     void hasOneSection() {
         // given
         // when
-        ExtractableResponse<Response> result = SectionAssuredTemplate.deleteSection(이호선_id, 역삼역_id)
+        ExtractableResponse<Response> result = deleteSection(이호선_id, 역삼역_id)
                 .then().log().all().extract();
 
         // then
@@ -174,18 +166,17 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("2개의 구간에서 중간 역을 삭제할 수 있습니다. 이후 조회 시 삭제한 역은 조회되지 않습니다.")
     void notDownStation() {
         // given
-        long newDownStationId = StationAssuredTemplate.createStation(StationFixtures.SECOND_DOWN_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newDownStationId = createStationWithId(StationFixtures.SECOND_DOWN_STATION.getName());
 
         SectionRequest sectionRequest = new SectionRequest(역삼역_id, newDownStationId, 10L);
         SectionAssuredTemplate.addSection(이호선_id, sectionRequest);
 
         // when
-        SectionAssuredTemplate.deleteSection(이호선_id, 역삼역_id)
+        deleteSection(이호선_id, 역삼역_id)
                 .then().log().all().extract();
 
         // then
-        ExtractableResponse<Response> lineResult = LineAssuredTemplate.searchOneLine(이호선_id)
+        ExtractableResponse<Response> lineResult = searchOneLine(이호선_id)
                 .then().log().all().extract();
 
         Assertions.assertThat(lineResult.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -206,20 +197,19 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("정상적으로 하행 종점역 삭제가 진행됩니다.")
     void deleteStation() {
         // given
-        long newDownStationId = StationAssuredTemplate.createStation(StationFixtures.SECOND_DOWN_STATION.getName())
-                .then().extract().jsonPath().getLong("id");
+        long newDownStationId = createStationWithId(StationFixtures.SECOND_DOWN_STATION.getName());
 
         SectionRequest sectionRequest = new SectionRequest(역삼역_id, newDownStationId, 10L);
         SectionAssuredTemplate.addSection(이호선_id, sectionRequest);
 
         // when
-        ExtractableResponse<Response> deleteResult = SectionAssuredTemplate.deleteSection(이호선_id, newDownStationId)
+        ExtractableResponse<Response> deleteResult = deleteSection(이호선_id, newDownStationId)
                 .then().log().all().extract();
 
         Assertions.assertThat(deleteResult.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
         // then
-        ExtractableResponse<Response> lineResult = LineAssuredTemplate.searchOneLine(이호선_id)
+        ExtractableResponse<Response> lineResult = searchOneLine(이호선_id)
                 .then().log().all().extract();
 
         Assertions.assertThat(lineResult.statusCode()).isEqualTo(HttpStatus.OK.value());

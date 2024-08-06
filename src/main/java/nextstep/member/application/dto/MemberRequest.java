@@ -3,6 +3,9 @@ package nextstep.member.application.dto;
 import nextstep.member.domain.Member;
 
 public class MemberRequest {
+
+    private static final String OAUTH_DEFAULT_PASSWORD = "defaultPassword";
+
     private String email;
     private String password;
     private Integer age;

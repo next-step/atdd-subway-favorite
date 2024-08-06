@@ -67,9 +67,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void showAllLines() {
         // given
         String newStation = "새로운지하쳘역";
-        long newStationId = StationAssuredTemplate.createStation(newStation)
-                .then()
-                .extract().jsonPath().getLong("id");
+        long newStationId = StationAssuredTemplate.createStationWithId(newStation);
 
         LineAssuredTemplate.createLine(new LineRequest("신분당선", "bg-red-600", UP_STATION_ID, DOWN_STATION_ID, DISTANCE));
         LineAssuredTemplate.createLine(new LineRequest("2호선", "bg-green-600", UP_STATION_ID, newStationId, DISTANCE));

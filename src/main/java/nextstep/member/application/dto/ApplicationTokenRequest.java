@@ -1,13 +1,13 @@
 package nextstep.member.application.dto;
 
-public class TokenRequest {
+public class ApplicationTokenRequest {
     private String email;
     private String password;
 
-    public TokenRequest() {
+    public ApplicationTokenRequest() {
     }
 
-    public TokenRequest(String email, String password) {
+    public ApplicationTokenRequest(String email, String password) {
         this.email = email;
         this.password = password;
     }

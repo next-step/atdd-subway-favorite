@@ -10,9 +10,6 @@ import nextstep.subway.station.StationResponse;
 
 import java.util.List;
 
-/**
- * TODO: StationResponse를 포함하는 클래스로 만듭니다.
- */
 @Getter
 @NoArgsConstructor
 public class FavoriteResponse {
