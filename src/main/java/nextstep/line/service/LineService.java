@@ -45,8 +45,8 @@ public class LineService {
         Line line = Line.of(createLineRequest.getName(), createLineRequest.getColor(), createLineRequest.getDistance(), sections);
         lineRepository.save(line);
 
-        StationResponse upStationResponse = new StationResponse(upStation.getId(), upStation.getName());
-        StationResponse downStationResponse = new StationResponse(downStation.getId(), downStation.getName());
+        StationResponse upStationResponse = StationResponse.of(upStation.getId(), upStation.getName());
+        StationResponse downStationResponse = StationResponse.of(downStation.getId(), downStation.getName());
 
         LineResponse lineResponse = convertToLineResponseByLineAndStations(line, List.of(upStationResponse, downStationResponse));
 
