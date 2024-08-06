@@ -22,4 +22,11 @@ public enum GithubResponses {
             .findFirst()
             .orElse(null);
     }
+
+    public static GithubResponses getUserByAccessToken(String accessToken) {
+        return Arrays.stream(GithubResponses.values())
+            .filter(user -> user.getAccessToken().equals(accessToken))
+            .findFirst()
+            .orElse(null);
+    }
 }

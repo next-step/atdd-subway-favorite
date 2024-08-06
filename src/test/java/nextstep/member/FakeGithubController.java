@@ -2,9 +2,12 @@ package nextstep.member;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
+import nextstep.member.application.dto.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -14,10 +17,21 @@ public class FakeGithubController {
     public ResponseEntity<GithubAccessTokenResponse> accessToken(
         @RequestBody GithubAccessTokenRequest tokenRequest) {
 
-        GithubResponses 사용자 = GithubResponses.getUserByCode(tokenRequest.getCode());
+        GithubResponses user = GithubResponses.getUserByCode(tokenRequest.getCode());
 
-        String accessToken = 사용자.getAccessToken();
+        String accessToken = user.getAccessToken();
         GithubAccessTokenResponse response = new GithubAccessTokenResponse(accessToken);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/github/user")
+    public ResponseEntity<GithubProfileResponse> getProfile(
+        @RequestHeader("Authorization") String accessToken) {
+
+        GithubResponses user = GithubResponses.getUserByAccessToken(accessToken);
+
+        GithubProfileResponse response = new GithubProfileResponse(user.getEmail());
+
         return ResponseEntity.ok(response);
     }
 }
