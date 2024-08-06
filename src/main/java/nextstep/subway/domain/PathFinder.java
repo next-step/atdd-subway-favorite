@@ -3,7 +3,7 @@ package nextstep.subway.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.exception.PathNotFoundException;
+import nextstep.common.PathNotFoundException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;

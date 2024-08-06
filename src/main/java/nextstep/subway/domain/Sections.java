@@ -1,6 +1,6 @@
 package nextstep.subway.domain;
 
-import nextstep.subway.exception.InvalidSectionException;
+import nextstep.common.InvalidSectionException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

@@ -3,7 +3,7 @@ package nextstep.subway.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.exception.InvalidSectionException;
+import nextstep.common.InvalidSectionException;
 
 import javax.persistence.Embeddable;
 

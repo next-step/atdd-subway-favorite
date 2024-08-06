@@ -21,9 +21,13 @@ public class Favorite {
     private Long sourceStationId;
     private Long targetStationId;
 
-    public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
+    private Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
         this.memberId = memberId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+    }
+
+    public static Favorite of(Long memberId, Long sourceStationId, Long targetStationId) {
+        return new Favorite(memberId, sourceStationId, targetStationId);
     }
 }

@@ -1,11 +1,16 @@
 package nextstep.favorite.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.common.MemberNotFoundException;
 import nextstep.favorite.presentation.FavoriteRequest;
 import nextstep.favorite.presentation.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.infrastructure.FavoriteRepository;
 import nextstep.member.domain.LoginMember;
+import nextstep.member.infrastructure.MemberRepository;
+import nextstep.subway.domain.Station;
+import nextstep.common.StationNotFoundException;
+import nextstep.subway.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +19,22 @@ import java.util.List;
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
-    public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        // TODO 존재하는 역에 대한 검증
+    private final StationRepository stationRepository;
+    private final MemberRepository memberRepository;
 
-        Favorite createdFavorite = favoriteRepository.save(request.toFavorite(loginMember.getId()));
+    public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        Station sourceStation = findStationByIdOrThrow(request.getSourceStationId());
+        Station targetStation = findStationByIdOrThrow(request.getTargetStationId());
+        memberRepository.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
+
+        Favorite favorite = Favorite.of(
+                sourceStation.getId(),
+                targetStation.getId(),
+                loginMember.getId()
+        );
+
+        Favorite createdFavorite = favoriteRepository.save(favorite);
         return createdFavorite.getId();
     }
 
@@ -37,5 +54,10 @@ public class FavoriteService {
      */
     public void deleteFavorite(Long id) {
         favoriteRepository.deleteById(id);
+    }
+
+    private Station findStationByIdOrThrow(Long stationId) {
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException(stationId));
     }
 }

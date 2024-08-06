@@ -11,8 +11,8 @@ import java.util.Map;
 public class FavoriteSteps {
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long sourceStationId, Long targetStationId) {
         Map<String, Long> params = new HashMap<>();
-        params.put("source", sourceStationId);
-        params.put("target", targetStationId);
+        params.put("sourceStationId", sourceStationId);
+        params.put("targetStationId", targetStationId);
 
         return RestAssured
                 .given().log().all()

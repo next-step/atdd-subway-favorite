@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
-import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
+import static nextstep.subway.acceptance.StationSteps.지하철_역_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -24,14 +25,20 @@ public class FavoriteAcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
     public static final Integer AGE = 20;
-    private final Long 시작역_ID = 1L;
-    private final Long 종착역_ID = 3L;
+    private Long 강남역_ID;
+    private Long 신사역_ID;
 
     @Autowired
     private MemberRepository memberRepository;
 
+    @BeforeEach
+    void setup() {
+        강남역_ID = 지하철_역_생성("강남역").body().jsonPath().getLong("id");
+        신사역_ID = 지하철_역_생성("신사역").body().jsonPath().getLong("id");
+    }
+
     /**
-     * Given 구간과 역이 등록되어 있고,
+     * Given 지하철 역이 등록되어 있고,
      * And 회원 가입한 사용자가 있고,
      * And 회원 가입한 사용자가 로그인을 한 상태일 떄,
      * When 시작 역과 종착역을 즐겨찾기로 등록하면
@@ -46,14 +53,14 @@ public class FavoriteAcceptanceTest {
         String accessToken = 로그인_토큰_응답.jsonPath().getString("accessToken");
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 시작역_ID, 종착역_ID);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
 
         // then
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     /**
-     * Given 구간과 역이 등록되어 있고,
+     * Given 지하철 역이 등록되어 있고,
      * And 회원 가입한 사용자가 있고,
      * And 회원 가입한 사용자가 로그인을 하지 않은 상태일 떄,
      * When 시작 역과 종착역을 즐겨찾기로 등록하면
@@ -66,17 +73,32 @@ public class FavoriteAcceptanceTest {
         String accessToken = "invalid token";
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 시작역_ID, 종착역_ID);
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
 
         // then
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     /**
-     * Given 구간과 역이 등록되어 있고,
+     * Given 지하철 역이 등록되어 있지 않고,
      * And 회원 가입한 사용자가 있고,
      * And 회원 가입한 사용자가 로그인을 한 상태일 떄,
      * When 시작 역과 종착역을 즐겨찾기로 등록하면
-     * Then 자신의 즐겨찾기가 등록된다.
+     * Then 등록에 오류가 발생한다.
      */
+    @Test
+    @DisplayName("존재하지 않는 역으로 즐겨찾기를 등록하면 오류가 발생한다.")
+    void createFavoriteWithNonExistentStation() {
+        // given
+        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        ExtractableResponse<Response> 로그인_토큰_응답 = 로그인_토큰_요청(EMAIL, PASSWORD);
+        String accessToken = 로그인_토큰_응답.jsonPath().getString("accessToken");
+        Long 존재하지_않는_역_ID = 999999L;
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 존재하지_않는_역_ID);
+
+        // then
+        assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

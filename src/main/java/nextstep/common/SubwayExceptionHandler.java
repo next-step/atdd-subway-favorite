@@ -1,10 +1,10 @@
-package nextstep.subway.exception;
+package nextstep.common;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice("nextstep.subway")
+@ControllerAdvice
 public class SubwayExceptionHandler {
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ErrorResponse> handleSubwayException(SubwayException ex) {

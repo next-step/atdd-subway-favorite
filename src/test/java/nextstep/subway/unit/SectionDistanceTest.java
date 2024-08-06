@@ -1,7 +1,7 @@
 package nextstep.subway.unit;
 
 import nextstep.subway.domain.SectionDistance;
-import nextstep.subway.exception.InvalidSectionException;
+import nextstep.common.InvalidSectionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
