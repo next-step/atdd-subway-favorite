@@ -7,3 +7,4 @@ public class FavoriteException extends RuntimeException {
     }
 
 }
+

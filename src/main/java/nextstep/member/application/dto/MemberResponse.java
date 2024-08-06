@@ -32,3 +32,4 @@ public class MemberResponse {
         return age;
     }
 }
+

@@ -47,3 +47,4 @@ public class MemberService {
                 .orElseThrow(RuntimeException::new);
     }
 }
+

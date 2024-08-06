@@ -20,3 +20,4 @@ public class FinderConfig {
         throw new IllegalArgumentException("Unsupported finder");
     }
 }
+

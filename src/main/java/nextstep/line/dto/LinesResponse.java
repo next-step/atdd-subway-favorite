@@ -40,3 +40,4 @@ public class LinesResponse {
         return Objects.hash(lineResponses);
     }
 }
+

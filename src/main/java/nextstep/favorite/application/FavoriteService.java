@@ -61,3 +61,4 @@ public class FavoriteService {
         favoriteRepository.deleteById(favorite.getId());
     }
 }
+

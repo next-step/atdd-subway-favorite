@@ -44,3 +44,4 @@ public class StationResponse {
         return Objects.hash(id, name);
     }
 }
+

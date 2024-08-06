@@ -11,3 +11,4 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
 
     Optional<Section> findByDownStationId(Long downStationId);
 }
+

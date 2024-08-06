@@ -36,3 +36,4 @@ public class MemberRequest {
         return new Member(email, password, age);
     }
 }
+

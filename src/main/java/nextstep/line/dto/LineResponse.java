@@ -87,4 +87,7 @@ public class LineResponse {
     public int hashCode() {
         return Objects.hash(id, name, color, distance, stations);
     }
+
 }
+
+

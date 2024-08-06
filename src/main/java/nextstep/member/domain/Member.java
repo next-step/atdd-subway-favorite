@@ -63,3 +63,4 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 }
+

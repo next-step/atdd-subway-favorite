@@ -49,3 +49,4 @@ public class FavoriteResponse {
         return Objects.hash(id, source, target);
     }
 }
+

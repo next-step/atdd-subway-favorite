@@ -24,3 +24,4 @@ public class TokenRequest {
         return password;
     }
 }
+

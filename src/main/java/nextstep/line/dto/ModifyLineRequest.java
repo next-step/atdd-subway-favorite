@@ -25,3 +25,4 @@ public class ModifyLineRequest {
         return this.color;
     }
 }
+
