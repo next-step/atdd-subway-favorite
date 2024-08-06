@@ -1,8 +1,9 @@
 package nextstep.member.domain.entity;
 
 import lombok.Getter;
+import nextstep.auth.domain.entity.TokenPrincipal;
 import nextstep.base.exception.AuthenticationException;
-import nextstep.member.domain.command.authenticator.SocialOAuthUser;
+import nextstep.auth.domain.entity.SocialOAuthUser;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -50,5 +51,9 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
+    }
+
+    public TokenPrincipal toTokenPrincipal() {
+        return new TokenPrincipal(id, email);
     }
 }

@@ -5,8 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.이메일_패스워드_로그인;
-import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
+import static nextstep.auth.acceptance.AuthSteps.이메일_패스워드_로그인;
+import static nextstep.auth.acceptance.AuthSteps.인증토큰을_추출한다;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
