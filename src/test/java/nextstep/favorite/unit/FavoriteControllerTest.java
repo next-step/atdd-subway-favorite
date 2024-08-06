@@ -3,20 +3,18 @@ package nextstep.favorite.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.member.application.JwtTokenProvider;
-import nextstep.path.application.exception.NotAddedStationsToSectionException;
-import nextstep.path.application.exception.NotConnectedStationsException;
+import nextstep.path.application.exception.NotAddedStationsToPathsException;
+import nextstep.path.application.exception.NotConnectedPathsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
@@ -89,6 +87,6 @@ public class FavoriteControllerTest {
     }
 
     private static Stream<Class<? extends Exception>> exceptionProvider() {
-        return Stream.of(NotAddedStationsToSectionException.class, NotConnectedStationsException.class);
+        return Stream.of(NotAddedStationsToPathsException.class, NotConnectedPathsException.class);
     }
 }

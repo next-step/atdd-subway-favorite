@@ -3,8 +3,8 @@ package nextstep.handler;
 import nextstep.line.application.exception.DuplicateStationException;
 import nextstep.line.application.exception.LastOneSectionException;
 import nextstep.line.application.exception.NotExistLineException;
-import nextstep.path.application.exception.NotAddedStationsToSectionException;
-import nextstep.path.application.exception.NotConnectedStationsException;
+import nextstep.path.application.exception.NotAddedStationsToPathsException;
+import nextstep.path.application.exception.NotConnectedPathsException;
 import nextstep.path.ui.exception.SameSourceAndTargetException;
 import nextstep.station.application.exception.NotExistStationException;
 import org.springframework.http.HttpStatus;
@@ -25,8 +25,8 @@ public class GlobalExceptionHandler {
             LastOneSectionException.class,
             DuplicateStationException.class,
             SameSourceAndTargetException.class,
-            NotConnectedStationsException.class,
-            NotAddedStationsToSectionException.class
+            NotConnectedPathsException.class,
+            NotAddedStationsToPathsException.class
     })
     public ResponseEntity<String> handleBadRequestException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

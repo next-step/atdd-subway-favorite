@@ -2,7 +2,7 @@ package nextstep.path.unit;
 
 import nextstep.line.domain.Section;
 import nextstep.path.domain.ShortestPath;
-import nextstep.path.application.exception.NotConnectedStationsException;
+import nextstep.path.application.exception.NotConnectedPathsException;
 import nextstep.station.domain.Station;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ public class ShortestPathTest {
         ThrowableAssert.ThrowingCallable actual = () -> shortestPath.getStations(강남역, 교대역);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(NotConnectedStationsException.class);
+        assertThatThrownBy(actual).isInstanceOf(NotConnectedPathsException.class);
     }
 
     @DisplayName("거리 조회 함수는, 가장 짧은 거리를 반환한다.")
@@ -66,6 +66,6 @@ public class ShortestPathTest {
         ThrowableAssert.ThrowingCallable actual = () -> shortestPath.getDistance(강남역, 교대역);
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(NotConnectedStationsException.class);
+        assertThatThrownBy(actual).isInstanceOf(NotConnectedPathsException.class);
     }
 }

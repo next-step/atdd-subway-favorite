@@ -3,8 +3,8 @@ package nextstep.path.unit;
 import nextstep.line.domain.LineRepository;
 import nextstep.path.application.dto.PathsResponse;
 import nextstep.path.application.PathService;
-import nextstep.path.application.exception.NotAddedEndToSectionException;
-import nextstep.path.application.exception.NotAddedStartToSectionException;
+import nextstep.path.application.exception.NotAddedEndToPathsException;
+import nextstep.path.application.exception.NotAddedStartToPathsException;
 import nextstep.station.domain.Station;
 import nextstep.station.domain.StationRepository;
 import nextstep.utils.DatabaseCleanup;
@@ -78,7 +78,7 @@ public class PathServiceTest {
         ThrowableAssert.ThrowingCallable actual = () -> pathService.findShortestPaths(구간에없는역.getId(), 교대역.getId());
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(NotAddedStartToSectionException.class)
+        assertThatThrownBy(actual).isInstanceOf(NotAddedStartToPathsException.class)
                 .hasMessageContaining(String.format("출발역(%s)", 구간에없는역.getName()));
     }
 
@@ -92,7 +92,7 @@ public class PathServiceTest {
         ThrowableAssert.ThrowingCallable actual = () -> pathService.findShortestPaths(강남역.getId(), 구간에없는역.getId());
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(NotAddedEndToSectionException.class)
+        assertThatThrownBy(actual).isInstanceOf(NotAddedEndToPathsException.class)
                 .hasMessageContaining(String.format("도착역(%s)", 구간에없는역.getName()));
     }
 }

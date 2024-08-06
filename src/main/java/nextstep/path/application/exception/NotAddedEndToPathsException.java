@@ -1,9 +1,9 @@
 package nextstep.path.application.exception;
 
-public class NotAddedEndToSectionException extends NotAddedStationsToSectionException {
+public class NotAddedEndToPathsException extends NotAddedStationsToPathsException {
     private static final String MESSAGE = "도착역(%s)";
 
-    public NotAddedEndToSectionException(String name) {
+    public NotAddedEndToPathsException(String name) {
         super(String.format(MESSAGE, name));
     }
 }

@@ -1,7 +1,9 @@
 package nextstep.path.domain;
 
 import nextstep.line.domain.Section;
-import nextstep.path.application.exception.NotConnectedStationsException;
+import nextstep.path.application.exception.NotAddedEndToPathsException;
+import nextstep.path.application.exception.NotAddedStartToPathsException;
+import nextstep.path.application.exception.NotConnectedPathsException;
 import nextstep.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -43,28 +45,49 @@ public class ShortestPath {
     }
 
     public List<Station> getStations(Station start, Station end) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(start, end);
-        validateConnected(path);
-        return path.getVertexList();
+        validateContains(start, end);
+        GraphPath<Station, DefaultWeightedEdge> paths = findShortestPath(start, end);
+        validateConnected(paths);
+        return paths.getVertexList();
     }
 
-    private static void validateConnected(GraphPath<Station, DefaultWeightedEdge> path) {
-        if (path == null) {
-            throw new NotConnectedStationsException();
+    private void validateConnected(GraphPath<Station, DefaultWeightedEdge> paths) {
+        if (paths == null) {
+            throw new NotConnectedPathsException();
         }
     }
 
+    public void validateConnected(Station start, Station end) {
+        if (findShortestPath(start, end) == null) {
+            throw new NotConnectedPathsException();
+        }
+    }
+
+    public void validateContains(Station start, Station end) {
+        if (!graph.containsVertex(start)) {
+            throw new NotAddedStartToPathsException(start.getName());
+        }
+        if (!graph.containsVertex(end)) {
+            throw new NotAddedEndToPathsException(end.getName());
+        }
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station start, Station end) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        return dijkstraShortestPath.getPath(start, end);
+    }
+
     public int getDistance(Station start, Station end) {
+        validateContains(start, end);
         List<GraphPath<Station, DefaultWeightedEdge>> paths = new KShortestPaths<>(graph, maxDistance).getPaths(start, end);
         validateConnected(paths);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = paths.get(0);
         return (int) shortestPath.getWeight();
     }
 
-    private static void validateConnected(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
+    private void validateConnected(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
         if (paths.isEmpty()) {
-            throw new NotConnectedStationsException();
+            throw new NotConnectedPathsException();
         }
     }
 }

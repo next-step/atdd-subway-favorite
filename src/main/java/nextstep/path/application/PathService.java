@@ -4,8 +4,6 @@ import nextstep.path.domain.ShortestPath;
 import nextstep.path.application.dto.PathsResponse;
 import nextstep.line.domain.Section;
 import nextstep.line.domain.SectionRepository;
-import nextstep.path.application.exception.NotAddedEndToSectionException;
-import nextstep.path.application.exception.NotAddedStartToSectionException;
 import nextstep.station.domain.Station;
 import nextstep.station.domain.StationRepository;
 import nextstep.station.application.dto.StationResponse;
@@ -33,7 +31,6 @@ public class PathService {
         Station end = lookUpStationBy(target);
 
         List<Section> sections = sectionRepository.findAll();
-        validateContains(sections, start, end);
         ShortestPath shortestPath = ShortestPath.from(sections);
 
         return new PathsResponse(shortestPath.getDistance(start, end), createStationResponses(shortestPath.getStations(start, end)));
@@ -42,18 +39,6 @@ public class PathService {
     private Station lookUpStationBy(Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(NotExistStationException::new);
-    }
-
-    public void validateContains(List<Section> sections, Station start, Station end) {
-        boolean containsStart = containsStationToSections(sections, start);
-        boolean containsEnd = containsStationToSections(sections, end);
-
-        if (!containsStart) {
-            throw new NotAddedStartToSectionException(start.getName());
-        }
-        if (!containsEnd) {
-            throw new NotAddedEndToSectionException(end.getName());
-        }
     }
 
     private static boolean containsStationToSections(List<Section> sections, Station station) {
