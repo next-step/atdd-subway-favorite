@@ -4,7 +4,6 @@ import nextstep.section.entity.Section;
 import nextstep.section.entity.Sections;
 import nextstep.section.exception.SectionException;
 import nextstep.station.entity.Station;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
