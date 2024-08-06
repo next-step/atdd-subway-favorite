@@ -16,6 +16,10 @@ public class MemberRequest {
         this.age = age;
     }
 
+    public static MemberRequest of(final String email, final String password, final Integer age) {
+        return new MemberRequest(email, password, age);
+    }
+
     public String getEmail() {
         return email;
     }
@@ -32,3 +36,4 @@ public class MemberRequest {
         return new Member(email, password, age);
     }
 }
+

@@ -5,7 +5,10 @@ import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.exception.UnAuthorizedException;
 import org.springframework.stereotype.Service;
+
+import static nextstep.common.constant.ErrorCode.UNAUTHORIZED_ACCESS;
 
 @Service
 public class MemberService {
@@ -35,7 +38,7 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return memberRepository.findByEmail(email).orElseThrow(() -> new UnAuthorizedException(String.valueOf(UNAUTHORIZED_ACCESS)));
     }
 
     public MemberResponse findMe(LoginMember loginMember) {
@@ -44,3 +47,4 @@ public class MemberService {
                 .orElseThrow(RuntimeException::new);
     }
 }
+

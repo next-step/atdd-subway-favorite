@@ -22,6 +22,21 @@ public class Member {
         this.age = age;
     }
 
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public static Member of(final String email, final String password, final Integer age) {
+        return new Member(email, password, age);
+    }
+
+    public static Member of(final Long id, final String email, final String password, final Integer age) {
+        return new Member(id, email, password, age);
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,3 +63,4 @@ public class Member {
         return Objects.equals(this.password, password);
     }
 }
+

@@ -34,3 +34,4 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return new LoginMember(email);
     }
 }
+

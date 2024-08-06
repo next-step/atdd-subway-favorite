@@ -28,7 +28,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void bearerAuth() {
-        memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        memberRepository.save(Member.of(EMAIL, PASSWORD, AGE));
 
         Map<String, String> params = new HashMap<>();
         params.put("email", EMAIL);
