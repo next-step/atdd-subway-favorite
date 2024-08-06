@@ -53,3 +53,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 }
+

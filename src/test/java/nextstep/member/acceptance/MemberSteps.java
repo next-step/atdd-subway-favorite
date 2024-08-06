@@ -65,3 +65,4 @@ public class MemberSteps {
         assertThat(response.jsonPath().getInt("age")).isEqualTo(age);
     }
 }
+

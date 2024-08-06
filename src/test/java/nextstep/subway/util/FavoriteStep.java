@@ -64,3 +64,4 @@ public class FavoriteStep {
                 .statusCode(HttpStatus.NO_CONTENT.value()).extract();
     }
 }
+
