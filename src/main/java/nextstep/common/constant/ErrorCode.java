@@ -26,6 +26,7 @@ public enum ErrorCode {
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED.value(), "UNAUTHORIZED_ACCESS", "권한이 유효하지 않습니다."),
     FAVORITE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "FAVORITE_NOT_FOUND", "즐겨찾기를 찾을 수 없습니다."),
     FAVORITE_NOT_PERMISSION(HttpStatus.BAD_REQUEST.value(), "FAVORITE_NOT_PERMISSION", "즐겨찾기를 등록할 수 없습니다."),
+    GITHUB_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "GITHUB_NOT_FOUND", "GitHub와 통신에 실패했습니다."),
     ERROR_MESSAGE(HttpStatus.INTERNAL_SERVER_ERROR.value(), "ERROR_MESSAGE", "관리자에게 문의하세요.");
 
     private static final Map<String, ErrorCode> ERROR_CODE_MAP = new HashMap<>();
@@ -62,4 +63,5 @@ public enum ErrorCode {
         return ERROR_CODE_MAP.getOrDefault(code, ERROR_MESSAGE);
     }
 }
+
 

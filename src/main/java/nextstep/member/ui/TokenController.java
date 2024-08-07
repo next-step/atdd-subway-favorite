@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.TokenService;
+import nextstep.member.application.dto.AuthTokenRequest;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
 import org.springframework.http.ResponseEntity;
@@ -22,5 +23,14 @@ public class TokenController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> createTokenByGithub(@RequestBody AuthTokenRequest authTokenRequest) {
+        TokenResponse token = tokenService.getAuthToken(authTokenRequest.getCode());
+
+        return ResponseEntity.ok(token);
+    }
 }
+
+
 

@@ -1,8 +1,10 @@
 package nextstep.member.application;
 
+import nextstep.member.application.dto.GithubProfileResponse;
 import nextstep.utils.GithubResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -12,22 +14,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class GithubClientTest {
 
-    @DisplayName("1. 깃허브 토큰을 발급받는 테스트")
-    @Test
-    public void requestGithubAccessToken() {
-        GithubClient githubClient = new GithubClient();
+    @Autowired
+    private GithubClient githubClient;
 
+    @DisplayName("[requestGithubAccessToken] 깃허브 토큰을 발급받는다.")
+    @Test
+    public void requestGithubAccessToken_success() {
         String code = GithubResponse.사용자1.getCode();
         String githubAccessToken = githubClient.requestGithubAccessToken(code);
 
         assertThat(githubAccessToken).isNotBlank();
         assertThat(githubAccessToken).isEqualTo(GithubResponse.사용자1.getAccessToken());
 
-
     }
 
-    // 2. 깃허브 사용자 정보를 가져오는 테스트
+    @DisplayName("[requestGithubAccessToken] 깃허브 사용자 정보를 가져온다. ")
+    @Test
+    public void requestGithubProfile() {
+        String accessToken = GithubResponse.사용자1.getAccessToken();
+        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(accessToken);
 
+        assertThat(githubProfileResponse.getEmail()).isEqualTo(GithubResponse.사용자1.getEmail());
+        assertThat(githubProfileResponse.getAge()).isEqualTo(GithubResponse.사용자1.getAge());
+
+    }
 }
 
 

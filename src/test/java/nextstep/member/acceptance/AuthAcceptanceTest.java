@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.utils.GithubStep.깃허브_로그인;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
@@ -58,23 +59,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("깃헙 로그인")
     @Test
     public void githubAuth() {
-        // when
-        Map<String, String> params = new HashMap<>();
-        params.put("code", GithubResponse.사용자1.getCode());
+        // given
+        String code = GithubResponse.사용자1.getCode();
 
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/github")
-                .then().log().all().extract();
+        // when
+        String authToken = 깃허브_로그인(code);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        String accessToken = response.as(TokenResponse.class).getAccessToken();
-        assertThat(accessToken).isNotBlank();
-        assertThat(accessToken).isEqualTo(GithubResponse.사용자1.getAccessToken());
-
+        assertThat(authToken).isNotBlank();
     }
 }
 

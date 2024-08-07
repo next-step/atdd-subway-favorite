@@ -8,6 +8,8 @@ import nextstep.member.domain.MemberRepository;
 import nextstep.member.exception.UnAuthorizedException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static nextstep.common.constant.ErrorCode.UNAUTHORIZED_ACCESS;
 
 @Service
@@ -39,6 +41,10 @@ public class MemberService {
 
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new UnAuthorizedException(String.valueOf(UNAUTHORIZED_ACCESS)));
+    }
+
+    public Optional<Member> findMemberOptionalByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public MemberResponse findMe(LoginMember loginMember) {
