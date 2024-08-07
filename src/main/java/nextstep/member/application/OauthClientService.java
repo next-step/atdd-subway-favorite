@@ -15,12 +15,12 @@ public class OauthClientService {
 
     public ResourceResponse authenticate(String code) {
         ApplicationTokenResponse accessToken = getAccessToken(code);
-        if (accessToken.getAccessToken().isBlank()) {
+        if (!isValid(accessToken.getAccessToken())) {
             throw new AuthenticationException();
         }
 
         ResourceResponse resource = getResource(accessToken.getAccessToken());
-        if (resource.getEmail().isBlank()) {
+        if (!isValid(resource.getEmail())) {
             throw new AuthenticationException();
         }
 
@@ -33,5 +33,9 @@ public class OauthClientService {
 
     private ResourceResponse getResource(String accessToken) {
         return oauthClient.requestResource(accessToken);
+    }
+
+    private boolean isValid(String source) {
+        return !(source == null || source.isBlank());
     }
 }

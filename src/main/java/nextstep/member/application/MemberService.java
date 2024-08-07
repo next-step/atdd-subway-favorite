@@ -2,6 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
+import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
+
+    private static final String OAUTH_DEFAULT_PASSWORD = "defaultPassword";
+
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -42,5 +46,14 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Member findMemberByUserResource(ResourceResponse resourceResponse) {
+        try {
+            return findMemberByEmail(resourceResponse.getEmail());
+        } catch (RuntimeException exception) {
+            createMember(new MemberRequest(resourceResponse.getEmail(), OAUTH_DEFAULT_PASSWORD, resourceResponse.getAge()));
+            return findMemberByEmail(resourceResponse.getEmail());
+        }
     }
 }

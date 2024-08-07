@@ -1,9 +1,9 @@
 package nextstep.member.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.MemberClientService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.OauthClientService;
+import nextstep.member.application.TokenService;
 import nextstep.member.application.dto.OauthTokenRequest;
 import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.ApplicationTokenResponse;
@@ -21,21 +21,13 @@ public class OauthController {
 
     private final OauthClientService oauthClientService;
     private final MemberService memberService;
-    private final MemberClientService memberClientService;
+    private final TokenService tokenService;
 
     @PostMapping("/github")
     public ResponseEntity<ApplicationTokenResponse> getAccessToken(@RequestBody OauthTokenRequest request) {
         ResourceResponse resourceResponse = oauthClientService.authenticate(request.getCode());
-
-        Member member;
-        try {
-            member = memberService.findMemberByEmail(resourceResponse.getEmail());
-        } catch (RuntimeException exception) {
-            memberClientService.enrollMember(resourceResponse.getEmail(), resourceResponse.getAge());
-            member = memberService.findMemberByEmail(resourceResponse.getEmail());
-        }
-
-        ApplicationTokenResponse applicationTokenResponse = memberClientService.getMemberToken(member.getEmail());
+        Member member = memberService.findMemberByUserResource(resourceResponse);
+        ApplicationTokenResponse applicationTokenResponse = tokenService.createToken(member.getEmail(), member.getPassword());
         return ResponseEntity.ok(applicationTokenResponse);
     }
 }
