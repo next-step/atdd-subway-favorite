@@ -3,9 +3,9 @@ package nextstep.member.payload;
 
 public class AccessTokenRequest {
 
-    private final String client_id;
-    private final String client_secret;
-    private final String code;
+    private String client_id;
+    private String client_secret;
+    private String code;
 
     public String getClient_id() {
         return client_id;
@@ -15,8 +15,21 @@ public class AccessTokenRequest {
         return client_secret;
     }
 
+
     public String getCode() {
         return code;
+    }
+
+    public void setClient_id(final String client_id) {
+        this.client_id = client_id;
+    }
+
+    public void setClient_secret(final String client_secret) {
+        this.client_secret = client_secret;
+    }
+
+    public void setCode(final String code) {
+        this.code = code;
     }
 
     public static AuthorizeRequestBuilder builder() {
