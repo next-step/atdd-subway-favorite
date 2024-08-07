@@ -2,7 +2,6 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.auth.application.dto.ResourceResponse;
 import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -48,12 +47,12 @@ public class MemberService {
                 .orElseThrow(RuntimeException::new);
     }
 
-    public Member findMemberByUserResource(ResourceResponse resourceResponse) {
+    public Member findMemberByUserResource(String email, int age) {
         try {
-            return findMemberByEmail(resourceResponse.getEmail());
+            return findMemberByEmail(email);
         } catch (RuntimeException exception) {
-            createMember(new MemberRequest(resourceResponse.getEmail(), OAUTH_DEFAULT_PASSWORD, resourceResponse.getAge()));
-            return findMemberByEmail(resourceResponse.getEmail());
+            createMember(new MemberRequest(email, OAUTH_DEFAULT_PASSWORD, age));
+            return findMemberByEmail(email);
         }
     }
 }

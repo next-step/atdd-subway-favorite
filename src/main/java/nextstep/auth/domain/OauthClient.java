@@ -1,7 +1,7 @@
 package nextstep.auth.domain;
 
 import nextstep.auth.application.dto.ResourceResponse;
-import nextstep.member.application.dto.ApplicationTokenResponse;
+import nextstep.auth.application.dto.ApplicationTokenResponse;
 
 public interface OauthClient {
 

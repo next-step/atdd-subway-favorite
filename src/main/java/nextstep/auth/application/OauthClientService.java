@@ -3,7 +3,7 @@ package nextstep.auth.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.application.dto.ResourceResponse;
-import nextstep.member.application.dto.ApplicationTokenResponse;
+import nextstep.auth.application.dto.ApplicationTokenResponse;
 import nextstep.auth.domain.OauthClient;
 import org.springframework.stereotype.Service;
 

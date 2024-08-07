@@ -1,8 +1,8 @@
 package nextstep.auth.ui;
 
 import nextstep.auth.application.TokenService;
-import nextstep.member.application.dto.ApplicationTokenRequest;
-import nextstep.member.application.dto.ApplicationTokenResponse;
+import nextstep.auth.application.dto.ApplicationTokenRequest;
+import nextstep.auth.application.dto.ApplicationTokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

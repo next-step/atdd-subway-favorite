@@ -6,7 +6,7 @@ import nextstep.auth.application.OauthClientService;
 import nextstep.auth.application.TokenService;
 import nextstep.auth.application.dto.OauthTokenRequest;
 import nextstep.auth.application.dto.ResourceResponse;
-import nextstep.member.application.dto.ApplicationTokenResponse;
+import nextstep.auth.application.dto.ApplicationTokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +26,7 @@ public class OauthController {
     @PostMapping("/github")
     public ResponseEntity<ApplicationTokenResponse> getAccessToken(@RequestBody OauthTokenRequest request) {
         ResourceResponse resourceResponse = oauthClientService.authenticate(request.getCode());
-        Member member = memberService.findMemberByUserResource(resourceResponse);
+        Member member = memberService.findMemberByUserResource(resourceResponse.getEmail(), resourceResponse.getAge());
         ApplicationTokenResponse applicationTokenResponse = tokenService.createToken(member.getEmail(), member.getPassword());
         return ResponseEntity.ok(applicationTokenResponse);
     }

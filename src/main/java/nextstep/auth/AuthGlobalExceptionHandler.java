@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import nextstep.common.ErrorResponse;
-import nextstep.member.exception.AccessTokenException;
+import nextstep.auth.exception.AccessTokenException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

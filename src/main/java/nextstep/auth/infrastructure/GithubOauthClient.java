@@ -1,14 +1,14 @@
 package nextstep.auth.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
-import nextstep.member.application.dto.ApplicationTokenResponse;
+import nextstep.auth.application.dto.ApplicationTokenResponse;
 import nextstep.auth.application.dto.ResourceResponse;
 import nextstep.auth.application.dto.github.GithubAccessTokenRequest;
 import nextstep.auth.application.dto.github.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.github.GithubProfileResponse;
 import nextstep.auth.common.AuthErrorMessage;
 import nextstep.auth.domain.OauthClient;
-import nextstep.member.exception.AccessTokenException;
+import nextstep.auth.exception.AccessTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

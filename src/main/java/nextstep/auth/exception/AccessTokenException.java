@@ -1,4 +1,4 @@
-package nextstep.member.exception;
+package nextstep.auth.exception;
 
 import nextstep.auth.common.AuthErrorMessage;
 
