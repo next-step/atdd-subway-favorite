@@ -7,9 +7,11 @@ public class AuthTokenRequest {
         return code;
     }
 
-    public AuthTokenRequest() {}
+    public AuthTokenRequest() {
+    }
 
     public AuthTokenRequest(String code) {
         this.code = code;
     }
 }
+

@@ -4,7 +4,8 @@ public class GithubProfileResponse {
     private String email;
     private int age;
 
-    public GithubProfileResponse() {}
+    public GithubProfileResponse() {
+    }
 
     public GithubProfileResponse(String email, int age) {
         this.email = email;
