@@ -40,9 +40,7 @@ public class GithubOAuth2Service {
         GithubUserInfoResponse userInfo = githubOAuth2Client.getUserInfo(accessToken.getAccess_token());
 
         Member member = memberRepository.findByEmail(userInfo.getEmail())
-                .orElseGet(() ->
-                        memberRepository.save(new Member(userInfo.getEmail()))
-                );
+                .orElseGet(() -> memberRepository.save(new Member(userInfo.getEmail())));
 
         return new TokenResponse(jwtTokenProvider.createToken(member.getId(), member.getEmail()));
     }
