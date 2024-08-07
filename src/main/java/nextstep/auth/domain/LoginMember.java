@@ -3,9 +3,9 @@ package nextstep.auth.domain;
 import java.util.Objects;
 
 public class LoginMember implements UserDetails {
-    private Long id;
-    private String email;
-    private String password;
+    private final Long id;
+    private final String email;
+    private final String password;
 
     public LoginMember(Long id, String email, String password) {
         this.id = id;
