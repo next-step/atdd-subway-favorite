@@ -16,6 +16,6 @@ public class MemberEmailPasswordVerifier implements EmailPasswordVerifier {
     public TokenPrincipal verify(String email, String password) {
         Member member =  memberRepository.findByEmailOrThrow(email);
         member.verifyPassword(password);
-        return member.toTokenPrincipal();
+        return new TokenPrincipal(member.getId(), member.getEmail());
     }
 }

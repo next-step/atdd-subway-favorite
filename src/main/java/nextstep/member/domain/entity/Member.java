@@ -1,9 +1,7 @@
 package nextstep.member.domain.entity;
 
 import lombok.Getter;
-import nextstep.auth.domain.entity.TokenPrincipal;
 import nextstep.base.exception.AuthenticationException;
-import nextstep.auth.domain.entity.SocialOAuthUser;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -33,8 +31,8 @@ public class Member {
         this.age = age;
     }
 
-    public static Member of(SocialOAuthUser socialOAuthUser) {
-        return new Member(socialOAuthUser.getEmail(), null, null);
+    public static Member ofEmail(String email) {
+        return new Member(email, null, null);
     }
 
     public void update(Member member) {
@@ -51,9 +49,5 @@ public class Member {
 
     public boolean checkPassword(String password) {
         return Objects.equals(this.password, password);
-    }
-
-    public TokenPrincipal toTokenPrincipal() {
-        return new TokenPrincipal(id, email);
     }
 }
