@@ -37,6 +37,25 @@ class AuthenticationPrincipalArgumentResolverTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @DisplayName("토큰이 정상이라면 LoginMember 객체를 응답합니다.")
+    @Test
+    void successAuth() throws Exception {
+        // given
+        String token = "accessToken";
+        String bearer = "Bearer " + token;
+        String email = "email@test.com";
+        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
+        Mockito.doReturn(bearer).when(nativeWebRequest).getHeader("Authorization");
+        Mockito.doReturn(true).when(jwtTokenProvider).validateToken(token);
+        Mockito.doReturn(email).when(jwtTokenProvider).getPrincipal(token);
+        Mockito.doReturn(Optional.of(new Member(1L, email))).when(memberRepository).findByEmail(email);
+
+        // when
+        LoginMember loginMember = (LoginMember) argumentResolver.resolveArgument(methodParameter, modelAndViewContainer, nativeWebRequest, binderFactory);
+        // then
+        Assertions.assertThat(loginMember).isEqualTo(new LoginMember(1L, email));
+    }
+
     @DisplayName("토큰 정보가 없으면 인증 에러가 발생합니다.")
     @Test
     void noToken() throws Exception {
@@ -87,24 +106,5 @@ class AuthenticationPrincipalArgumentResolverTest {
         // then
         Assertions.assertThatThrownBy(() -> argumentResolver.resolveArgument(methodParameter, modelAndViewContainer, nativeWebRequest, binderFactory))
                 .isInstanceOf(AuthenticationException.class);
-    }
-
-    @DisplayName("토큰이 정상이라면 LoginMember 객체를 응답합니다.")
-    @Test
-    void successAuth() throws Exception {
-        // given
-        String token = "accessToken";
-        String bearer = "Bearer " + token;
-        String email = "email@test.com";
-        AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository);
-        Mockito.doReturn(bearer).when(nativeWebRequest).getHeader("Authorization");
-        Mockito.doReturn(true).when(jwtTokenProvider).validateToken(token);
-        Mockito.doReturn(email).when(jwtTokenProvider).getPrincipal(token);
-        Mockito.doReturn(Optional.of(new Member(1L, email))).when(memberRepository).findByEmail(email);
-
-        // when
-        LoginMember loginMember = (LoginMember) argumentResolver.resolveArgument(methodParameter, modelAndViewContainer, nativeWebRequest, binderFactory);
-        // then
-        Assertions.assertThat(loginMember).isEqualTo(new LoginMember(1L, email));
     }
 }

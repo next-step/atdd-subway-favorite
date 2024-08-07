@@ -1,21 +1,20 @@
 package nextstep.member.application.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
-import nextstep.member.exception.AccessTokenException;
-import nextstep.member.common.MemberErrorMessage;
-import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.ApplicationTokenResponse;
+import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;
 import nextstep.member.application.dto.github.GithubAccessTokenResponse;
 import nextstep.member.application.dto.github.GithubProfileResponse;
+import nextstep.member.common.MemberErrorMessage;
 import nextstep.member.domain.OauthClient;
+import nextstep.member.exception.AccessTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -45,7 +44,7 @@ public class GithubOauthClient implements OauthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(
                 requestBody, headers);
         RestTemplate restTemplate = new RestTemplate();
 
@@ -67,7 +66,7 @@ public class GithubOauthClient implements OauthClient {
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "bearer " + accessToken);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+        HttpEntity<Void> httpEntity = new HttpEntity<>(
                 null, headers);
         RestTemplate restTemplate = new RestTemplate();
 
