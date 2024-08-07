@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 @Component
 public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
 
@@ -24,8 +26,7 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
 
     @Override
     public AccessTokenResponse getAccessToken(final AccessTokenRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        HttpHeaders headers = createHeader(Map.of());
         HttpEntity<AccessTokenRequest> httpEntity = new HttpEntity<>(request, headers);
         return restTemplate.exchange(githubOAuthProperty.getTokenUrl(), HttpMethod.POST, httpEntity, AccessTokenResponse.class)
                 .getBody();
@@ -33,13 +34,17 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
 
     @Override
     public GithubUserInfoResponse getUserInfo(final String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Authorization", String.format("Bearer %s", accessToken));
+        HttpHeaders headers = createHeader(Map.of(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", accessToken)));
         HttpEntity<Void> httpEntity = new HttpEntity<>(headers);
-
         return restTemplate.exchange(githubOAuthProperty.getUserInfoUrl(), HttpMethod.GET, httpEntity, GithubUserInfoResponse.class)
                 .getBody();
+    }
+
+    private HttpHeaders createHeader(Map<String, String> additionalHeaders) {
+        HttpHeaders headers = new HttpHeaders();;
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        additionalHeaders.forEach(headers::add);
+        return headers;
     }
 
 }
