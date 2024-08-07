@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.auth;
 
 import nextstep.common.ErrorResponse;
 import nextstep.member.exception.AccessTokenException;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class MemberGlobalExceptionHandler {
+public class AuthGlobalExceptionHandler {
 
     @ExceptionHandler(AccessTokenException.class)
     public ResponseEntity<String> invalidTokenException(Exception exception) {

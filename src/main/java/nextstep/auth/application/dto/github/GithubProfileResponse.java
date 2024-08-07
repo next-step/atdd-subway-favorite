@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto.github;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ResourceResponse {
+public class GithubProfileResponse {
 
     private String email;
-    private Integer age;
+    private int age;
 
-    public ResourceResponse(String email, Integer age) {
+    public GithubProfileResponse(String email, int age) {
         this.email = email;
         this.age = age;
     }

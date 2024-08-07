@@ -1,13 +1,13 @@
-package nextstep.member.application.infrastructure;
+package nextstep.auth.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
 import nextstep.member.application.dto.ApplicationTokenResponse;
-import nextstep.member.application.dto.ResourceResponse;
-import nextstep.member.application.dto.github.GithubAccessTokenRequest;
-import nextstep.member.application.dto.github.GithubAccessTokenResponse;
-import nextstep.member.application.dto.github.GithubProfileResponse;
-import nextstep.member.common.MemberErrorMessage;
-import nextstep.member.domain.OauthClient;
+import nextstep.auth.application.dto.ResourceResponse;
+import nextstep.auth.application.dto.github.GithubAccessTokenRequest;
+import nextstep.auth.application.dto.github.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.github.GithubProfileResponse;
+import nextstep.auth.common.AuthErrorMessage;
+import nextstep.auth.domain.OauthClient;
 import nextstep.member.exception.AccessTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -56,7 +56,7 @@ public class GithubOauthClient implements OauthClient {
             return new ApplicationTokenResponse(githubAccessTokenResponse.getAccessToken());
         } catch (NullPointerException exception) {
             log.error("request accessToken error ", exception);
-            throw new AccessTokenException(MemberErrorMessage.NOT_VALID_USER_CODE);
+            throw new AccessTokenException(AuthErrorMessage.NOT_VALID_USER_CODE);
         }
     }
 
@@ -78,7 +78,7 @@ public class GithubOauthClient implements OauthClient {
             return new ResourceResponse(githubProfileResponse.getEmail(), githubProfileResponse.getAge());
         } catch (NullPointerException exception) {
             log.error("request accessToken error ", exception);
-            throw new AccessTokenException(MemberErrorMessage.NOT_VALID_USER_CODE);
+            throw new AccessTokenException(AuthErrorMessage.NOT_VALID_USER_CODE);
         }
     }
 }

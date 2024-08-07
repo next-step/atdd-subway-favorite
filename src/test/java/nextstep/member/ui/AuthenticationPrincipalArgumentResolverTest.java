@@ -1,8 +1,9 @@
 package nextstep.member.ui;
 
-import nextstep.member.exception.AuthenticationException;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.ui.AuthenticationPrincipalArgumentResolver;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.assertj.core.api.Assertions;

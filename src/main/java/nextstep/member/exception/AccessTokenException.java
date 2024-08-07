@@ -1,10 +1,10 @@
 package nextstep.member.exception;
 
-import nextstep.member.common.MemberErrorMessage;
+import nextstep.auth.common.AuthErrorMessage;
 
 public class AccessTokenException extends RuntimeException {
 
-    public AccessTokenException(MemberErrorMessage memberErrorMessage) {
-        super(memberErrorMessage.getMessage());
+    public AccessTokenException(AuthErrorMessage authErrorMessage) {
+        super(authErrorMessage.getMessage());
     }
 }

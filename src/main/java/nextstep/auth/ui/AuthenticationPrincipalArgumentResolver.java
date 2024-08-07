@@ -1,8 +1,8 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.member.exception.AuthenticationException;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.core.MethodParameter;

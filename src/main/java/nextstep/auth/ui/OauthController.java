@@ -1,11 +1,11 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.MemberService;
-import nextstep.member.application.OauthClientService;
-import nextstep.member.application.TokenService;
-import nextstep.member.application.dto.OauthTokenRequest;
-import nextstep.member.application.dto.ResourceResponse;
+import nextstep.auth.application.OauthClientService;
+import nextstep.auth.application.TokenService;
+import nextstep.auth.application.dto.OauthTokenRequest;
+import nextstep.auth.application.dto.ResourceResponse;
 import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.http.ResponseEntity;

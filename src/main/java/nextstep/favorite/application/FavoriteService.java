@@ -7,7 +7,7 @@ import nextstep.favorite.common.FavoriteErrorMessage;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.NoFavoriteException;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.subway.path.service.PathService;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;

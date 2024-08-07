@@ -1,6 +1,6 @@
-package nextstep.member.ui;
+package nextstep.auth.ui;
 
-import nextstep.member.application.TokenService;
+import nextstep.auth.application.TokenService;
 import nextstep.member.application.dto.ApplicationTokenRequest;
 import nextstep.member.application.dto.ApplicationTokenResponse;
 import org.springframework.http.ResponseEntity;

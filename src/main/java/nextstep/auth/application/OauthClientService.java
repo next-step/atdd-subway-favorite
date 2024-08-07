@@ -1,10 +1,10 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.exception.AuthenticationException;
-import nextstep.member.application.dto.ResourceResponse;
+import nextstep.auth.exception.AuthenticationException;
+import nextstep.auth.application.dto.ResourceResponse;
 import nextstep.member.application.dto.ApplicationTokenResponse;
-import nextstep.member.domain.OauthClient;
+import nextstep.auth.domain.OauthClient;
 import org.springframework.stereotype.Service;
 
 @Service

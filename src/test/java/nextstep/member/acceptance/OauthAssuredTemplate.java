@@ -2,7 +2,7 @@ package nextstep.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.OauthTokenRequest;
+import nextstep.auth.application.dto.OauthTokenRequest;
 import org.springframework.http.MediaType;
 
 public class OauthAssuredTemplate {

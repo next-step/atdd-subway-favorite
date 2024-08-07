@@ -1,4 +1,4 @@
-package nextstep.member.application.dto.github;
+package nextstep.auth.application.dto.github;
 
 import lombok.AccessLevel;
 import lombok.Getter;
