@@ -7,7 +7,6 @@ import nextstep.favorite.common.FavoriteErrorMessage;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
 import nextstep.favorite.exception.NoFavoriteException;
-import nextstep.auth.domain.LoginMember;
 import nextstep.subway.path.service.PathService;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
@@ -25,15 +24,15 @@ public class FavoriteService {
     private final StationRepository stationRepository;
     private final PathService pathService;
 
-    public Favorite createFavorite(FavoriteRequest request, LoginMember loginMember) {
+    public Favorite createFavorite(FavoriteRequest request, Long memberId) {
         pathService.findShortestPath(request.getSource(), request.getTarget());
-        Favorite favorite = new Favorite(loginMember.getId(), request.getSource(), request.getTarget());
+        Favorite favorite = new Favorite(memberId, request.getSource(), request.getTarget());
 
         return favoriteRepository.save(favorite);
     }
 
-    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(memberId);
 
         List<Long> stationIds = favorites.stream().flatMap(favorite -> Stream.of(favorite.getSourceStationId(), favorite.getTargetStationId()))
                 .distinct()
@@ -45,8 +44,8 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
                 .orElseThrow(() -> new NoFavoriteException(FavoriteErrorMessage.NO_FAVORITE_EXIST));
 
         favoriteRepository.delete(favorite);
