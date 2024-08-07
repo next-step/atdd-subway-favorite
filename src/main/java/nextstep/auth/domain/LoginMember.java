@@ -5,10 +5,12 @@ import java.util.Objects;
 public class LoginMember implements UserDetails {
     private Long id;
     private String email;
+    private String password;
 
-    public LoginMember(Long id, String email) {
+    public LoginMember(Long id, String email, String password) {
         this.id = id;
         this.email = email;
+        this.password = password;
     }
 
     @Override
@@ -19,6 +21,11 @@ public class LoginMember implements UserDetails {
     @Override
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override

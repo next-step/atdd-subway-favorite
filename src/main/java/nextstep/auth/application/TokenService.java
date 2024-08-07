@@ -1,29 +1,28 @@
 package nextstep.auth.application;
 
-import nextstep.auth.exception.AuthenticationException;
-import nextstep.member.application.MemberService;
 import nextstep.auth.application.dto.ApplicationTokenResponse;
-import nextstep.member.domain.Member;
+import nextstep.auth.domain.UserDetails;
+import nextstep.auth.domain.UserDetailsService;
+import nextstep.auth.exception.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenService {
-    private MemberService memberService;
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
-        this.memberService = memberService;
+    public TokenService(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userDetailsService = userDetailsService;
     }
 
     public ApplicationTokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
+        UserDetails userDetails = userDetailsService.loadByUserEmail(email);
+        if (!userDetails.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
-
+        String token = jwtTokenProvider.createToken(userDetails.getEmail());
         return new ApplicationTokenResponse(token);
     }
 }

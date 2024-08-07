@@ -43,11 +43,12 @@ class AuthenticationPrincipalArgumentResolverTest {
         String token = "accessToken";
         String bearer = "Bearer " + token;
         String email = "email@test.com";
+        String password = "password";
         AuthenticationPrincipalArgumentResolver argumentResolver = new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, userDetailsService);
         Mockito.doReturn(bearer).when(nativeWebRequest).getHeader("Authorization");
         Mockito.doReturn(true).when(jwtTokenProvider).validateToken(token);
         Mockito.doReturn(email).when(jwtTokenProvider).getPrincipal(token);
-        Mockito.doReturn(new LoginMember(1L, email)).when(userDetailsService).loadByUserEmail(email);
+        Mockito.doReturn(new LoginMember(1L, email, password)).when(userDetailsService).loadByUserEmail(email);
 
         // when
         UserDetails loginMember = (UserDetails) argumentResolver.resolveArgument(methodParameter, modelAndViewContainer, nativeWebRequest, binderFactory);
