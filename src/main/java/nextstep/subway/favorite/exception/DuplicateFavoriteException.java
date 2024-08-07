@@ -1,4 +1,4 @@
-package nextstep.favorite.exception;
+package nextstep.subway.favorite.exception;
 
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.common.exception.SubwayExceptionType;

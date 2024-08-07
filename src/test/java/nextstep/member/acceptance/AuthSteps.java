@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 
 public class AuthSteps {
 
-    public static ExtractableResponse<Response> 로그인(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -26,7 +26,7 @@ public class AuthSteps {
     }
 
     public static String 로그인_후_토큰_반환(String email, String password) {
-        ExtractableResponse<Response> response = 로그인(email, password);
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
 
         String 로그인_토큰 = responseToAccessToken(response);
         assertThat(로그인_토큰).isNotBlank();
@@ -38,4 +38,18 @@ public class AuthSteps {
         return response.jsonPath().getString("accessToken");
     }
 
+    public static ExtractableResponse<Response> 깃허브_로그인_요청(String code, String accessToken) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header("Authorization", "Bearer " + accessToken)
+            .body(params)
+            .when().post("/login/github")
+            .then().log().all()
+            .statusCode(HttpStatus.OK.value()).extract();
+
+        return response;
+    }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain.entity;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,8 @@ public class LineSection {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private Long distance;
+    @Embedded
+    private Distance distance;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "line_id")
@@ -38,7 +40,7 @@ public class LineSection {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public boolean hasSameUpStation(Station station) {
@@ -47,6 +49,6 @@ public class LineSection {
 
     public void updateDownStationAndDistance(Station downStation, long distance) {
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance.updateDistance(distance);
     }
 }

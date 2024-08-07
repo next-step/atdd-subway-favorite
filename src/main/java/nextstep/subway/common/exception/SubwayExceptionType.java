@@ -31,8 +31,9 @@ public enum SubwayExceptionType {
 
     FAVORITE_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "Entity Not Found. favoriteId: %s"),
     DUPLICATE_FAVORITE(HttpStatus.BAD_REQUEST.value(), "Favorite already exists. memberId: %s, sourceStationId: %s, targetStationId: %s"),
-    UNAUTHORIZED_FAVORITE_ACCESS(HttpStatus.FORBIDDEN.value(), "Unauthorized access to favorite. memberId: %s, favoriteId: %s");
+    UNAUTHORIZED_FAVORITE_ACCESS(HttpStatus.FORBIDDEN.value(), "Unauthorized access to favorite. memberId: %s, favoriteId: %s"),
 
+    INVALID_DISTANCE(HttpStatus.BAD_REQUEST.value(), "Invalid Distance. distance: %s");
 
     private final int code;
     private final String message;

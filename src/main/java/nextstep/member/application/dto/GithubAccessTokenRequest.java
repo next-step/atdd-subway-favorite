@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
+@NoArgsConstructor
+@Getter
+public class GithubAccessTokenRequest {
 
-    private String accessToken;
+    private String code;
+    private String clientId;
+    private String clientSecret;
 }

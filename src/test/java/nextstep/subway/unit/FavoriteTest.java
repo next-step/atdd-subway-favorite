@@ -2,7 +2,7 @@ package nextstep.subway.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nextstep.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import lombok.AllArgsConstructor;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -8,12 +9,10 @@ import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class MemberService {
-    private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+    private final MemberRepository memberRepository;
 
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());

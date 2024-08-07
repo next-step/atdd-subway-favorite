@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.subway.favorite.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
+public class FavoriteRequest {
 
-    private String accessToken;
+    private Long source;
+    private Long target;
 }
