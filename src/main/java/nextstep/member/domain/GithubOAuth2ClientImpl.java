@@ -27,7 +27,6 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<AccessTokenRequest> httpEntity = new HttpEntity<>(request, headers);
-
         return restTemplate.exchange(githubOAuthProperty.getTokenUrl(), HttpMethod.POST, httpEntity, AccessTokenResponse.class)
                 .getBody();
     }

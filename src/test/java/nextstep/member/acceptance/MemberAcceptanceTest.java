@@ -63,16 +63,4 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    /** TODO :
-     * Given 회원 가입을 생성하고
-     * And 로그인을 하고
-     * When 토큰을 통해 내 정보를 조회하면
-     * Then 내 정보를 조회할 수 있다
-     */
-    @DisplayName("내 정보를 조회한다.")
-    @Test
-    void getMyInfo() {
-        var createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);
-
-    }
 }
