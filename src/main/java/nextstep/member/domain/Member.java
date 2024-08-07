@@ -1,7 +1,6 @@
 package nextstep.member.domain;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.Objects;
 
 @Entity
