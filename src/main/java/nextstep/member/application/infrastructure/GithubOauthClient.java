@@ -1,8 +1,8 @@
 package nextstep.member.application.infrastructure;
 
 import lombok.extern.slf4j.Slf4j;
-import nextstep.member.AccessTokenException;
-import nextstep.member.MemberErrorMessage;
+import nextstep.member.exception.AccessTokenException;
+import nextstep.member.common.MemberErrorMessage;
 import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.application.dto.github.GithubAccessTokenRequest;

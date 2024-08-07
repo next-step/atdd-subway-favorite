@@ -1,4 +1,4 @@
-package nextstep.member;
+package nextstep.member.common;
 
 import lombok.Getter;
 

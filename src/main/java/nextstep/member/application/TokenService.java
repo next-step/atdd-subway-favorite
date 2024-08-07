@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.AuthenticationException;
+import nextstep.member.exception.AuthenticationException;
 import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;

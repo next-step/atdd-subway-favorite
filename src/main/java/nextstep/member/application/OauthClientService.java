@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.AuthenticationException;
+import nextstep.member.exception.AuthenticationException;
 import nextstep.member.application.dto.ResourceResponse;
 import nextstep.member.application.dto.ApplicationTokenResponse;
 import nextstep.member.domain.OauthClient;
@@ -15,12 +15,12 @@ public class OauthClientService {
 
     public ResourceResponse authenticate(String code) {
         ApplicationTokenResponse accessToken = getAccessToken(code);
-        if (!isValid(accessToken.getAccessToken())) {
+        if (inValid(accessToken.getAccessToken())) {
             throw new AuthenticationException();
         }
 
         ResourceResponse resource = getResource(accessToken.getAccessToken());
-        if (!isValid(resource.getEmail())) {
+        if (inValid(resource.getEmail())) {
             throw new AuthenticationException();
         }
 
@@ -35,7 +35,7 @@ public class OauthClientService {
         return oauthClient.requestResource(accessToken);
     }
 
-    private boolean isValid(String source) {
-        return !(source == null || source.isBlank());
+    private boolean inValid(String source) {
+        return source == null || source.isBlank();
     }
 }
