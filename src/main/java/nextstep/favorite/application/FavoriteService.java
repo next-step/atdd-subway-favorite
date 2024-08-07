@@ -1,46 +1,86 @@
 package nextstep.favorite.application;
 
-import nextstep.favorite.application.dto.FavoriteRequest;
-import nextstep.favorite.application.dto.FavoriteResponse;
+import lombok.RequiredArgsConstructor;
+import nextstep.common.exception.*;
 import nextstep.favorite.domain.Favorite;
-import nextstep.favorite.domain.FavoriteRepository;
+import nextstep.favorite.infrastructure.FavoriteRepository;
+import nextstep.favorite.presentation.FavoriteRequest;
+import nextstep.favorite.presentation.FavoriteResponse;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.domain.Member;
+import nextstep.member.infrastructure.MemberRepository;
+import nextstep.subway.domain.PathFinderService;
+import nextstep.subway.domain.Station;
+import nextstep.subway.infrastructure.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Transactional
+@RequiredArgsConstructor
 @Service
 public class FavoriteService {
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
+    private final MemberRepository memberRepository;
+    private final PathFinderService pathFinderService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository) {
-        this.favoriteRepository = favoriteRepository;
+    public Long createFavorite(FavoriteRequest request, LoginMember loginMember) {
+        Station sourceStation = findStationByIdOrThrow(request.getSourceStationId());
+        Station targetStation = findStationByIdOrThrow(request.getTargetStationId());
+        Member member = findMemberByIdOrThrow(loginMember);
+
+        if (!pathFinderService.isValidPath(sourceStation.getId(), targetStation.getId())) {
+            throw new PathNotFoundException(sourceStation.getId(), targetStation.getId());
+        }
+
+        Favorite requestedFavorite = Favorite.of(
+                member.getId(),
+                sourceStation.getId(),
+                targetStation.getId()
+        );
+
+        Favorite createdFavorite = favoriteRepository.save(requestedFavorite);
+        return createdFavorite.getId();
     }
 
-    /**
-     * TODO: LoginMember 를 추가로 받아서 FavoriteRequest 내용과 함께 Favorite 를 생성합니다.
-     *
-     * @param request
-     */
-    public void createFavorite(FavoriteRequest request) {
-        Favorite favorite = new Favorite();
-        favoriteRepository.save(favorite);
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        Member member = findMemberByIdOrThrow(loginMember);
+        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+        return favorites.stream()
+                .map(this::createFavoriteResponse)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * TODO: StationResponse 를 응답하는 FavoriteResponse 로 변환해야 합니다.
-     *
-     * @return
-     */
-    public List<FavoriteResponse> findFavorites() {
-        List<Favorite> favorites = favoriteRepository.findAll();
-        return null;
+    public void deleteFavorite(Long favoriteId, LoginMember loginMember) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
+
+        Member member = findMemberByIdOrThrow(loginMember);
+
+        if (!favorite.getMemberId().equals(member.getId())) {
+            throw new UnauthorizedDeletionException(favoriteId);
+        }
+
+        favoriteRepository.deleteById(favoriteId);
     }
 
-    /**
-     * TODO: 요구사항 설명에 맞게 수정합니다.
-     * @param id
-     */
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
+    private Station findStationByIdOrThrow(Long stationId) {
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException(stationId));
+    }
+
+    private Member findMemberByIdOrThrow(LoginMember loginMember) {
+        return memberRepository.findByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new MemberNotFoundException(loginMember.getEmail()));
+    }
+
+    private FavoriteResponse createFavoriteResponse(Favorite favorite) {
+        Station sourceStation = findStationByIdOrThrow(favorite.getSourceStationId());
+        Station targetStation = findStationByIdOrThrow(favorite.getTargetStationId());
+        return FavoriteResponse.of(favorite, sourceStation, targetStation);
     }
 }

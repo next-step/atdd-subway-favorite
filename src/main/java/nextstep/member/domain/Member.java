@@ -1,8 +1,14 @@
 package nextstep.member.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Member {
     @Id
@@ -13,29 +19,10 @@ public class Member {
     private String password;
     private Integer age;
 
-    public Member() {
-    }
-
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
     public void update(Member member) {
