@@ -1,10 +1,8 @@
 package nextstep.auth.ui;
 
-import nextstep.auth.exception.AuthenticationException;
 import nextstep.auth.application.JwtTokenProvider;
-import nextstep.auth.domain.LoginMember;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
+import nextstep.auth.domain.UserDetailsService;
+import nextstep.auth.exception.AuthenticationException;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -12,12 +10,12 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
+    private JwtTokenProvider jwtTokenProvider;
+    private UserDetailsService userDetailsService;
 
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberRepository = memberRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -43,10 +41,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         if (jwtTokenProvider.validateToken(token)) {
             String email = jwtTokenProvider.getPrincipal(token);
-            Member member = memberRepository.findByEmail(email)
-                    .orElseThrow(AuthenticationException::new);
-
-            return new LoginMember(member.getId(), member.getEmail());
+            return userDetailsService.loadByUserEmail(email);
         }
 
         throw new AuthenticationException();

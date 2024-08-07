@@ -2,7 +2,7 @@ package nextstep.auth.domain;
 
 import java.util.Objects;
 
-public class LoginMember {
+public class LoginMember implements UserDetails {
     private Long id;
     private String email;
 
@@ -11,10 +11,12 @@ public class LoginMember {
         this.email = email;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }

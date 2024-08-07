@@ -1,6 +1,7 @@
 package nextstep.auth;
 
 import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.domain.UserDetailsService;
 import nextstep.member.domain.MemberRepository;
 import nextstep.auth.ui.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
@@ -12,15 +13,15 @@ import java.util.List;
 @Configuration
 public class AuthConfig implements WebMvcConfigurer {
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
+    private final UserDetailsService userDetailsService;
 
-    public AuthConfig(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) {
+    public AuthConfig(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.memberRepository = memberRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberRepository));
+        argumentResolvers.add(new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, userDetailsService));
     }
 }
