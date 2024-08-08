@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  profiles:
+    include: auth
+
+oauth2:
+  github:
+    client-id: github-client-id
+    client-secret: github-client-secret
+    user-info-uri: https://api.github.com/user
+    token-uri: https://github.com/login/oauth/access_token
+
+security:
+  jwt:
+    token:
+      secret-key: atdd-secret-key
+      expire-length: 3600000

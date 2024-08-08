@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.MemberSteps.*;
+import static nextstep.member.acceptance.MemberApiRequest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberAcceptanceTest extends AcceptanceTest {
@@ -63,15 +63,4 @@ class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    /**
-     * Given 회원 가입을 생성하고
-     * And 로그인을 하고
-     * When 토큰을 통해 내 정보를 조회하면
-     * Then 내 정보를 조회할 수 있다
-     */
-    @DisplayName("내 정보를 조회한다.")
-    @Test
-    void getMyInfo() {
-
-    }
 }
