@@ -7,7 +7,6 @@ import nextstep.member.exception.ApiCallException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import static nextstep.common.constant.ErrorCode.GITHUB_NOT_FOUND;
@@ -37,44 +36,56 @@ public class GithubClient {
         );
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+        HttpEntity<GithubAccessTokenResponse> httpEntity = new HttpEntity(
                 githubAccessTokenRequest, headers);
-
+        ResponseEntity<GithubAccessTokenResponse> responseEntity;
 
         try {
-            ResponseEntity<GithubAccessTokenResponse> responseEntity = restTemplate
-                    .exchange(githubAccessTokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class);
-
-            if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
-                return responseEntity.getBody().getAccessToken();
-            }
-
-            throw new ApiCallException(GITHUB_NOT_FOUND + " : Response body is null");
+            responseEntity = restTemplate
+                    .postForEntity(githubAccessTokenUrl, httpEntity, GithubAccessTokenResponse.class);
 
         } catch (Exception e) {
             throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected error occurred");
         }
+
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected status");
+        }
+
+        if (responseEntity.getBody() == null || responseEntity.getBody().getAccessToken() == null) {
+            throw new ApiCallException(GITHUB_NOT_FOUND + " : AccessToken is null");
+        }
+
+        return responseEntity.getBody().getAccessToken();
     }
 
     public GithubProfileResponse requestGithubProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.add("Authorization", accessToken);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, accessToken);
 
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
+        HttpEntity<GithubProfileResponse> httpEntity = new HttpEntity(
                 headers);
-        GithubProfileResponse githubProfileResponse;
+        ResponseEntity<GithubProfileResponse> responseEntity;
+
         try {
-            githubProfileResponse = restTemplate
-                    .exchange(githubAccessProfileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
-                    .getBody();
+            responseEntity = restTemplate
+                    .exchange(githubAccessProfileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class);
         } catch (Exception e) {
             throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected error occurred");
         }
 
-        return githubProfileResponse;
+        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+            throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected status");
+        }
+
+        if (responseEntity.getBody() == null) {
+            throw new ApiCallException(GITHUB_NOT_FOUND + " : Profile is null");
+        }
+
+        return responseEntity.getBody();
     }
 }
 
