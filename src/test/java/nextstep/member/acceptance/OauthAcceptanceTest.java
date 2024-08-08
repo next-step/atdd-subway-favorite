@@ -26,7 +26,7 @@ public class OauthAcceptanceTest extends AcceptanceTest {
     void registerNewUser() {
         // given
         ExtractableResponse<Response> loginResult = 깃허브로그인(GithubUser.사용자1.getCode())
-                .then().extract();
+                .then().log().all().extract();
 
         // when
         Assertions.assertThat(loginResult.statusCode()).isEqualTo(HttpStatus.OK.value());

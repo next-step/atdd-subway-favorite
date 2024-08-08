@@ -1,4 +1,6 @@
-package nextstep.auth.domain;
+package nextstep.member.domain;
+
+import nextstep.auth.domain.UserDetails;
 
 import java.util.Objects;
 
