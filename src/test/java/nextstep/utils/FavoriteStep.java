@@ -1,4 +1,4 @@
-package nextstep.subway.util;
+package nextstep.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,3 +64,4 @@ public class FavoriteStep {
                 .statusCode(HttpStatus.NO_CONTENT.value()).extract();
     }
 }
+

@@ -14,7 +14,6 @@ import nextstep.station.entity.Station;
 import nextstep.station.exception.StationNotFoundException;
 import nextstep.station.repository.StationRepository;
 import nextstep.station.service.StationService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,7 +88,7 @@ public class SectionServiceMockTest {
                 () -> assertEquals(삼성역_강남역_구간_생성_응답.getUpStationResponse().getId(), 삼성역.getId()),
                 () -> assertEquals(삼성역_강남역_구간_생성_응답.getUpStationResponse().getName(), 삼성역.getName()),
                 () -> assertEquals(삼성역_강남역_구간_생성_응답.getDownStationResponse().getId(), 강남역.getId()),
-                () ->assertEquals(삼성역_강남역_구간_생성_응답.getDownStationResponse().getName(), 강남역.getName())
+                () -> assertEquals(삼성역_강남역_구간_생성_응답.getDownStationResponse().getName(), 강남역.getName())
         );
 
     }

@@ -75,3 +75,4 @@ class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 }
+
