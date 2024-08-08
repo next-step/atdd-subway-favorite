@@ -1,18 +1,16 @@
 package nextstep.configuration.auth;
 
-import nextstep.member.infrastructure.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import nextstep.auth.infrastructure.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class AuthConfig implements WebMvcConfigurer {
-    private JwtTokenProvider jwtTokenProvider;
-
-    public AuthConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public void addArgumentResolvers(List argumentResolvers) {

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.member.acceptance.AuthSteps.이메일_패스워드_로그인;
-import static nextstep.member.acceptance.AuthSteps.인증토큰을_추출한다;
+import static nextstep.auth.acceptance.AuthSteps.이메일_패스워드_로그인;
+import static nextstep.auth.acceptance.AuthSteps.인증토큰을_추출한다;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.step.BaseStepAsserter.응답_상태값이_올바른지_검증한다;
 import static nextstep.subway.acceptance.step.FavoriteStepExtractor.즐겨찾기_추출기.단일_응답의_id_를_추출한다;
