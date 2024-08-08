@@ -1,5 +1,7 @@
 package nextstep.utils;
 
+import java.util.Arrays;
+
 public enum GithubResponse {
     사용자1("aofijeowifjaoief", "access_token_1", "email1@email.com", 20),
     사용자2("fau3nfin93dmn", "access_token_2", "email2@email.com", 30),
@@ -19,30 +21,27 @@ public enum GithubResponse {
     }
 
     public static String getEmailByAccessToken(String accessToken) {
-        for (GithubResponse response : values()) {
-            if (response.getAccessToken().equals(accessToken)) {
-                return response.getEmail();
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(response -> response.getAccessToken().equals(accessToken))
+                .map(GithubResponse::getEmail)
+                .findFirst()
+                .orElse(null);
     }
 
     public static int getAgeByAccessToken(String accessToken) {
-        for (GithubResponse response : values()) {
-            if (response.getAccessToken().equals(accessToken)) {
-                return response.getAge();
-            }
-        }
-        return -1;
+        return Arrays.stream(values())
+                .filter(response -> response.getAccessToken().equals(accessToken))
+                .map(GithubResponse::getAge)
+                .findFirst()
+                .orElse(-1);
     }
 
     public static String getAccessTokenByCode(String code) {
-        for (GithubResponse response : values()) {
-            if (response.getCode().equals(code)) {
-                return response.getAccessToken();
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(response -> response.getCode().equals(code))
+                .map(GithubResponse::getAccessToken)
+                .findFirst()
+                .orElse(null);
     }
 
 
