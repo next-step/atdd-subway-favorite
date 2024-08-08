@@ -23,6 +23,7 @@ public class GithubClient {
     private String githubClientSecret;
 
     private final RestTemplate restTemplate;
+    private final String BEARER_ = "Bearer ";
 
     public GithubClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -64,7 +65,7 @@ public class GithubClient {
     public GithubProfileResponse requestGithubProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, accessToken);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER_ +accessToken);
 
         HttpEntity<GithubProfileResponse> httpEntity = new HttpEntity(
                 headers);

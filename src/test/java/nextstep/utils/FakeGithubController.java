@@ -20,7 +20,7 @@ public class FakeGithubController {
     @GetMapping("/github/user")
     public ResponseEntity<GithubProfileResponse> user(
             @RequestHeader("Authorization") String authorization) {
-        String accessToken = authorization;
+        String accessToken = authorization.split(" ")[1];
         String email = GithubResponse.getEmailByAccessToken(accessToken);
         int age = GithubResponse.getAgeByAccessToken(accessToken);
         GithubProfileResponse response = new GithubProfileResponse(email, age);
