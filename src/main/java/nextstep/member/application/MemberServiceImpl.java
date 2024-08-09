@@ -13,40 +13,48 @@ import java.util.Optional;
 import static nextstep.common.constant.ErrorCode.UNAUTHORIZED_ACCESS;
 
 @Service
-public class MemberService {
-    private MemberRepository memberRepository;
+public class MemberServiceImpl implements UserDetailsService {
 
-    public MemberService(MemberRepository memberRepository) {
+    private final MemberRepository memberRepository;
+
+    public MemberServiceImpl(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
-    public MemberResponse createMember(MemberRequest memberRequest) {
+    @Override
+    public MemberResponse createMember(final MemberRequest memberRequest) {
         Member member = memberRepository.save(memberRequest.toMember());
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
+    @Override
+    public MemberResponse findMember(final Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
 
+    @Override
     public void updateMember(Long id, MemberRequest memberRequest) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(memberRequest.toMember());
     }
 
+    @Override
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
 
+    @Override
     public Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email).orElseThrow(() -> new UnAuthorizedException(String.valueOf(UNAUTHORIZED_ACCESS)));
     }
 
+    @Override
     public Optional<Member> findMemberOptionalByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 
+    @Override
     public MemberResponse findMe(LoginMember loginMember) {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))

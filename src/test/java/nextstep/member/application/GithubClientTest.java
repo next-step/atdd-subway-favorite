@@ -1,6 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.ProfileResponse;
 import nextstep.utils.GithubResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +32,10 @@ public class GithubClientTest {
     @Test
     public void requestGithubProfile() {
         String accessToken = GithubResponse.사용자1.getAccessToken();
-        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(accessToken);
+        ProfileResponse profileResponse = githubClient.requestGithubProfile(accessToken);
 
-        assertThat(githubProfileResponse.getEmail()).isEqualTo(GithubResponse.사용자1.getEmail());
-        assertThat(githubProfileResponse.getAge()).isEqualTo(GithubResponse.사용자1.getAge());
+        assertThat(profileResponse.getEmail()).isEqualTo(GithubResponse.사용자1.getEmail());
+        assertThat(profileResponse.getAge()).isEqualTo(GithubResponse.사용자1.getAge());
 
     }
 }

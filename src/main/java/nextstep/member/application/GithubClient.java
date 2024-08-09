@@ -2,7 +2,7 @@ package nextstep.member.application;
 
 import nextstep.member.application.dto.GithubAccessTokenRequest;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.ProfileResponse;
 import nextstep.member.exception.ApiCallException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import static nextstep.common.constant.ErrorCode.GITHUB_NOT_FOUND;
 
 @Component
-public class GithubClient {
+public class GithubClient implements ClientRequester {
     @Value("${security.github.access-token-uri}")
     private String githubAccessTokenUrl;
     @Value("${security.github.access-profile-uri}")
@@ -29,6 +29,7 @@ public class GithubClient {
         this.restTemplate = restTemplate;
     }
 
+    @Override
     public String requestGithubAccessToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
@@ -62,18 +63,19 @@ public class GithubClient {
         return responseEntity.getBody().getAccessToken();
     }
 
-    public GithubProfileResponse requestGithubProfile(String accessToken) {
+    @Override
+    public ProfileResponse requestGithubProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, BEARER_ +accessToken);
 
-        HttpEntity<GithubProfileResponse> httpEntity = new HttpEntity(
+        HttpEntity<ProfileResponse> httpEntity = new HttpEntity(
                 headers);
-        ResponseEntity<GithubProfileResponse> responseEntity;
+        ResponseEntity<ProfileResponse> responseEntity;
 
         try {
             responseEntity = restTemplate
-                    .exchange(githubAccessProfileUrl, HttpMethod.GET, httpEntity, GithubProfileResponse.class);
+                    .exchange(githubAccessProfileUrl, HttpMethod.GET, httpEntity, ProfileResponse.class);
         } catch (Exception e) {
             throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected error occurred");
         }

@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.ProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenResponse;
@@ -13,14 +13,14 @@ import java.util.Optional;
 
 @Service
 public class TokenService {
-    private MemberService memberService;
-    private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
+    private UserDetailsService memberService;
+    private TokenProvider tokenProvider;
+    private ClientRequester clientRequester;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
+    public TokenService(UserDetailsService memberService, TokenProvider tokenProvider, ClientRequester clientRequester) {
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.githubClient = githubClient;
+        this.tokenProvider = tokenProvider;
+        this.clientRequester = clientRequester;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -29,26 +29,35 @@ public class TokenService {
             throw new AuthenticationException();
         }
 
-        String token = jwtTokenProvider.createToken(member.getEmail());
+        String token = tokenProvider.createToken(member.getEmail());
 
         return new TokenResponse(token);
     }
 
     @Transactional
-    public MemberResponse createOrSaveMember(final GithubProfileResponse githubProfileResponse) {
-        Optional<Member> memberOptional = memberService.findMemberOptionalByEmail(githubProfileResponse.getEmail());
+    public TokenResponse getAuthToken(final String code) {
+        String accessToken = clientRequester.requestGithubAccessToken(code);
+        ProfileResponse profileResponse = clientRequester.requestGithubProfile(accessToken);
+        MemberResponse memberResponse = findOrCreateMember(profileResponse);
+        return new TokenResponse(tokenProvider.createToken(memberResponse.getEmail()));
+    }
+
+    public MemberResponse findOrCreateMember(ProfileResponse profileResponse) {
+        Optional<Member> memberOptional = memberService.findMemberOptionalByEmail(profileResponse.getEmail());
         if (memberOptional.isPresent()) {
             return MemberResponse.of(memberOptional.get());
         }
 
-        return memberService.createMember(MemberRequest.of(githubProfileResponse.getEmail(), "password", githubProfileResponse.getAge()));
+        return createMember(profileResponse);
     }
 
-    public TokenResponse getAuthToken(final String code) {
-        String accessToken = githubClient.requestGithubAccessToken(code);
-        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(accessToken);
-        MemberResponse memberResponse = createOrSaveMember(githubProfileResponse);
-        return new TokenResponse(jwtTokenProvider.createToken(memberResponse.getEmail()));
+    private MemberResponse createMember(ProfileResponse profileResponse) {
+        MemberRequest memberRequest = MemberRequest.of(
+                profileResponse.getEmail(),
+                "password",
+                profileResponse.getAge()
+        );
+        return memberService.createMember(memberRequest);
     }
 }
 
