@@ -58,7 +58,7 @@ public class ShortestPathFinder implements PathFinder {
             .forEach(section -> {
                 DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(),
                     section.getDownStation());
-                graph.setEdgeWeight(edge, section.getDistance().getDistance());
+                graph.setEdgeWeight(edge, section.getDistance());
             });
     }
 

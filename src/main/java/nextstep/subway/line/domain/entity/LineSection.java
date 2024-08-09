@@ -51,4 +51,12 @@ public class LineSection {
         this.downStation = downStation;
         this.distance.updateDistance(distance);
     }
+
+    public Long getDistance() {
+        return this.distance.getDistance();
+    }
+
+    public Distance getDiffDistance(Long other) {
+        return new Distance(this.distance.getDistance() - other);
+    }
 }
