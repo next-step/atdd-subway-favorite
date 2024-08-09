@@ -1,15 +1,20 @@
 package nextstep.member.application;
 
+import nextstep.common.ErrorMessage;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.LoginMember;
+import nextstep.member.common.MemberErrorMessage;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.exception.NoMemberExistException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+
+    private static final String OAUTH_DEFAULT_PASSWORD = "defaultPassword";
+
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -21,13 +26,18 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         member.update(param.toMember());
+    }
+
+    private Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new NoMemberExistException(MemberErrorMessage.NOT_EXIST_MEMBER));
     }
 
     public void deleteMember(Long id) {
@@ -35,12 +45,27 @@ public class MemberService {
     }
 
     public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return findByEmail(email);
     }
 
-    public MemberResponse findMe(LoginMember loginMember) {
-        return memberRepository.findByEmail(loginMember.getEmail())
-                .map(it -> MemberResponse.of(it))
-                .orElseThrow(RuntimeException::new);
+    public MemberResponse findMe(String email) {
+        Member member = findByEmail(email);
+        return MemberResponse.of(member);
+    }
+
+    private Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new NoMemberExistException(MemberErrorMessage.NOT_EXIST_MEMBER));
+    }
+
+    public Member findMemberByUserResource(String email, int age) {
+        try {
+            return findMemberByEmail(email);
+        } catch (NoMemberExistException exception) {
+            createMember(new MemberRequest(email, OAUTH_DEFAULT_PASSWORD, age));
+            return findMemberByEmail(email);
+        } catch (RuntimeException exception) {
+            throw new RuntimeException(ErrorMessage.SERVER_ERROR.getMessage());
+        }
     }
 }

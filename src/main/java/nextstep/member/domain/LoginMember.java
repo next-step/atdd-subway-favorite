@@ -1,22 +1,33 @@
 package nextstep.member.domain;
 
+import nextstep.auth.domain.UserDetails;
+
 import java.util.Objects;
 
-public class LoginMember {
-    private Long id;
-    private String email;
+public class LoginMember implements UserDetails {
+    private final Long id;
+    private final String email;
+    private final String password;
 
-    public LoginMember(Long id, String email) {
+    public LoginMember(Long id, String email, String password) {
         this.id = id;
         this.email = email;
+        this.password = password;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
