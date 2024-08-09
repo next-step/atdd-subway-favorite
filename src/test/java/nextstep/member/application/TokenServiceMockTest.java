@@ -2,7 +2,6 @@ package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.ProfileResponse;
-import nextstep.member.domain.Member;
 import nextstep.utils.FakeClientRequester;
 import nextstep.utils.FakeMemberServiceImpl;
 import nextstep.utils.FakeTokenProvider;
@@ -26,7 +25,6 @@ public class TokenServiceMockTest {
     @Mock
     private TokenService tokenService;
     private ProfileResponse 사용자1;
-    private Member member_사용자1;
     private String 비밀번호 = "password";
     private String 틀린_비밀번호 = "!password";
     private String FAKE_토큰 = "createToken_success";
@@ -35,11 +33,9 @@ public class TokenServiceMockTest {
     @BeforeEach
     void setup() {
         tokenService = new TokenService(new FakeMemberServiceImpl(), new FakeTokenProvider(), new FakeClientRequester());
-
         사용자1 = ProfileResponse.of(GithubResponse.사용자1.getEmail(), GithubResponse.사용자1.getAge());
-        member_사용자1 = Member.of(1L, GithubResponse.사용자1.getEmail(), "password", GithubResponse.사용자1.getAge());
-
     }
+
     @DisplayName("[createToken] 이메일과 비밀번호를 통해 Token을 생성한다.")
     @Test
     public void createToken_success() {
@@ -65,7 +61,6 @@ public class TokenServiceMockTest {
 
         // then
         assertThat(생성된_토큰.getAccessToken()).isEqualTo(FAKE_토큰);
-
     }
 
     @DisplayName("[findOrCreateMember] 사용자가 조회되지 않으면, 사용자를 저장한 다음 저장한 값을 반환한다.")

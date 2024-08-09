@@ -31,55 +31,79 @@ public class GithubClient implements ClientRequester {
 
     @Override
     public String requestGithubAccessToken(String code) {
-        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
+        GithubAccessTokenRequest githubAccessTokenRequest = createGithubAccessTokenRequest(code);
+        HttpHeaders headers = createGithubAccessTokenHttpHeaders();
+
+        HttpEntity<GithubAccessTokenResponse> httpEntity = new HttpEntity(
+                githubAccessTokenRequest, headers);
+
+        ResponseEntity<GithubAccessTokenResponse> responseEntity = performApiCallGetGithubAccessToken(httpEntity);
+        return extractAccessTokenFromResponse(responseEntity);
+    }
+
+    public GithubAccessTokenRequest createGithubAccessTokenRequest(String code) {
+        return new GithubAccessTokenRequest(
                 code,
                 githubClientId,
                 githubClientSecret
         );
+    }
 
+    public HttpHeaders createGithubAccessTokenHttpHeaders () {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        return headers;
+    }
 
-        HttpEntity<GithubAccessTokenResponse> httpEntity = new HttpEntity(
-                githubAccessTokenRequest, headers);
-        ResponseEntity<GithubAccessTokenResponse> responseEntity;
-
+    private ResponseEntity<GithubAccessTokenResponse> performApiCallGetGithubAccessToken(HttpEntity<GithubAccessTokenResponse> httpEntity) {
         try {
-            responseEntity = restTemplate
-                    .postForEntity(githubAccessTokenUrl, httpEntity, GithubAccessTokenResponse.class);
-
+            return restTemplate.postForEntity(githubAccessTokenUrl, httpEntity, GithubAccessTokenResponse.class);
         } catch (Exception e) {
-            throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected error occurred");
+            throw new ApiCallException("GITHUB_NOT_FOUND : Unexpected error occurred");
         }
+    }
 
+    private String extractAccessTokenFromResponse(ResponseEntity<GithubAccessTokenResponse> responseEntity) {
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
-            throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected status");
+            throw new ApiCallException("GITHUB_NOT_FOUND : Unexpected status");
         }
 
-        if (responseEntity.getBody() == null || responseEntity.getBody().getAccessToken() == null) {
-            throw new ApiCallException(GITHUB_NOT_FOUND + " : AccessToken is null");
+        GithubAccessTokenResponse body = responseEntity.getBody();
+        if (body == null || body.getAccessToken() == null) {
+            throw new ApiCallException("GITHUB_NOT_FOUND : AccessToken is null");
         }
 
-        return responseEntity.getBody().getAccessToken();
+        return body.getAccessToken();
     }
 
     @Override
     public ProfileResponse requestGithubProfile(String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, BEARER_ +accessToken);
-
+        HttpHeaders headers = createRequestGithubProfileHttpHeaders(accessToken);
         HttpEntity<ProfileResponse> httpEntity = new HttpEntity(
                 headers);
-        ResponseEntity<ProfileResponse> responseEntity;
+        ResponseEntity<ProfileResponse> responseEntity = performApiCallGetGithubProfile(httpEntity);
 
+        return extractGithubProfilesFromResponse(responseEntity);
+    }
+
+    public HttpHeaders createRequestGithubProfileHttpHeaders (String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.AUTHORIZATION, BEARER_ + accessToken);
+
+        return headers;
+    }
+
+    private ResponseEntity<ProfileResponse> performApiCallGetGithubProfile(HttpEntity<ProfileResponse> httpEntity) {
         try {
-            responseEntity = restTemplate
+            return restTemplate
                     .exchange(githubAccessProfileUrl, HttpMethod.GET, httpEntity, ProfileResponse.class);
         } catch (Exception e) {
             throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected error occurred");
         }
+    }
 
+    private ProfileResponse extractGithubProfilesFromResponse(ResponseEntity<ProfileResponse> responseEntity) {
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
             throw new ApiCallException(GITHUB_NOT_FOUND + " : Unexpected status");
         }
@@ -90,5 +114,6 @@ public class GithubClient implements ClientRequester {
 
         return responseEntity.getBody();
     }
+
 }
 
