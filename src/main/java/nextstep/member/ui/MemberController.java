@@ -2,6 +2,7 @@ package nextstep.member.ui;
 
 import java.net.URI;
 import lombok.AllArgsConstructor;
+import nextstep.auth.ui.AuthenticationPrincipal;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
@@ -51,4 +52,3 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 }
-

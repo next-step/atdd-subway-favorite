@@ -1,6 +1,6 @@
 package nextstep.subway.acceptance.favorite;
 
-import static nextstep.member.acceptance.AuthSteps.로그인_후_토큰_반환;
+import static nextstep.auth.acceptance.AuthSteps.로그인_후_토큰_반환;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.acceptance.common.SubwayUtils.responseToIds;
 import static nextstep.subway.acceptance.common.SubwayUtils.responseToLocation;
@@ -18,10 +18,7 @@ import static nextstep.subway.acceptance.line.SectionUtils.지하철구간_생�
 import static nextstep.subway.acceptance.station.StationUtils.강남역;
 import static nextstep.subway.acceptance.station.StationUtils.교대역;
 import static nextstep.subway.acceptance.station.StationUtils.남부터미널역;
-import static nextstep.subway.acceptance.station.StationUtils.논현역;
-import static nextstep.subway.acceptance.station.StationUtils.신사역;
 import static nextstep.subway.acceptance.station.StationUtils.양재역;
-import static nextstep.subway.acceptance.station.StationUtils.역삼역;
 import static nextstep.subway.acceptance.station.StationUtils.지하철역_생성_후_id_추출;
 import static org.assertj.core.api.Assertions.assertThat;
 

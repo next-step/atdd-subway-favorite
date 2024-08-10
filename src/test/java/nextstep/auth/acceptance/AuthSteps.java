@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

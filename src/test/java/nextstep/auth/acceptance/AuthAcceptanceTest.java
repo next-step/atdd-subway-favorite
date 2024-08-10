@@ -1,17 +1,17 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
-import static nextstep.member.acceptance.AuthSteps.깃허브_로그인_요청;
-import static nextstep.member.acceptance.AuthSteps.로그인_후_토큰_반환;
+import static nextstep.auth.acceptance.AuthSteps.깃허브_로그인_요청;
+import static nextstep.auth.acceptance.AuthSteps.로그인_후_토큰_반환;
 import static nextstep.member.acceptance.MemberSteps.회원_프로필_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.auth.application.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
-import nextstep.member.GithubResponses;
+import nextstep.auth.GithubResponses;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
