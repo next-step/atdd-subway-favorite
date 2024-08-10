@@ -7,9 +7,9 @@ public class UserInfoDto implements UserInfo {
   private final String credentials;
   private final String principal;
 
-  public UserInfoDto(String credentials, String principal) {
-    this.credentials = credentials;
-    this.principal = principal;
+  public UserInfoDto(String email, String password) {
+    this.credentials = email;
+    this.principal = password;
   }
 
   @Override
