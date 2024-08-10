@@ -41,7 +41,7 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     }
 
     private HttpHeaders createHeader(Map<String, String> additionalHeaders) {
-        HttpHeaders headers = new HttpHeaders();;
+        HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         additionalHeaders.forEach(headers::add);
         return headers;

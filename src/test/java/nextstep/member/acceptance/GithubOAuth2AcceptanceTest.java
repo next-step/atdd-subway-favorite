@@ -1,21 +1,17 @@
 package nextstep.member.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
-import nextstep.member.ui.AuthenticationPrincipal;
-import nextstep.utils.AcceptanceTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
 import static nextstep.member.acceptance.GithubOauth2ApiRequest.로그인_한다;
 import static nextstep.member.acceptance.MemberApiRequest.내_정보를_조회한다;
 import static nextstep.member.application.FakeGithubOAuth2Client.GithubResponses;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import io.restassured.response.Response;
+import nextstep.member.domain.Member;
+import nextstep.member.domain.MemberRepository;
+import nextstep.utils.AcceptanceTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 class GithubOAuth2AcceptanceTest extends AcceptanceTest {
     @Autowired

@@ -1,18 +1,22 @@
 package nextstep.member.payload;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AccessTokenRequest {
 
-    private String client_id;
-    private String client_secret;
+    @JsonProperty("client_id")
+    private String clientId;
+    @JsonProperty("client_secret")
+    private String clientSecret;
     private String code;
 
-    public String getClient_id() {
-        return client_id;
+    public String getClientId() {
+        return clientId;
     }
 
-    public String getClient_secret() {
-        return client_secret;
+    public String getClientSecret() {
+        return clientSecret;
     }
 
 
@@ -20,12 +24,12 @@ public class AccessTokenRequest {
         return code;
     }
 
-    public void setClient_id(final String client_id) {
-        this.client_id = client_id;
+    public void setClientId(final String clientId) {
+        this.clientId = clientId;
     }
 
-    public void setClient_secret(final String client_secret) {
-        this.client_secret = client_secret;
+    public void setClientSecret(final String clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     public void setCode(final String code) {
@@ -36,9 +40,9 @@ public class AccessTokenRequest {
         return new AuthorizeRequestBuilder();
     }
 
-    private AccessTokenRequest(final String client_id, final String client_secret, final String code) {
-        this.client_id = client_id;
-        this.client_secret = client_secret;
+    private AccessTokenRequest(final String clientId, final String clientSecret, final String code) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
         this.code = code;
     }
 
