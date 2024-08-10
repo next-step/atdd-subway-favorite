@@ -1,8 +1,9 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.ProfileResponse;
-import nextstep.member.exception.ApiCallException;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.dto.GithubAccessTokenResponse;
+import nextstep.auth.application.dto.ProfileResponse;
+import nextstep.auth.exception.ApiCallException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import static nextstep.utils.GithubResponse.사용자1;
+import static nextstep.utils.dtoMock.GithubResponse.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,7 +58,7 @@ public class GithubClientMockTest {
                 .thenReturn(new ResponseEntity<>(mockResponse, HttpStatus.OK));
 
         // when
-        var 발급받은_토큰 = githubClient.requestGithubAccessToken(코드);
+        var 발급받은_토큰 = githubClient.requestAccessToken(코드);
 
         // then
         assertThat(발급받은_토큰).isEqualTo(토큰);
@@ -72,7 +73,7 @@ public class GithubClientMockTest {
 
         // when & then
         assertAll(
-                () -> assertThrows(ApiCallException.class, () -> githubClient.requestGithubAccessToken(코드)).getMessage()
+                () -> assertThrows(ApiCallException.class, () -> githubClient.requestAccessToken(코드)).getMessage()
                         .equals("GITHUB_NOT_FOUND : Unexpected error occurred")
         );
     }
@@ -87,7 +88,7 @@ public class GithubClientMockTest {
                 .thenReturn(new ResponseEntity<>(사용자_프로필_응답, HttpStatus.OK));
 
         // when
-        var 가져온_사용자_프로필 = githubClient.requestGithubProfile(토큰);
+        var 가져온_사용자_프로필 = githubClient.requestProfile(토큰);
 
         // then
         assertAll(
@@ -105,12 +106,11 @@ public class GithubClientMockTest {
 
         // when & then
         assertAll(
-                () -> assertThrows(ApiCallException.class, () -> githubClient.requestGithubProfile(토큰))
+                () -> assertThrows(ApiCallException.class, () -> githubClient.requestProfile(토큰))
                         .getMessage().equals("GITHUB_NOT_FOUND : Unexpected error occurred")
 
         );
     }
 
 }
-
 

@@ -1,11 +1,12 @@
 package nextstep.member.application;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.ProfileResponse;
-import nextstep.utils.FakeClientRequester;
-import nextstep.utils.FakeMemberServiceImpl;
-import nextstep.utils.FakeTokenProvider;
-import nextstep.utils.GithubResponse;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.TokenService;
+import nextstep.auth.application.dto.ProfileResponse;
+import nextstep.utils.fakeMock.FakeClientRequester;
+import nextstep.utils.fakeMock.FakeTokenProvider;
+import nextstep.utils.fakeMock.FakeUserDetailsServiceImpl;
+import nextstep.utils.dtoMock.GithubResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +32,7 @@ public class TokenServiceMockTest {
 
     @BeforeEach
     void setup() {
-        tokenService = new TokenService(new FakeMemberServiceImpl(), new FakeTokenProvider(), new FakeClientRequester());
+        tokenService = new TokenService(new FakeUserDetailsServiceImpl(), new FakeTokenProvider(), new FakeClientRequester());
         사용자1 = ProfileResponse.of(GithubResponse.사용자1.getEmail(), GithubResponse.사용자1.getAge());
     }
 
@@ -61,34 +61,6 @@ public class TokenServiceMockTest {
 
         // then
         assertThat(생성된_토큰.getAccessToken()).isEqualTo(FAKE_토큰);
-    }
-
-    @DisplayName("[findOrCreateMember] 사용자가 조회되지 않으면, 사용자를 저장한 다음 저장한 값을 반환한다.")
-    @Test
-    public void memberDoesNotExist() {
-        // when
-        var 멤버_응답 = tokenService.findOrCreateMember(ProfileResponse.of(사용자1.getEmail(), 사용자1.getAge()));
-
-        // then
-        assertAll(
-                () -> assertThat(멤버_응답.getEmail()).isEqualTo(사용자1.getEmail()),
-                () -> assertThat(멤버_응답.getAge()).isEqualTo(사용자1.getAge()),
-                () -> assertThat(멤버_응답.getId()).isNotNull()
-        );
-    }
-
-    @DisplayName("[findOrCreateMember] 사용자를 조회한 다음, 조회된 사용자를 반환한다.")
-    @Test
-    public void memberExist() {
-        // when
-        var 멤버_응답 = tokenService.findOrCreateMember(사용자1);
-
-        // then
-        assertAll(
-                () -> assertThat(멤버_응답.getEmail()).isEqualTo(사용자1.getEmail()),
-                () -> assertThat(멤버_응답.getAge()).isEqualTo(사용자1.getAge()),
-                () -> assertThat(멤버_응답.getId()).isNotNull()
-        );
     }
 
 }

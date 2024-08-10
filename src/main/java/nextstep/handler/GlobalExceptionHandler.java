@@ -4,8 +4,9 @@ import nextstep.common.constant.ErrorCode;
 import nextstep.common.dto.ErrorResponse;
 import nextstep.favorite.exception.FavoriteException;
 import nextstep.line.exception.LineNotFoundException;
-import nextstep.member.exception.ApiCallException;
-import nextstep.member.exception.UnAuthorizedException;
+import nextstep.auth.exception.ApiCallException;
+import nextstep.auth.exception.UnAuthorizedException;
+import nextstep.member.exception.MemberException;
 import nextstep.path.exception.PathException;
 import nextstep.section.exception.SectionException;
 import nextstep.station.exception.StationException;
@@ -25,6 +26,7 @@ public class GlobalExceptionHandler {
             SectionException.class,
             PathException.class,
             FavoriteException.class,
+            MemberException.class,
             ApiCallException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequestExceptions(Exception e) {
