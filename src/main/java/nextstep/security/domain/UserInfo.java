@@ -1,9 +1,9 @@
 package nextstep.security.domain;
 
-public interface UserInfo<CREDENTIALS, PRINCIPAL> {
+public interface UserInfo {
 
-  CREDENTIALS getCredentials();
+  String getCredentials();
 
-  PRINCIPAL getPrincipal();
+  String getPrincipal();
 
 }
