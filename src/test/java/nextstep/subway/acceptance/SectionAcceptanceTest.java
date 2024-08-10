@@ -3,7 +3,7 @@ package nextstep.subway.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.presentation.LineRequest;
-import nextstep.subway.presentation.LineResponse;
+import nextstep.subway.application.LineResponse;
 import nextstep.subway.presentation.SectionRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

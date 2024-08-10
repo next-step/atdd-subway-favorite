@@ -1,6 +1,7 @@
 package nextstep.member.presentation;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.member.application.TokenResponse;
 import nextstep.member.application.TokenService;
 import nextstep.member.infrastructure.GithubAccessTokenRequest;
 import org.springframework.http.ResponseEntity;

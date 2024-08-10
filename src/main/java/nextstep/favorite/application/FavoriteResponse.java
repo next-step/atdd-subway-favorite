@@ -1,10 +1,10 @@
-package nextstep.favorite.presentation;
+package nextstep.favorite.application;
 
 import lombok.Builder;
 import lombok.Getter;
 import nextstep.favorite.domain.Favorite;
 import nextstep.subway.domain.Station;
-import nextstep.subway.presentation.StationResponse;
+import nextstep.subway.application.StationResponse;
 
 @Builder
 @Getter

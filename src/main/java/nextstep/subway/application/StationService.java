@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.subway.domain.Station;
 import nextstep.subway.infrastructure.StationRepository;
 import nextstep.subway.presentation.StationRequest;
-import nextstep.subway.presentation.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

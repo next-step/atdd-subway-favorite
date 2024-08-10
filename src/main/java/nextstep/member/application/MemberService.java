@@ -2,7 +2,6 @@ package nextstep.member.application;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.presentation.MemberRequest;
-import nextstep.member.presentation.MemberResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;

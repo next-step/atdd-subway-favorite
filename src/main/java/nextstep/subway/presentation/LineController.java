@@ -1,6 +1,7 @@
 package nextstep.subway.presentation;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.application.LineResponse;
 import nextstep.subway.application.LineService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -2,7 +2,7 @@ package nextstep.member.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.GithubClient;
-import nextstep.member.presentation.TokenResponse;
+import nextstep.member.application.TokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;

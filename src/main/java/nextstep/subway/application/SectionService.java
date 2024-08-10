@@ -8,7 +8,6 @@ import nextstep.subway.infrastructure.LineRepository;
 import nextstep.subway.infrastructure.SectionRepository;
 import nextstep.subway.infrastructure.StationRepository;
 import nextstep.subway.presentation.SectionRequest;
-import nextstep.subway.presentation.SectionResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

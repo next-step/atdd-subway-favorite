@@ -1,4 +1,4 @@
-package nextstep.subway.presentation;
+package nextstep.subway.application;
 
 import lombok.Builder;
 import lombok.Getter;

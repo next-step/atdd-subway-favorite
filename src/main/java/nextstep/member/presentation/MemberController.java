@@ -1,6 +1,7 @@
 package nextstep.member.presentation;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.member.application.MemberResponse;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.LoginMember;
 import org.springframework.http.ResponseEntity;

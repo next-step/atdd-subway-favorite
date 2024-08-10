@@ -8,7 +8,6 @@ import nextstep.common.exception.StationNotFoundException;
 import nextstep.subway.infrastructure.LineRepository;
 import nextstep.subway.infrastructure.StationRepository;
 import nextstep.subway.presentation.LineRequest;
-import nextstep.subway.presentation.LineResponse;
 import nextstep.subway.presentation.LineUpdateRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
