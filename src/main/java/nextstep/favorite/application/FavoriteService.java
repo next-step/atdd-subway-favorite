@@ -39,14 +39,13 @@ public class FavoriteService {
      * @param loginMember
      * @param request
      */
-    public void createFavorite(LoginMember loginMember, FavoriteRequest request) {
+    public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
         var member = findMemberByIdOrThrow(loginMember);
 
         // 비정상 경로 확인
         pathService.getShortestPath(request.getSource(), request.getTarget());
-
-        Favorite favorite = new Favorite(member.getId(), request.getSource(), request.getTarget());
-        favoriteRepository.save(favorite);
+        Favorite favorite = favoriteRepository.save(new Favorite(member.getId(), request.getSource(), request.getTarget()));
+        return favorite.getId();
     }
 
     /**
