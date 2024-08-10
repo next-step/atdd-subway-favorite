@@ -3,9 +3,9 @@ package nextstep.auth.unit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import nextstep.auth.application.GithubClient;
+import nextstep.auth.infrastructure.oauth.github.GithubClient;
 import nextstep.auth.GithubResponses;
-import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.infrastructure.oauth.github.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

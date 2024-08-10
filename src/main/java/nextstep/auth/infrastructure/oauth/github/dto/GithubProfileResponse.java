@@ -1,4 +1,4 @@
-package nextstep.auth.application.dto;
+package nextstep.auth.infrastructure.oauth.github.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
-
-    private String accessToken;
+public class GithubProfileResponse {
+    private String email;
 }

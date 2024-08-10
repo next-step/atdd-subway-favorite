@@ -1,7 +1,7 @@
 package nextstep.auth;
 
 import java.util.List;
-import nextstep.auth.application.JwtTokenProvider;
+import nextstep.auth.infrastructure.token.jwt.JwtTokenProvider;
 import nextstep.auth.ui.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

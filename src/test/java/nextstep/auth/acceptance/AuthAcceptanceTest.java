@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.dto.TokenResponse;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -54,6 +54,5 @@ class AuthAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(accessToken).isNotBlank();
         assertThat(accessToken).isEqualTo(사용자1.getAccessToken());
-
     }
 }
