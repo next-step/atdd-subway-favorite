@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class GithubAccessTokenRequest {
     private String code;
+    private String clientId;
+    private String clientSecret;
 }

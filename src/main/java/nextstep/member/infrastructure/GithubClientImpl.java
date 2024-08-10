@@ -27,7 +27,9 @@ public class GithubClientImpl implements GithubClient {
     @Override
     public TokenResponse getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
-                code
+                code,
+                clientId,
+                clientSecret
         );
 
         HttpHeaders headers = new HttpHeaders();
