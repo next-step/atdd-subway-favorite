@@ -81,7 +81,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(response.jsonPath().getString("code")).isEqualTo("S011");
+            assertThat(response.jsonPath().getString("code")).isEqualTo("P003");
             assertThat(response.jsonPath().getString("message")).isEqualTo(" 출발역 또는 도착역이 동일합니다.");
         });
 
@@ -104,7 +104,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(response.jsonPath().getString("code")).isEqualTo("S009");
+            assertThat(response.jsonPath().getString("code")).isEqualTo("P001");
             assertThat(response.jsonPath().getString("message")).isEqualTo(" 경로를 찾을 수 없습니다.");
         });
     }
@@ -123,7 +123,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(출발역없음.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(출발역없음.jsonPath().getString("code")).isEqualTo("S010");
+            assertThat(출발역없음.jsonPath().getString("code")).isEqualTo("P002");
             assertThat(출발역없음.jsonPath().getString("message")).isEqualTo(" 출발역 또는 도착역이 존재하지 않습니다.");
         });
     }
@@ -142,7 +142,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(() -> {
             assertThat(도착역없음.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(도착역없음.jsonPath().getString("code")).isEqualTo("S010");
+            assertThat(도착역없음.jsonPath().getString("code")).isEqualTo("P002");
             assertThat(도착역없음.jsonPath().getString("message")).isEqualTo(" 출발역 또는 도착역이 존재하지 않습니다.");
         });
     }
