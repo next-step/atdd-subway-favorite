@@ -1,8 +1,9 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.TokenService;
+import nextstep.member.application.JwtTokenAuthenticationService;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.application.dto.UserInfoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,16 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TokenController {
-    private TokenService tokenService;
 
-    public TokenController(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
+  private final JwtTokenAuthenticationService jwtTokenAuthenticationService;
 
-    @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
-        TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+  public TokenController(JwtTokenAuthenticationService jwtTokenAuthenticationService) {
+    this.jwtTokenAuthenticationService = jwtTokenAuthenticationService;
+  }
 
-        return ResponseEntity.ok(response);
-    }
+  @PostMapping("/login/token")
+  public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
+    TokenResponse response = jwtTokenAuthenticationService.createToken(
+        new UserInfoDto(request.getEmail(), request.getPassword()));
+    return ResponseEntity.ok(response);
+  }
 }

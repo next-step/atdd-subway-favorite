@@ -11,4 +11,8 @@ public class AuthenticationException extends BaseException {
     public AuthenticationException() {
         super(ErrorMessage.UNAUTHORIZED);
     }
+
+    public AuthenticationException(ErrorMessage errorMessage) {
+        super(errorMessage);
+    }
 }
