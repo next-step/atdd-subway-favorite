@@ -16,10 +16,13 @@ public enum ErrorCode {
     NOT_FOUND_FIRST_SECTION(400, "S008", " 첫번째 구간을 찾을 수 없습니다."),
 
     // Path
-    NOT_FOUND_PATH(400, "S009", " 경로를 찾을 수 없습니다."),
-    NOT_FOUND_STATION(400, "S010", " 출발역 또는 도착역이 존재하지 않습니다."),
-    SAME_STATION(400, "S011", " 출발역 또는 도착역이 동일합니다.");
+    NOT_FOUND_PATH(400, "P001", " 경로를 찾을 수 없습니다."),
+    NOT_FOUND_STATION(400, "P002", " 출발역 또는 도착역이 존재하지 않습니다."),
+    SAME_STATION(400, "P003", " 출발역 또는 도착역이 동일합니다."),
 
+    // AUTH
+    NOT_FOUND_MEMBER(401, "A001", " 회원 정보를 찾을 수 없습니다."),
+    UNATHORIZED_FAVORITE_DELETE(401, "A002", " 해당 즐겨찾기를 삭제할 권한이 없습니다.");
 
     private final String code;
     private final String message;
