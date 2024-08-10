@@ -14,8 +14,8 @@ import java.util.Arrays;
 public class FakeGithubOAuth2Client implements GithubOAuth2Client {
 
     @Override
-    public AccessTokenResponse getAccessToken(final AccessTokenRequest request) {
-        GithubResponses githubResponses = GithubResponses.findByCode(request.getCode());
+    public AccessTokenResponse getAccessToken(final String code) {
+        GithubResponses githubResponses = GithubResponses.findByCode(code);
         return new AccessTokenResponse(githubResponses.getAccessToken());
     }
 

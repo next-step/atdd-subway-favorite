@@ -1,17 +1,19 @@
 package nextstep.member.application;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import nextstep.member.application.FakeGithubOAuth2Client.GithubResponses;
 import nextstep.member.domain.GithubOAuth2Client;
-import nextstep.member.domain.GithubOAuthProperty;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
 
 public class GithubOAuth2ServiceTest {
 
@@ -20,7 +22,6 @@ public class GithubOAuth2ServiceTest {
     private MemberRepository memberRepository;
     private GithubOAuth2Client githubOAuth2Client;
     private JwtTokenProvider jwtTokenProvider;
-    private GithubOAuthProperty githubOAuthProperty;
 
 
     @BeforeEach
@@ -28,9 +29,7 @@ public class GithubOAuth2ServiceTest {
         memberRepository = mock(MemberRepository.class);
         githubOAuth2Client = new FakeGithubOAuth2Client();
         jwtTokenProvider = new JwtTokenProvider("test-secret-key", 360000);
-        githubOAuthProperty = mock(GithubOAuthProperty.class);
-
-        githubOAuth2Service = new GithubOAuth2Service(memberRepository, githubOAuth2Client, jwtTokenProvider, githubOAuthProperty);
+        githubOAuth2Service = new GithubOAuth2Service(memberRepository, githubOAuth2Client, jwtTokenProvider);
     }
 
 

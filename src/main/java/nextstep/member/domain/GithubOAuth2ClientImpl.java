@@ -25,7 +25,12 @@ public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
     }
 
     @Override
-    public AccessTokenResponse getAccessToken(final AccessTokenRequest request) {
+    public AccessTokenResponse getAccessToken(final String code) {
+        AccessTokenRequest request = AccessTokenRequest.builder()
+            .clientId(githubOAuthProperty.getClientId())
+            .clientSecret(githubOAuthProperty.getClientSecret())
+            .code(code)
+            .build();
         HttpHeaders headers = createHeader(Map.of());
         HttpEntity<AccessTokenRequest> httpEntity = new HttpEntity<>(request, headers);
         return restTemplate.exchange(githubOAuthProperty.getTokenUrl(), HttpMethod.POST, httpEntity, AccessTokenResponse.class)
