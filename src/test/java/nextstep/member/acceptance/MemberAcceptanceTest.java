@@ -20,8 +20,8 @@ public class MemberAcceptanceTest {
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
 
-    @DisplayName("회원가입을 한다.")
     @Test
+    @DisplayName("회원가입을 한다.")
     void createMember() {
         // when
         ExtractableResponse<Response> response = 회원_생성_요청(EMAIL, PASSWORD, AGE);
@@ -30,8 +30,8 @@ public class MemberAcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("회원 정보를 조회한다.")
     @Test
+    @DisplayName("회원 정보를 조회한다.")
     void getMember() {
         // given
         ExtractableResponse<Response> createResponse = 회원_생성_요청(EMAIL, PASSWORD, AGE);

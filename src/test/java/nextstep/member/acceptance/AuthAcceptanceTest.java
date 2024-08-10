@@ -4,13 +4,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
-import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import static nextstep.member.acceptance.AuthSteps.Github_로그인_토큰_요청;
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
 import static nextstep.member.acceptance.MemberSteps.본인_정보_조회;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,8 +26,8 @@ class AuthAcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @DisplayName("Bearer Auth")
     @Test
+    @DisplayName("Bearer Auth")
     void bearerAuth() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
@@ -38,5 +38,13 @@ class AuthAcceptanceTest {
         ExtractableResponse<Response> response2 = 본인_정보_조회(accessToken);
 
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
+    }
+
+    @Test
+    @DisplayName("Github Auth")
+    void githubAuth() {
+        ExtractableResponse<Response> response = Github_로그인_토큰_요청("code1");
+
+        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
     }
 }

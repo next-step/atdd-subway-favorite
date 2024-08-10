@@ -23,4 +23,16 @@ public class AuthSteps {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
     }
+
+    public static ExtractableResponse<Response> Github_로그인_토큰_요청(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
 }

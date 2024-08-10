@@ -2,6 +2,7 @@ package nextstep.member.presentation;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.member.application.TokenService;
+import nextstep.member.infrastructure.GithubAccessTokenRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,12 @@ public class TokenController {
     @PostMapping("/login/token")
     public ResponseEntity<TokenResponse> createToken(@RequestBody TokenRequest request) {
         TokenResponse response = tokenService.createToken(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/login/github")
+    public ResponseEntity<TokenResponse> createToken(@RequestBody GithubAccessTokenRequest githubAccessTokenRequest) {
+        TokenResponse response = tokenService.getAuthToken(githubAccessTokenRequest.getCode());
         return ResponseEntity.ok(response);
     }
 }
