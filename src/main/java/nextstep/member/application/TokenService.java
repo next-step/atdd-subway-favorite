@@ -3,7 +3,6 @@ package nextstep.member.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.member.AuthenticationException;
 import nextstep.member.domain.Member;
-import nextstep.member.infrastructure.GithubClient;
 import nextstep.member.infrastructure.MemberRepository;
 import nextstep.member.presentation.TokenResponse;
 import org.springframework.stereotype.Service;

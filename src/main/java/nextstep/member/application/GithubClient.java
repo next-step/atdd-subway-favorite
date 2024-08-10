@@ -1,5 +1,6 @@
-package nextstep.member.infrastructure;
+package nextstep.member.application;
 
+import nextstep.member.infrastructure.GithubProfileResponse;
 import nextstep.member.presentation.TokenResponse;
 
 public interface GithubClient {
