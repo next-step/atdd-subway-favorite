@@ -25,6 +25,10 @@ public class Member {
         this.age = age;
     }
 
+    public Member(String email) {
+        this.email = email;
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;

@@ -11,10 +11,9 @@ import java.util.Map;
 
 public class AuthSteps {
     public static ExtractableResponse<Response> 로그인_토큰_요청(String email, String password) {
-        Map<String, String> params = new HashMap<>();
+        var params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -25,7 +24,7 @@ public class AuthSteps {
     }
 
     public static ExtractableResponse<Response> Github_로그인_토큰_요청(String code) {
-        Map<String, String> params = new HashMap<>();
+        var params = new HashMap<>();
         params.put("code", code);
 
         return RestAssured.given().log().all()
