@@ -72,6 +72,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보를 조회한다.")
     @Test
     void getMyInfo() {
+        // given
+       회원_생성_요청(EMAIL, PASSWORD, AGE);
+
+        // and
+        var token = 회원_로그인_요청(EMAIL,PASSWORD).jsonPath().getString("accessToken");
+
+        // when
+        var response = 내정보_조회_요청(token);
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
+        assertThat(response.jsonPath().getLong("age")).isEqualTo(AGE);
 
     }
 }

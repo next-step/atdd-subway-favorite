@@ -27,7 +27,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         if (!"bearer".equalsIgnoreCase(authorization.split(" ")[0])) {
             throw new AuthenticationException();
         }
+
         String token = authorization.split(" ")[1];
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new AuthenticationException();
+        }
 
         String email = jwtTokenProvider.getPrincipal(token);
 
