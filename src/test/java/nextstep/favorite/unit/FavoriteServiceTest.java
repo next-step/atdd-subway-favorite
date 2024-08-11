@@ -114,7 +114,6 @@ public class FavoriteServiceTest {
         @DisplayName("로그인 한 회원의 즐겨찾기 조회 시 즐겨찾기 목록이 반환된다.")
         @Test
         void 즐겨찾기_조회() {
-            // TODO: 즐겨찾기 생성이 필요한 경우 이렇게 테스트 메서드를 호출해도 될까?
             즐겨찾기_생성();
 
             var 로그인_정보 =  new LoginMember("testemail@test.com");
