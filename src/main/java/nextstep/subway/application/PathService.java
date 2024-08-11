@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import nextstep.common.exception.PathNotFoundException;
 import nextstep.subway.domain.PathFinderService;
 import nextstep.subway.domain.PathResult;
-import nextstep.subway.presentation.PathResponse;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

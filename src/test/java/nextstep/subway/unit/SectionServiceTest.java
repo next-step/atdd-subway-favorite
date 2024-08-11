@@ -7,7 +7,7 @@ import nextstep.subway.domain.Station;
 import nextstep.subway.infrastructure.LineRepository;
 import nextstep.subway.infrastructure.StationRepository;
 import nextstep.subway.presentation.SectionRequest;
-import nextstep.subway.presentation.SectionResponse;
+import nextstep.subway.application.SectionResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

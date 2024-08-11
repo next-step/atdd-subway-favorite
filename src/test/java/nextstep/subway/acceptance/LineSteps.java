@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.presentation.LineRequest;
-import nextstep.subway.presentation.LineResponse;
+import nextstep.subway.application.LineResponse;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;

@@ -38,6 +38,7 @@ public class FavoriteAcceptanceTest {
     private Long 교대역_ID;
     private Long 신분당선_ID;
 
+    private String accessToken;
     @Autowired
     private MemberRepository memberRepository;
 
@@ -53,6 +54,8 @@ public class FavoriteAcceptanceTest {
 
         SectionRequest 신분당성_구간_request = new SectionRequest(강남역_ID, 신사역_ID, 5);
         지하철_구간_생성(신분당선_ID, 신분당성_구간_request);
+
+        accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD);
     }
 
     /**
@@ -65,9 +68,6 @@ public class FavoriteAcceptanceTest {
     @Test
     @DisplayName("사용자는 시작 역과 종착 역을 가지고 즐겨찾기를 등록할 수 있다.")
     void createFavorite() {
-        // given
-        String accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD);
-
         // when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
 
@@ -87,10 +87,10 @@ public class FavoriteAcceptanceTest {
     @DisplayName("로그인 하지 않은 사용자가 즐겨찾기 등록을 시도하면 인증 오류가 발생한다.")
     void invalidUserCreateFavorite() {
         // given
-        String accessToken = "invalid token";
+        var invalidAccessToken = "invalid token";
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
+        var 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(invalidAccessToken, 강남역_ID, 신사역_ID);
 
         // then
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -107,11 +107,10 @@ public class FavoriteAcceptanceTest {
     @DisplayName("존재하지 않는 역으로 즐겨찾기를 등록하면 오류가 발생한다.")
     void createFavoriteWithNonExistentStation() {
         // given
-        String accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD);
-        Long 존재하지_않는_역_ID = 999999L;
+        var 존재하지_않는_역_ID = 999999L;
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 존재하지_않는_역_ID);
+        var 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, 강남역_ID, 존재하지_않는_역_ID);
 
         // then
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -128,13 +127,10 @@ public class FavoriteAcceptanceTest {
     @DisplayName("사용자는 자신이 등록한 즐겨찾기를 조회할 수 있다.")
     void getFavorites() {
         // given
-        String accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD);
-
-        // 즐겨찾기 생성
         즐겨찾기_생성_요청(accessToken, 강남역_ID, 신사역_ID);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(accessToken);
+        var 즐겨찾기_조회_응답 = 즐겨찾기_조회(accessToken);
 
         // then
         assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -142,11 +138,11 @@ public class FavoriteAcceptanceTest {
         List<Map<String, Object>> favorites = 즐겨찾기_조회_응답.jsonPath().getList(".");
         assertThat(favorites).hasSize(1);
 
-        Map<String, Object> favorite = favorites.get(0);
+        var favorite = favorites.get(0);
         assertThat(favorite).containsKeys("id", "source", "target");
 
-        Map<String, Object> source = (Map<String, Object>) favorite.get("source");
-        Map<String, Object> target = (Map<String, Object>) favorite.get("target");
+        var source = (Map<String, Object>) favorite.get("source");
+        var target = (Map<String, Object>) favorite.get("target");
 
         assertThat(source.get("id")).isEqualTo(강남역_ID.intValue());
         assertThat(source.get("name")).isEqualTo("강남역");
@@ -165,17 +161,16 @@ public class FavoriteAcceptanceTest {
     @DisplayName("사용자는 자신이 등록한 즐겨찾기를 삭제할 수 있다.")
     void deleteFavorite() {
         // given
-        String accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD);
-        Long favoriteId = 즐겨찾기_생성_및_ID_추출(accessToken, 강남역_ID, 신사역_ID);
+        var favoriteId = 즐겨찾기_생성_및_ID_추출(accessToken, 강남역_ID, 신사역_ID);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(accessToken, favoriteId);
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(accessToken, favoriteId);
 
         // then
         assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(accessToken);
-        List<Map<String, Object>> favorites = 즐겨찾기_조회_응답.jsonPath().getList(".");
+        var 즐겨찾기_조회_응답 = 즐겨찾기_조회(accessToken);
+        var favorites = 즐겨찾기_조회_응답.jsonPath().getList(".");
         assertThat(favorites).isEmpty();
     }
 
@@ -190,12 +185,11 @@ public class FavoriteAcceptanceTest {
     @DisplayName("다른 사용자의 즐겨찾기를 삭제하려고 하면 인증 오류가 발생한다.")
     void deleteOtherUsersFavorite() {
         // given
-        String accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD);
-        Long favoriteId = 즐겨찾기_생성_및_ID_추출(accessToken, 강남역_ID, 신사역_ID);
-        String otherAccessToken = 사용자_설정_및_로그인("other@email.com", "otherpassword");
+        var favoriteId = 즐겨찾기_생성_및_ID_추출(accessToken, 강남역_ID, 신사역_ID);
+        var otherAccessToken = 사용자_설정_및_로그인("other@email.com", "otherpassword");
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(otherAccessToken, favoriteId);
+        var 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(otherAccessToken, favoriteId);
 
         // then
         assertThat(즐겨찾기_삭제_응답.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
@@ -203,18 +197,18 @@ public class FavoriteAcceptanceTest {
 
     private String 사용자_설정_및_로그인(String email, String password) {
         memberRepository.save(new Member(email, password, AGE));
-        ExtractableResponse<Response> 로그인_토큰_응답 = 로그인_토큰_요청(email, password);
+        var 로그인_토큰_응답 = 로그인_토큰_요청(email, password);
         return 로그인_토큰_응답.jsonPath().getString("accessToken");
     }
 
     private Long 즐겨찾기_생성_및_ID_추출(String accessToken, Long sourceStationId, Long targetStationId) {
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, sourceStationId, targetStationId);
-        String location = 즐겨찾기_생성_응답.header("Location");
+        var 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(accessToken, sourceStationId, targetStationId);
+        var location = 즐겨찾기_생성_응답.header("Location");
         return extractIdFromLocation(location);
     }
 
     private Long extractIdFromLocation(String location) {
-        String[] splitLocation = location.split("/");
+        var splitLocation = location.split("/");
         return Long.parseLong(splitLocation[splitLocation.length - 1]);
     }
 }
