@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static nextstep.subway.util.AuthStep.로그인_후_토큰_발급;
-import static nextstep.utils.FavoriteStep.*;
+import static nextstep.utils.step.FavoriteStep.*;
 import static nextstep.subway.util.LineStep.지하철_노선_생성;
 import static nextstep.subway.util.StationStep.지하철_역_등록;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,6 +1,7 @@
 package nextstep.member.ui;
 
-import nextstep.member.application.MemberService;
+import nextstep.auth.ui.AuthenticationPrincipal;
+import nextstep.member.application.MemberServices;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.domain.LoginMember;
@@ -11,9 +12,9 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private MemberServices memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberServices memberService) {
         this.memberService = memberService;
     }
 

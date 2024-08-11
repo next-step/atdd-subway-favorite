@@ -1,5 +1,7 @@
 package nextstep.utils;
 
+import nextstep.utils.database.DataLoader;
+import nextstep.utils.database.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,3 +22,4 @@ public class AcceptanceTest {
         dataLoader.loadData();
     }
 }
+
