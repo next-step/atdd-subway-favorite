@@ -1,8 +1,8 @@
-package nextstep.member;
+package nextstep.auth;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.infrastructure.oauth.github.dto.GithubAccessTokenRequest;
+import nextstep.auth.infrastructure.oauth.github.dto.GithubAccessTokenResponse;
+import nextstep.auth.infrastructure.oauth.github.dto.GithubProfileResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

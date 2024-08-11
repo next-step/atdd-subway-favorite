@@ -1,18 +1,17 @@
-package nextstep.member.unit;
+package nextstep.auth.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import nextstep.member.application.GithubClient;
-import nextstep.member.GithubResponses;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.infrastructure.oauth.github.GithubClient;
+import nextstep.auth.GithubResponses;
+import nextstep.auth.infrastructure.oauth.github.dto.GithubProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.client.HttpClientErrorException;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")

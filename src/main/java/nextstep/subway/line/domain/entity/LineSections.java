@@ -61,12 +61,12 @@ public class LineSections {
 
         // 상행역이 기존 상행역에 존재하고, 하행역이 기존역에 존재하는 경우
         if (isContainUpStations(newUpStation) && isContainStations(newDownStation)) {
-            throw new InvalidDownStationException(newLineSection.getDistance().getDistance());
+            throw new InvalidDownStationException(newLineSection.getDistance());
         }
 
         // 상행역이 기존 상행역에 존재하고, 하행역이 기존 하행역보다 길거나 같은 경우
         if (isContainUpStations(newUpStation) && isLongerThanExistingSection(newLineSection)) {
-            throw new InvalidSectionLengthException(newLineSection.getDistance().getDistance());
+            throw new InvalidSectionLengthException(newLineSection.getDistance());
         }
     }
 
@@ -106,7 +106,7 @@ public class LineSections {
             existingSection.getLine(),
             newLineSection.getDownStation(),
             existingSection.getDownStation(),
-            existingSection.getDistance().getDistance() - newLineSection.getDistance().getDistance()
+            existingSection.getDistance() - newLineSection.getDistance()
         );
     }
 
@@ -121,7 +121,7 @@ public class LineSections {
     private boolean isLongerThanExistingSection(LineSection newSection) {
         return lineSections.stream()
             .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
-            .anyMatch(section -> newSection.getDistance().getDistance() >= section.getDistance().getDistance());
+            .anyMatch(section -> newSection.getDistance() >= section.getDistance());
     }
 
     private boolean isSameStation(Station upStation, Station downStation) {
@@ -190,7 +190,7 @@ public class LineSections {
         LineSection nextLineSection = getNextLineSection(station);
 
         prevLineSection.updateDownStationAndDistance(nextLineSection.getDownStation(),
-            prevLineSection.getDistance().getDistance() + nextLineSection.getDistance().getDistance());
+            prevLineSection.getDistance() + nextLineSection.getDistance());
         lineSections.remove(nextLineSection);
     }
 
