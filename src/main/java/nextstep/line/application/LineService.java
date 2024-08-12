@@ -16,6 +16,7 @@ import nextstep.line.presentation.dto.LineResponse;
 import nextstep.line.presentation.dto.SectionRequest;
 import nextstep.line.presentation.dto.SectionResponse;
 import nextstep.line.presentation.dto.SectionsResponse;
+import nextstep.utils.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +35,15 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest lineRequest) {
         Line line = lineRepository.save(toEntity(lineRequest));
-        UpAndDownStation upAndDownStation = fetchUpAndDownStation(lineRequest.getUpStationId(), lineRequest.getDownStationId());
+        Pair<Station, Long> upAndDownStation = fetchUpAndDownStation(lineRequest.getUpStationId(), lineRequest.getDownStationId());
 
-        line.addSection(upAndDownStation.upStation, upAndDownStation.downStation, lineRequest.getDistance());
+        line.addSection(upAndDownStation.getFirst(), upAndDownStation.getSecond(), lineRequest.getDistance());
 
         return createLineResponse(line);
     }
 
-    private UpAndDownStation fetchUpAndDownStation(Long upStationId, Long downStationId) {
-        return new UpAndDownStation(upStationId, downStationId);
+    private Pair<Station, Long> fetchUpAndDownStation(Long upStationId, Long downStationId) {
+        return new Pair<>(upStationId, downStationId, stationRepository);
     }
 
     private LineResponse createLineResponse(Line line) {
@@ -104,10 +105,10 @@ public class LineService {
         Line line = this.lineRepository.findById(lineId)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_LINE));
 
-        UpAndDownStation upAndDownStation = fetchUpAndDownStation(sectionRequest.getUpStationId(),
+        Pair<Station, Long> upAndDownStation = fetchUpAndDownStation(sectionRequest.getUpStationId(),
                 sectionRequest.getDownStationId());
 
-        line.addSection(upAndDownStation.upStation, upAndDownStation.downStation, sectionRequest.getDistance());
+        line.addSection(upAndDownStation.getFirst(), upAndDownStation.getSecond(), sectionRequest.getDistance());
     }
 
     @Transactional
@@ -119,21 +120,5 @@ public class LineService {
                 .orElseThrow(() -> new CustomException(NOT_FOUND_STATION));
 
         line.deleteSection(station);
-    }
-
-    private class UpAndDownStation {
-
-        public final Station upStation;
-        public final Station downStation;
-
-        public UpAndDownStation(Long upStationId, Long downStationId) {
-            this.upStation = findById(upStationId);
-            this.downStation = findById(downStationId);
-        }
-
-        private Station findById(Long stationId) {
-            return stationRepository.findById(stationId)
-                    .orElseThrow(() -> new CustomException(NOT_FOUND_STATION));
-        }
     }
 }

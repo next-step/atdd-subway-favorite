@@ -10,6 +10,7 @@ import nextstep.global.exception.CustomException;
 import nextstep.line.domain.Section;
 import nextstep.line.infrastructure.SectionRepository;
 import nextstep.path.domain.PathFinder;
+import nextstep.utils.Pair;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,8 +27,8 @@ public class PathService {
     }
 
     public List<Station> getPath(Long source, Long target) {
-        SourceAndTargetStation sourceAndTargetStation = fetchSourceAndTarget(source, target);
-        List<String> stationNames = pathFinder.getPath(findAllSections(), sourceAndTargetStation.getSource(), sourceAndTargetStation.getTarget());
+        Pair<Station, Long> sourceAndTarget = fetchSourceAndTarget(source, target);
+        List<String> stationNames = pathFinder.getPath(findAllSections(), sourceAndTarget.getFirst(), sourceAndTarget.getSecond());
         List<Station> stations = stationRepository.findByNameIn(stationNames);
         return toOrderByNames(stationNames, stations);
     }
@@ -41,39 +42,15 @@ public class PathService {
     }
 
     public double getPathWeight(Long source, Long target) {
-        SourceAndTargetStation sourceAndTargetStation = fetchSourceAndTarget(source, target);
-        return pathFinder.getPathWeight(findAllSections(), sourceAndTargetStation.getSource(), sourceAndTargetStation.getTarget());
+        Pair<Station, Long> sourceAndTarget = fetchSourceAndTarget(source, target);
+        return pathFinder.getPathWeight(findAllSections(), sourceAndTarget.getFirst(), sourceAndTarget.getSecond());
     }
 
     public List<Section> findAllSections() {
         return sectionRepository.findAll();
     }
 
-    private class SourceAndTargetStation {
-
-        private final Station source;
-        private final Station target;
-
-        public SourceAndTargetStation(Long source, Long target) {
-            this.source = findById(source);
-            this.target = findById(target);
-        }
-
-        public Station getSource() {
-            return source;
-        }
-
-        public Station getTarget() {
-            return target;
-        }
-
-        private Station findById(Long id) {
-            return stationRepository.findById(id)
-                    .orElseThrow(() -> new CustomException(NOT_FOUND_STATION));
-        }
-    }
-
-    private SourceAndTargetStation fetchSourceAndTarget(Long source, Long target) {
-        return new SourceAndTargetStation(source, target);
+    private Pair<Station, Long> fetchSourceAndTarget(Long source, Long target) {
+        return new Pair<>(source, target, stationRepository);
     }
 }
