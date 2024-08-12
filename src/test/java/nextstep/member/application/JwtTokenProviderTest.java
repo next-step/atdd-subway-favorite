@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.security.service.JwtTokenProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,7 @@ class JwtTokenProviderTest {
     void setUp() {
         jwtTokenProvider = new JwtTokenProvider();
         ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", "test-atdd-secret-key");
-        ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", 100000);
+        ReflectionTestUtils.setField(jwtTokenProvider, "validityInMilliseconds", 100000L);
     }
 
     @DisplayName("토큰 claims subject 정보에 id가 포함된다")

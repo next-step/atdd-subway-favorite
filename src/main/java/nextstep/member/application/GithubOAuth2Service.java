@@ -1,11 +1,12 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.security.payload.TokenResponse;
 import nextstep.member.domain.GithubOAuth2Client;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.member.payload.AccessTokenResponse;
 import nextstep.member.payload.GithubUserInfoResponse;
+import nextstep.security.service.JwtTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

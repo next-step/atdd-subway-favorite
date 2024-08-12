@@ -1,7 +1,7 @@
 package nextstep.member.ui;
 
 import nextstep.member.application.GithubOAuth2Service;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.security.payload.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

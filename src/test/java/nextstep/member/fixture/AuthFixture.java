@@ -1,9 +1,9 @@
 package nextstep.member.fixture;
 
-import nextstep.member.application.JwtTokenAuthenticationService;
+import nextstep.security.service.JwtTokenAuthenticationService;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.security.payload.TokenResponse;
 import nextstep.member.application.dto.UserInfoDto;
 import org.springframework.stereotype.Service;
 
