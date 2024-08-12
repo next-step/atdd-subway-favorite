@@ -26,7 +26,7 @@ public class GithubClientImpl implements GithubClient {
     private String apiUrl;
 
     @Override
-    public TokenResponse getAccessTokenFromGithub(String code) {
+    public GithubAccessTokenResponse getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
                 clientId,
@@ -42,8 +42,7 @@ public class GithubClientImpl implements GithubClient {
         ResponseEntity<GithubAccessTokenResponse> response = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class);
 
-        String accessToken = response.getBody().getAccessToken();
-        return new TokenResponse(accessToken);
+        return response.getBody();
     }
 
     @Override
