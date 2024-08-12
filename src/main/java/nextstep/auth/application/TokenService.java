@@ -10,17 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TokenService {
 
-    private final MemberDetailService memberDetailService;
+    private final UserDetailService userDetailService;
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
 
     public TokenResponse authenticateWithCredentials(String email, String password) {
-        var member = memberDetailService.findByEmail(email);
-        if (!member.getPassword().equals(password)) {
+        var userDetails = userDetailService.findByEmail(email);
+        if (!userDetails.getCredential().equals(password)) {
             throw new AuthenticationException();
         }
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getEmail()));
+        return new TokenResponse(jwtTokenProvider.createToken(userDetails.getPrincipal()));
     }
 
     @Transactional
@@ -29,8 +29,8 @@ public class TokenService {
         var githubProfile = githubClient.requestGithubProfile(tokenResponse.getAccessToken());
         var email = githubProfile.getEmail();
 
-        var member = memberDetailService.findOrElseGet(email);
+        var userDetails = userDetailService.findOrElseGet(email);
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getEmail()));
+        return new TokenResponse(jwtTokenProvider.createToken(userDetails.getPrincipal()));
     }
 }
