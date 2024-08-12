@@ -6,7 +6,7 @@ import java.util.List;
 import nextstep.path.application.PathService;
 import nextstep.path.domain.PathFinder;
 import nextstep.station.domain.Station;
-import nextstep.unit.fixture.SectionInMemoryRepository;
+import nextstep.unit.fixture.SectionInMemoryJpaRepository;
 import nextstep.unit.fixture.StationInMemoryRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
-public class PathServiceMockTest extends SectionInMemoryRepository {
+public class PathServiceMockTest extends SectionInMemoryJpaRepository {
 
     private PathService pathService;
 
@@ -28,7 +28,7 @@ public class PathServiceMockTest extends SectionInMemoryRepository {
     @Test
     void getPath() {
         // given
-        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(), new SectionInMemoryRepository());
+        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(), new SectionInMemoryJpaRepository());
 
         // when
         List<Station> result = pathService.getPath(교대역_id, 양재역_id);
@@ -40,7 +40,7 @@ public class PathServiceMockTest extends SectionInMemoryRepository {
     @Test
     void getPathWeight() {
         // given
-        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(), new SectionInMemoryRepository());
+        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(), new SectionInMemoryJpaRepository());
 
         // when
         double weight = pathService.getPathWeight(교대역_id, 양재역_id);

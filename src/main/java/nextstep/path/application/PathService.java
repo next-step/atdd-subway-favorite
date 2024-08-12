@@ -1,14 +1,12 @@
 package nextstep.path.application;
 
-import static nextstep.global.exception.ExceptionCode.NOT_FOUND_STATION;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.line.infrastructure.SectionRepository;
 import nextstep.station.domain.Station;
 import nextstep.station.infrastructure.StationRepository;
-import nextstep.global.exception.CustomException;
 import nextstep.line.domain.Section;
-import nextstep.line.infrastructure.SectionRepository;
+import nextstep.line.infrastructure.SectionJpaRepository;
 import nextstep.path.domain.PathFinder;
 import nextstep.utils.Pair;
 import org.springframework.stereotype.Service;
