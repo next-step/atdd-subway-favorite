@@ -32,9 +32,9 @@ public class TokenService {
         var githubProfile = githubClient.requestGithubProfile(tokenResponse.getAccessToken());
 
         var email = githubProfile.getEmail();
-        memberRepository.findByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseGet(() -> memberRepository.save(new Member(email)));
 
-        return new TokenResponse(jwtTokenProvider.createToken(email));
+        return new TokenResponse(jwtTokenProvider.createToken(member.getEmail()));
     }
 }
