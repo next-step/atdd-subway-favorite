@@ -1,7 +1,6 @@
 package nextstep.member.application;
 
 import nextstep.member.domain.GithubOAuth2Client;
-import nextstep.member.payload.AccessTokenRequest;
 import nextstep.member.payload.AccessTokenResponse;
 import nextstep.member.payload.GithubUserInfoResponse;
 import org.springframework.context.annotation.Primary;

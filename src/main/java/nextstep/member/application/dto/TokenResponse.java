@@ -1,4 +1,4 @@
-package nextstep.security.payload;
+package nextstep.member.application.dto;
 
 public class TokenResponse {
     private String accessToken;

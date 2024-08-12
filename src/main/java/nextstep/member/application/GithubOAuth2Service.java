@@ -1,6 +1,7 @@
 package nextstep.member.application;
 
-import nextstep.security.payload.TokenResponse;
+import nextstep.member.domain.LoginMember;
+import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.GithubOAuth2Client;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -16,9 +17,9 @@ public class GithubOAuth2Service {
 
     private final MemberRepository memberRepository;
     private final GithubOAuth2Client githubOAuth2Client;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider<LoginMember> jwtTokenProvider;
 
-    public GithubOAuth2Service(final MemberRepository memberRepository, final GithubOAuth2Client githubOAuth2Client, final JwtTokenProvider jwtTokenProvider) {
+    public GithubOAuth2Service(final MemberRepository memberRepository, final GithubOAuth2Client githubOAuth2Client, final JwtTokenProvider<LoginMember> jwtTokenProvider) {
         this.memberRepository = memberRepository;
         this.githubOAuth2Client = githubOAuth2Client;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -31,7 +32,7 @@ public class GithubOAuth2Service {
         Member member = memberRepository.findByEmail(userInfo.getEmail())
                 .orElseGet(() -> memberRepository.save(new Member(userInfo.getEmail())));
 
-        return new TokenResponse(jwtTokenProvider.createToken(member.getId(), member.getEmail()));
+        return new TokenResponse(jwtTokenProvider.createToken(new LoginMember(member.getId(), member.getEmail())));
     }
 
 }

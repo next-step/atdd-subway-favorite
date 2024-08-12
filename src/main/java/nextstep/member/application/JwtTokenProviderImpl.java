@@ -2,41 +2,45 @@ package nextstep.member.application;
 
 import io.jsonwebtoken.*;
 import nextstep.member.domain.LoginMember;
+import nextstep.security.service.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProviderImpl implements JwtTokenProvider<LoginMember> {
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
-    private long validityInMilliseconds;
+    private Long validityInMilliseconds;
 
-    public JwtTokenProvider() {
+    public JwtTokenProviderImpl() {
     }
 
-    public JwtTokenProvider(final String secretKey, final long validityInMilliseconds) {
+    public JwtTokenProviderImpl(final String secretKey, final long validityInMilliseconds) {
         this.secretKey = secretKey;
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String createToken(final Long id, final String principal) {
-        Claims claims = Jwts.claims().setSubject(principal);
+    @Override
+    public String createToken(LoginMember loginMember) {
+        Claims claims = Jwts.claims().setSubject(loginMember.getEmail());
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .claim("id", id)
+                .claim("id", loginMember.getId())
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
-    public LoginMember parseLoginMember(String token) {
+
+    @Override
+    public LoginMember parseToken(String token) {
         Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         return new LoginMember(
                 Long.parseLong(body.get("id").toString()),
@@ -44,13 +48,5 @@ public class JwtTokenProvider {
         );
     }
 
-    public boolean validateToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
 }
 
