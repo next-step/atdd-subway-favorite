@@ -1,4 +1,4 @@
-package nextstep.member.payload;
+package nextstep.security.oauth2;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

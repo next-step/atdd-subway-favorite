@@ -1,8 +1,10 @@
 package nextstep.member.domain;
 
 import nextstep.member.payload.AccessTokenRequest;
-import nextstep.member.payload.AccessTokenResponse;
-import nextstep.member.payload.GithubUserInfoResponse;
+import nextstep.security.oauth2.AccessTokenResponse;
+import nextstep.security.oauth2.GithubOAuthProperty;
+import nextstep.security.oauth2.GithubOauth2Client;
+import nextstep.security.oauth2.GithubUserInfoResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Map;
 
 @Component
-public class GithubOAuth2ClientImpl implements GithubOAuth2Client {
+public class GithubOAuth2ClientImpl implements GithubOauth2Client {
 
     private final RestTemplate restTemplate;
 

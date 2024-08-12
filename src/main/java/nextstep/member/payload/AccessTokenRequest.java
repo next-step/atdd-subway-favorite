@@ -1,6 +1,5 @@
 package nextstep.member.payload;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccessTokenRequest {

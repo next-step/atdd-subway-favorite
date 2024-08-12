@@ -7,8 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import nextstep.member.application.FakeGithubOAuth2Client.GithubResponses;
-import nextstep.member.domain.GithubOAuth2Client;
+import nextstep.member.application.FakeOAuth2Client.GithubResponses;
+import nextstep.security.oauth2.GithubOauth2Client;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -22,16 +22,16 @@ public class GithubOAuth2ServiceTest {
     private GithubOAuth2Service githubOAuth2Service;
 
     private MemberRepository memberRepository;
-    private GithubOAuth2Client githubOAuth2Client;
+    private GithubOauth2Client githubOauth2Client;
     private JwtTokenProvider<LoginMember> jwtTokenProvider;
 
 
     @BeforeEach
     void setUp() {
         memberRepository = mock(MemberRepository.class);
-        githubOAuth2Client = new FakeGithubOAuth2Client();
+        githubOauth2Client = new FakeOAuth2Client();
         jwtTokenProvider = new JwtTokenProviderImpl("test-secret-key", 360000);
-        githubOAuth2Service = new GithubOAuth2Service(memberRepository, githubOAuth2Client, jwtTokenProvider);
+        githubOAuth2Service = new GithubOAuth2Service(memberRepository, githubOauth2Client, jwtTokenProvider);
     }
 
 

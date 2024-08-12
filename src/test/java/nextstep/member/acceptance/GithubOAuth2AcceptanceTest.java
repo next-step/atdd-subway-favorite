@@ -2,7 +2,7 @@ package nextstep.member.acceptance;
 
 import static nextstep.member.acceptance.GithubOauth2ApiRequest.로그인_한다;
 import static nextstep.member.acceptance.MemberApiRequest.내_정보를_조회한다;
-import static nextstep.member.application.FakeGithubOAuth2Client.GithubResponses;
+import static nextstep.member.application.FakeOAuth2Client.GithubResponses;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.Response;
