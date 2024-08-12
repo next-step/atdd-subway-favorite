@@ -1,7 +1,7 @@
 package nextstep.member.application;
 
 import nextstep.member.domain.LoginMember;
-import nextstep.security.service.JwtTokenProvider;
+import nextstep.security.application.JwtTokenProvider;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

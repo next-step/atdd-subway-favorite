@@ -4,8 +4,8 @@ import nextstep.member.domain.LoginMember;
 import nextstep.security.domain.Authentication;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.security.domain.UserInfo;
-import nextstep.security.service.JwtTokenProvider;
-import nextstep.security.service.UserDetailsService;
+import nextstep.security.application.JwtTokenProvider;
+import nextstep.security.application.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

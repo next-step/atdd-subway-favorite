@@ -12,7 +12,7 @@ import nextstep.member.domain.GithubOAuth2Client;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
-import nextstep.security.service.JwtTokenProvider;
+import nextstep.security.application.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package nextstep.security.service;
+package nextstep.security.application;
 
 public interface JwtTokenProvider<INFO> {
     String createToken(INFO tokenInfo);

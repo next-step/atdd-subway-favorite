@@ -10,7 +10,7 @@ import nextstep.member.domain.MemberRole;
 import nextstep.member.domain.UserInfoAuthentication;
 import nextstep.security.domain.Authentication;
 import nextstep.security.domain.UserInfo;
-import nextstep.security.service.UserDetailsService;
+import nextstep.security.application.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service

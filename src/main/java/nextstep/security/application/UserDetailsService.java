@@ -1,4 +1,4 @@
-package nextstep.security.service;
+package nextstep.security.application;
 
 import nextstep.security.domain.Authentication;
 import nextstep.security.domain.UserInfo;
