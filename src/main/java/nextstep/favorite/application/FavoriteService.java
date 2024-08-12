@@ -5,7 +5,7 @@ import nextstep.common.exception.*;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.infrastructure.FavoriteRepository;
 import nextstep.favorite.presentation.FavoriteRequest;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
 import nextstep.subway.domain.PathFinderService;

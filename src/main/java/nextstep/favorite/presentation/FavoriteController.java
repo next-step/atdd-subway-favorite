@@ -3,8 +3,8 @@ package nextstep.favorite.presentation;
 import lombok.RequiredArgsConstructor;
 import nextstep.favorite.application.FavoriteResponse;
 import nextstep.favorite.application.FavoriteService;
-import nextstep.member.domain.LoginMember;
-import nextstep.member.presentation.AuthenticationPrincipal;
+import nextstep.auth.domain.LoginMember;
+import nextstep.auth.presentation.AuthenticationPrincipal;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

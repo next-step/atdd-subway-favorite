@@ -1,7 +1,7 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.domain.Member;
 import nextstep.member.infrastructure.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -29,9 +29,9 @@ public class TokenService {
     @Transactional
     public TokenResponse getAuthToken(final String code) {
         var tokenResponse = githubClient.getAccessTokenFromGithub(code);
-        var githubProfileResponse = githubClient.requestGithubProfile(tokenResponse.getAccessToken());
+        var githubProfile = githubClient.requestGithubProfile(tokenResponse.getAccessToken());
 
-        var email = githubProfileResponse.getEmail();
+        var email = githubProfile.getEmail();
         memberRepository.findByEmail(email)
                 .orElseGet(() -> memberRepository.save(new Member(email)));
 

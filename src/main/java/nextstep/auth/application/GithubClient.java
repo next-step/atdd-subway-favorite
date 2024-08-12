@@ -1,6 +1,6 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.infrastructure.GithubProfileResponse;
+import nextstep.auth.infrastructure.GithubProfileResponse;
 
 public interface GithubClient {
     TokenResponse getAccessTokenFromGithub(String code);

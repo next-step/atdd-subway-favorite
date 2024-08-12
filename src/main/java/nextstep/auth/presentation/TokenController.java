@@ -1,9 +1,9 @@
-package nextstep.member.presentation;
+package nextstep.auth.presentation;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.TokenResponse;
-import nextstep.member.application.TokenService;
-import nextstep.member.infrastructure.GithubAccessTokenRequest;
+import nextstep.auth.application.TokenResponse;
+import nextstep.auth.application.TokenService;
+import nextstep.auth.infrastructure.GithubAccessTokenRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

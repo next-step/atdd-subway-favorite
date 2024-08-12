@@ -1,7 +1,7 @@
-package nextstep.member.unit;
+package nextstep.auth.unit;
 
-import nextstep.member.fake.GithubUsers;
-import nextstep.member.infrastructure.GithubClientImpl;
+import nextstep.auth.fake.GithubUsers;
+import nextstep.auth.infrastructure.GithubClientImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

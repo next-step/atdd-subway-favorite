@@ -1,8 +1,8 @@
-package nextstep.member.infrastructure;
+package nextstep.auth.infrastructure;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.TokenResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.TokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;

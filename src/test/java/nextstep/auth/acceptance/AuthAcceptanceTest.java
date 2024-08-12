@@ -1,7 +1,7 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import nextstep.member.domain.Member;
-import nextstep.member.fake.GithubUsers;
+import nextstep.auth.fake.GithubUsers;
 import nextstep.member.infrastructure.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import static nextstep.member.acceptance.AuthSteps.Github_로그인_토큰_요청;
-import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
+import static nextstep.auth.acceptance.AuthSteps.Github_로그인_토큰_요청;
+import static nextstep.auth.acceptance.AuthSteps.로그인_토큰_요청;
 import static nextstep.member.acceptance.MemberSteps.본인_정보_조회;
 import static org.assertj.core.api.Assertions.assertThat;
 
