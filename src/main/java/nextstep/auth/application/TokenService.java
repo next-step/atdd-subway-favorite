@@ -15,7 +15,7 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
     private final GithubClient githubClient;
 
-    public TokenResponse createToken(String email, String password) {
+    public TokenResponse authenticateWithCredentials(String email, String password) {
         var member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
@@ -27,7 +27,7 @@ public class TokenService {
     }
 
     @Transactional
-    public TokenResponse getAuthToken(final String code) {
+    public TokenResponse authenticateWithGithub(final String code) {
         var tokenResponse = githubClient.getAccessTokenFromGithub(code);
         var githubProfile = githubClient.requestGithubProfile(tokenResponse.getAccessToken());
 
