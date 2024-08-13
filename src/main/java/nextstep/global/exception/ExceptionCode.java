@@ -13,7 +13,9 @@ public enum ExceptionCode {
     INVALID_DUPLICATE_SECTION(2006, "해당 역은 이미 존재합니다."),
 
     INVALID_DUPLICATE_PATH(3001, "출발역과 도착역은 같을 수가 없습니다."),
-    INVALID_CONNECT_PATH(3001, "출발역과 도착역은 연결되지 않은 역입니다.");
+    INVALID_CONNECT_PATH(3001, "출발역과 도착역은 연결되지 않은 역입니다."),
+
+    NOT_FOUND_MEMBER(4001, "해당 유저는 존재하지 않습니다");
 
     private final int code;
     private final String message;
