@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import nextstep.line.presentation.dto.SectionResponse;
+import nextstep.line.presentation.dto.SectionResponse.Builder;
 
 @Entity
 public class Favorite {
@@ -11,4 +13,59 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long memberId;
+    private Long sourceStationId;
+    private Long targetStationId;
+
+    public Favorite() {}
+
+    public Favorite(Long memberId, Long sourceStationId, Long targetStationId) {
+        this(null, memberId, sourceStationId, targetStationId);
+    }
+
+    public Favorite(Builder builder) {
+        this(null, builder.memberId, builder.sourceStationId, builder.targetStationId);
+    }
+
+    public Favorite(Long id, Long memberId, Long sourceStationId, Long targetStationId) {
+        this.id = id;
+        this.memberId = memberId;
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
+    }
+
+    public static class Builder {
+        private Long id;
+        private Long memberId;
+        private Long sourceStationId;
+        private Long targetStationId;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder memberId(Long memberId) {
+            this.memberId = memberId;
+            return this;
+        }
+
+        public Builder sourceStationId(Long sourceStationId) {
+            this.sourceStationId = sourceStationId;
+            return this;
+        }
+
+        public Builder targetStationId(Long targetStationId) {
+            this.targetStationId = targetStationId;
+            return this;
+        }
+
+        public Favorite build() {
+            return new Favorite(this);
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
