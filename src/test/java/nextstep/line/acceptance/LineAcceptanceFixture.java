@@ -5,11 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.MediaType;
 
 @SuppressWarnings("NonAsciiCharacters")
-public class LineAcceptanceFixture {
+public class LineAcceptanceFixture extends AcceptanceTest {
 
     protected Long 신사역;
     protected Long 강남역;
@@ -23,7 +24,7 @@ public class LineAcceptanceFixture {
 
 
     @BeforeEach
-    void setUp() {
+    void init() {
         신사역 = requestCreateStation("신사역")
                 .jsonPath()
                 .getObject("id", Long.class);
