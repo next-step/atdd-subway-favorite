@@ -19,7 +19,6 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철 노선 관련 기능")
-//@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class LineAcceptanceTest extends LineAcceptanceFixture {
     /**
      * Given: 새로운 지하철 노선 정보를 입력하고,
