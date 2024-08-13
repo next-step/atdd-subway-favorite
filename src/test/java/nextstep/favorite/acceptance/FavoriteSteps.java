@@ -13,10 +13,10 @@ import org.springframework.http.MediaType;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteSteps {
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long target, Long Source) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성(String accessToken, Long target, Long source) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("target", target);
-        params.put("Source", Source);
+        params.put("source", source);
 
         return RestAssured.given().log().all()
                 .header("Authorization", "Bearer " + accessToken)
@@ -27,8 +27,9 @@ public class FavoriteSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_조회() {
+    public static ExtractableResponse<Response> 즐겨찾기_조회(String accessToken) {
         return RestAssured.given().log().all()
+                .header("Authorization", "Bearer " + accessToken)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
