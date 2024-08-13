@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
-import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
+import static nextstep.auth.acceptance.AuthSteps.로그인_토큰_요청;
 import static nextstep.member.acceptance.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

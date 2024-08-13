@@ -1,4 +1,4 @@
-package nextstep.member.infrastructure;
+package nextstep.auth.infrastructure;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

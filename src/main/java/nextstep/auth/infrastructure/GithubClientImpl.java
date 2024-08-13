@@ -1,8 +1,8 @@
-package nextstep.member.infrastructure;
+package nextstep.auth.infrastructure;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.TokenResponse;
+import nextstep.auth.application.GithubClient;
+import nextstep.auth.application.TokenResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class GithubClientImpl implements GithubClient {
     private String apiUrl;
 
     @Override
-    public TokenResponse getAccessTokenFromGithub(String code) {
+    public GithubAccessTokenResponse getAccessTokenFromGithub(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
                 clientId,
@@ -42,8 +42,7 @@ public class GithubClientImpl implements GithubClient {
         ResponseEntity<GithubAccessTokenResponse> response = restTemplate
                 .exchange(tokenUrl, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class);
 
-        String accessToken = response.getBody().getAccessToken();
-        return new TokenResponse(accessToken);
+        return response.getBody();
     }
 
     @Override

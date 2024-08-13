@@ -1,9 +1,10 @@
 package nextstep.member.presentation;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.auth.presentation.AuthenticationPrincipal;
 import nextstep.member.application.MemberResponse;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse memberResponse = memberService.findMe(loginMember);
+        MemberResponse memberResponse = memberService.findMe(loginMember.getEmail());
         return ResponseEntity.ok().body(memberResponse);
     }
 }

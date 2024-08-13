@@ -1,4 +1,4 @@
-package nextstep.member.presentation;
+package nextstep.auth.presentation;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

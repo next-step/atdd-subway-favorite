@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static nextstep.favorite.acceptance.FavoriteSteps.*;
-import static nextstep.member.acceptance.AuthSteps.로그인_토큰_요청;
+import static nextstep.auth.acceptance.AuthSteps.로그인_토큰_요청;
 import static nextstep.subway.acceptance.LineSteps.지하철_노선_생성;
 import static nextstep.subway.acceptance.SectionSteps.지하철_구간_생성;
 import static nextstep.subway.acceptance.StationSteps.지하철_역_생성;

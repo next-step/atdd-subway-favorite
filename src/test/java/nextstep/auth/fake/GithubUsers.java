@@ -1,4 +1,4 @@
-package nextstep.member.fake;
+package nextstep.auth.fake;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

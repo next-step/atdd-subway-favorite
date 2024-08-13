@@ -1,4 +1,4 @@
-package nextstep.member.presentation;
+package nextstep.auth.presentation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

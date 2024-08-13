@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.auth.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class AuthSteps {
     public static ExtractableResponse<Response> 로그인_토큰_요청(String email, String password) {

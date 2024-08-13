@@ -1,8 +1,8 @@
-package nextstep.member.fake;
+package nextstep.auth.fake;
 
-import nextstep.member.infrastructure.GithubAccessTokenRequest;
-import nextstep.member.infrastructure.GithubAccessTokenResponse;
-import nextstep.member.infrastructure.GithubProfileResponse;
+import nextstep.auth.infrastructure.GithubAccessTokenRequest;
+import nextstep.auth.infrastructure.GithubAccessTokenResponse;
+import nextstep.auth.infrastructure.GithubProfileResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
