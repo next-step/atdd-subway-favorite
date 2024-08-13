@@ -13,7 +13,6 @@ import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 
 import nextstep.utils.AcceptanceTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,10 +28,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private String accessToken;
-    private static final String EMAIL = "admin@email.com";
-    private static final String PASSWORD = "password";
-    private static final Integer AGE = 20;
+    private String adminAccessToken;
+    private static final String ADMIN_EMAIL = "admin@email.com";
+    private static final String ADMIN_PASSWORD = "password";
+    private static final Integer ADMIN_AGE = 20;
+
+    private String userAccessToken;
+    private static final String USER_EMAIL = "user@email.com";
+    private static final String USER_PASSWORD = "password";
+    private static final Integer USER_AGE = 30;
 
     protected Long 신사역;
     protected Long 강남역;
@@ -72,7 +76,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_생성(신분당선_생성(신사역, 논현역)).jsonPath().getObject("id", Long.class);
         분당선 = 지하철_노선_생성(분당선_생성(청량리, 서울숲)).jsonPath().getObject("id", Long.class);
 
-        accessToken = 사용자_설정_및_로그인(EMAIL, PASSWORD, AGE);
+        adminAccessToken = "Bearer " + 사용자_설정_및_로그인(ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_AGE);
+        userAccessToken = "Bearer " + 사용자_설정_및_로그인(USER_EMAIL, USER_PASSWORD, USER_AGE);
     }
 
     /**
@@ -82,7 +87,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_생성() {
         // given & when
-        ExtractableResponse<Response> createResponse = FavoriteSteps.즐겨찾기_생성(accessToken, 신사역, 논현역);
+        ExtractableResponse<Response> createResponse = FavoriteSteps.즐겨찾기_생성(adminAccessToken, 신사역, 논현역);
 
         // then
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -96,11 +101,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_조회() {
         // given
-        FavoriteSteps.즐겨찾기_생성(accessToken, 신사역, 논현역);
-        FavoriteSteps.즐겨찾기_생성(accessToken, 청량리, 서울숲);
+        FavoriteSteps.즐겨찾기_생성(adminAccessToken, 신사역, 논현역);
+        FavoriteSteps.즐겨찾기_생성(adminAccessToken, 청량리, 서울숲);
 
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(accessToken);
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(adminAccessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -115,12 +120,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_삭제() {
         // given
-        ExtractableResponse<Response> createResponse = FavoriteSteps.즐겨찾기_생성(accessToken, 신사역, 논현역);
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(accessToken);
+        ExtractableResponse<Response> createResponse = FavoriteSteps.즐겨찾기_생성(adminAccessToken, 신사역, 논현역);
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(adminAccessToken);
         Long favoriteId = response.jsonPath().getList("id", Long.class).get(0);
 
         // when
-        ExtractableResponse<Response> deleteResponse = FavoriteSteps.즐겨찾기_삭제(accessToken, favoriteId);
+        ExtractableResponse<Response> deleteResponse = FavoriteSteps.즐겨찾기_삭제(adminAccessToken, favoriteId);
 
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -133,11 +138,44 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 비정상_경로를_즐겨찾기_생성하면_예외발생() {
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성(accessToken, 신사역, 서울숲);
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성(adminAccessToken, 신사역, 서울숲);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    /**
+     * When 비정상 유저가 즐겨찾기를 생성하면
+     * Then 예외가 발생한다.
+     */
+    @Test
+    void 비정상_유저가_즐겨찾기_생성하면_예외발생() {
+        // given & when
+        ExtractableResponse<Response> createResponse = FavoriteSteps.즐겨찾기_생성("", 신사역, 논현역);
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    /**
+     * Given 즐겨찾기를 생성하고
+     * When 다른 사람이 해당 즐겨찾기를 삭제를 요청하면
+     * Then 예외가 발생한다.
+     */
+    @Test
+    void 다른사람이_본인_즐겨찾기가_아닌것을_삭제요청하면_예외가_발생() {
+        // given
+        FavoriteSteps.즐겨찾기_생성(adminAccessToken, 신사역, 논현역);
+        ExtractableResponse<Response> readResponse = FavoriteSteps.즐겨찾기_조회(adminAccessToken);
+        Long favoriteId = readResponse.jsonPath().getList("id", Long.class).get(0);
+
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_삭제(userAccessToken, favoriteId);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 
     private String 사용자_설정_및_로그인(String email, String password, Integer age) {
         memberRepository.save(new Member(email, password, age));

@@ -19,7 +19,7 @@ public class FavoriteSteps {
         params.put("source", source);
 
         return RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", accessToken)
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
@@ -29,7 +29,7 @@ public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_조회(String accessToken) {
         return RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", accessToken)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
@@ -37,7 +37,7 @@ public class FavoriteSteps {
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제(String accessToken, Long favoriteId) {
         return RestAssured.given().log().all()
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", accessToken)
                 .when().delete("/favorites/" + favoriteId)
                 .then().log().all()
                 .extract();

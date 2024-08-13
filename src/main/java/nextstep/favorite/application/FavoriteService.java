@@ -1,5 +1,6 @@
 package nextstep.favorite.application;
 
+import static nextstep.global.exception.ExceptionCode.NOT_FOUND_FAVORITE;
 import static nextstep.global.exception.ExceptionCode.NOT_FOUND_MEMBER;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.Favorite.Builder;
 import nextstep.favorite.infrastructrue.FavoriteRepository;
 import nextstep.global.exception.CustomException;
+import nextstep.member.AuthenticationException;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
@@ -67,13 +69,23 @@ public class FavoriteService {
         }).collect(Collectors.toList());
     }
     
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = findMemberByEmail(loginMember.getEmail());
+        Favorite favorite = findFavoriteById(id);
+        if (!favorite.isMember(member)) {
+            throw new AuthenticationException();
+        }
         favoriteRepository.deleteById(id);
     }
 
     private Member findMemberByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));
+    }
+
+    private Favorite findFavoriteById(Long id) {
+        return favoriteRepository.findById(id)
+                .orElseThrow(() -> new CustomException(NOT_FOUND_FAVORITE));
     }
 
     private Map<Long, Station> findByStationIds(List<Long> stationIds) {

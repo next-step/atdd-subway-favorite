@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.line.presentation.dto.SectionResponse;
 import nextstep.line.presentation.dto.SectionResponse.Builder;
+import nextstep.member.domain.Member;
 
 @Entity
 public class Favorite {
@@ -32,6 +33,10 @@ public class Favorite {
         this.memberId = memberId;
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
+    }
+
+    public boolean isMember(Member member) {
+        return memberId.equals(member.getId());
     }
 
     public static class Builder {
