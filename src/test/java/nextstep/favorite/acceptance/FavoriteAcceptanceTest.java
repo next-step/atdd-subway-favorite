@@ -126,6 +126,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * When 비정산 경로를 즐겨찾기를 생성하면
+     * Then 예외가 발생한다.
+     */
+    @Test
+    void 비정상_경로를_즐겨찾기_생성하면_예외발생() {
+        // when
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_생성(accessToken, 신사역, 서울숲);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private String 사용자_설정_및_로그인(String email, String password, Integer age) {
         memberRepository.save(new Member(email, password, age));
         var 로그인_토큰_응답 = 토큰_획득(email, password);
