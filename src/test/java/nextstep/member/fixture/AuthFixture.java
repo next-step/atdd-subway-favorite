@@ -1,26 +1,29 @@
 package nextstep.member.fixture;
 
-import nextstep.member.application.TokenService;
+import nextstep.member.application.JwtTokenAuthenticationService;
+import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
+import nextstep.member.application.dto.UserInfoDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthFixture {
-    private final MemberRepository memberRepository;
-    private final TokenService tokenService;
 
-    private static final String PASSWORD = "password";
+  private static final String PASSWORD = "password";
+  private final MemberService memberService;
+  private final JwtTokenAuthenticationService jwtTokenAuthenticationService;
 
-    public AuthFixture(final MemberRepository memberRepository, final TokenService tokenService) {
-        this.memberRepository = memberRepository;
-        this.tokenService = tokenService;
-    }
+  public AuthFixture(MemberService memberService,
+      JwtTokenAuthenticationService jwtTokenAuthenticationService) {
+    this.memberService = memberService;
+    this.jwtTokenAuthenticationService = jwtTokenAuthenticationService;
+  }
 
-    public String getMemberAccessToken(final String email) {
-        memberRepository.save(new Member(email, PASSWORD, 29));
-        TokenResponse response = tokenService.createToken(email, PASSWORD);
-        return response.getAccessToken();
-    }
+  public String getMemberAccessToken(final String email) {
+    memberService.createMember(new MemberRequest(email, PASSWORD, 29));
+    TokenResponse response = jwtTokenAuthenticationService.createToken(
+        new UserInfoDto(email, PASSWORD));
+    return response.getAccessToken();
+  }
 }

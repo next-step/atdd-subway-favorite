@@ -22,6 +22,7 @@ public enum ErrorMessage {
 
 
     //회원 관련
+    MEMBER_NOT_FOUND("존재하지 않는 사용자입니다."),
     UNAUTHORIZED("인증되지 않은 사용자입니다."),
     FORBIDDEN("권한이 없습니다");
     private final String message;

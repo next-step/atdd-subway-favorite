@@ -1,9 +1,8 @@
 package nextstep.member.application;
 
-import nextstep.member.domain.GithubOAuth2Client;
-import nextstep.member.payload.AccessTokenRequest;
-import nextstep.member.payload.AccessTokenResponse;
-import nextstep.member.payload.GithubUserInfoResponse;
+import nextstep.security.oauth2.AccessTokenResponse;
+import nextstep.security.oauth2.GithubOauth2Client;
+import nextstep.security.oauth2.GithubUserInfoResponse;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -11,11 +10,11 @@ import java.util.Arrays;
 
 @Component
 @Primary
-public class FakeGithubOAuth2Client implements GithubOAuth2Client {
+public class FakeOAuth2Client implements GithubOauth2Client {
 
     @Override
-    public AccessTokenResponse getAccessToken(final AccessTokenRequest request) {
-        GithubResponses githubResponses = GithubResponses.findByCode(request.getCode());
+    public AccessTokenResponse getAccessToken(final String code) {
+        GithubResponses githubResponses = GithubResponses.findByCode(code);
         return new AccessTokenResponse(githubResponses.getAccessToken());
     }
 
