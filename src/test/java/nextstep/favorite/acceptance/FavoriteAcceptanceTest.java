@@ -115,18 +115,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_삭제() {
         // given
-
-        // when
-
-        // then
         ExtractableResponse<Response> createResponse = FavoriteSteps.즐겨찾기_생성(accessToken, 신사역, 논현역);
-        long id = createResponse.jsonPath().getLong("id");
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(accessToken);
+        Long favoriteId = response.jsonPath().getList("id", Long.class).get(0);
 
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_삭제(id);
+        ExtractableResponse<Response> deleteResponse = FavoriteSteps.즐겨찾기_삭제(accessToken, favoriteId);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private String 사용자_설정_및_로그인(String email, String password, Integer age) {
