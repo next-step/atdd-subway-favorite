@@ -100,11 +100,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteSteps.즐겨찾기_생성(accessToken, 청량리, 서울숲);
 
         // when
-        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회();
+        ExtractableResponse<Response> response = FavoriteSteps.즐겨찾기_조회(accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList("id").size()).isEqualTo(2);
+        assertThat(response.jsonPath().getList("id")).hasSize(2);
     }
 
     /**

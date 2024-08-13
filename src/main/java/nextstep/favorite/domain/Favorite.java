@@ -68,4 +68,12 @@ public class Favorite {
     public Long getId() {
         return id;
     }
+
+    public Long getSourceStationId() {
+        return sourceStationId;
+    }
+
+    public Long getTargetStationId() {
+        return targetStationId;
+    }
 }
