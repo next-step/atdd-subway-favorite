@@ -22,8 +22,10 @@ import nextstep.station.presentation.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
@@ -35,6 +37,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public Long createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = findMemberByEmail(loginMember.getEmail());
 
@@ -68,7 +71,8 @@ public class FavoriteService {
                     .build();
         }).collect(Collectors.toList());
     }
-    
+
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = findMemberByEmail(loginMember.getEmail());
         Favorite favorite = findFavoriteById(id);
