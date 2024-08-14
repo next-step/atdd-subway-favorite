@@ -132,7 +132,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * When 비정산 경로를 즐겨찾기를 생성하면
+     * When 비정상 경로를 즐겨찾기를 생성하면
      * Then 예외가 발생한다.
      */
     @Test
