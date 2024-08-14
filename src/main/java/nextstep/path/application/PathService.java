@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.line.infrastructure.SectionRepository;
 import nextstep.station.domain.Station;
-import nextstep.station.infrastructure.StationRepository;
 import nextstep.line.domain.Section;
-import nextstep.line.infrastructure.SectionJpaRepository;
 import nextstep.path.domain.PathFinder;
+import nextstep.station.infrastructure.StationRepository;
 import nextstep.utils.Pair;
 import org.springframework.stereotype.Service;
 
