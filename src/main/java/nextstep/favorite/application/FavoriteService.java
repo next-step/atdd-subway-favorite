@@ -5,11 +5,9 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.line.domain.Section;
-import nextstep.line.domain.SectionRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
-import nextstep.path.domain.ShortestPath;
+import nextstep.path.application.PathService;
 import nextstep.station.application.StationService;
 import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -23,27 +21,23 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final SectionRepository sectionRepository;
     private final StationService stationService;
     private final MemberService memberService;
+    private final PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, SectionRepository sectionRepository, StationService stationService, MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
-        this.sectionRepository = sectionRepository;
         this.stationService = stationService;
         this.memberService = memberService;
+        this.pathService = pathService;
     }
 
     @Transactional
     public FavoriteResponse createFavorite(String memberEmail, FavoriteRequest favoriteRequest) {
+        pathService.validatePaths(favoriteRequest.getSource(), favoriteRequest.getTarget());
+
         Station start = stationService.lookUp(favoriteRequest.getSource());
         Station end = stationService.lookUp(favoriteRequest.getTarget());
-
-        List<Section> sections = sectionRepository.findAll();
-        ShortestPath path = ShortestPath.from(sections);
-
-        path.validateContains(start, end);
-        path.validateConnected(start, end);
 
         Member member = memberService.findMemberByEmail(memberEmail);
         Favorite favorite = favoriteRepository.save(new Favorite(start, end, member));

@@ -6,6 +6,7 @@ import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.member.application.JwtTokenProvider;
 import nextstep.path.application.exception.NotAddedStationsToPathsException;
 import nextstep.path.application.exception.NotConnectedPathsException;
+import nextstep.path.ui.exception.SameSourceAndTargetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -92,10 +93,11 @@ public class FavoriteControllerTest {
     }
 
     @DisplayName("즐겨찾기 추가 함수는, 출발 역과 도착 역이 같은 경우 400 에러를 응답한다.")
-    @ParameterizedTest
-    @MethodSource("exceptionProvider")
+    @Test
     void addFavoritesTest() throws Exception {
         // given
+        doThrow(SameSourceAndTargetException.class).when(favoriteService)
+                .createFavorite(any(), any());
         String jsonContent = 즐겨찾기에_추가할_경로("1");
 
         // when & then
@@ -107,8 +109,7 @@ public class FavoriteControllerTest {
     }
 
     @DisplayName("즐겨찾기 삭제 함수는, 존재하지 않는 즐겨찾기를 삭제하려 하면 400 에러가 발생한다.")
-    @ParameterizedTest
-    @MethodSource("exceptionProvider")
+    @Test
     void deleteFavoriteTest() throws Exception {
         // given
         doThrow(NotExistFavoriteException.class).when(favoriteService)

@@ -5,7 +5,6 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.member.domain.LoginMember;
 import nextstep.member.ui.AuthenticationPrincipal;
-import nextstep.path.ui.exception.SameSourceAndTargetException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +21,6 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
-        if (favoriteRequest.sameSourceAndTarget()) {
-            throw new SameSourceAndTargetException();
-        }
         favoriteService.createFavorite(loginMember.getEmail(), favoriteRequest);
         return ResponseEntity
                 .created(URI.create("/favorites/" + 1L))
