@@ -33,12 +33,10 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(String memberEmail, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         pathService.validatePaths(favoriteRequest.getSource(), favoriteRequest.getTarget());
 
-        Member member = memberService.findMemberByEmail(memberEmail);
-
-        Favorite favorite = favoriteRepository.save(new Favorite(favoriteRequest.getSource(), favoriteRequest.getTarget(), member.getId()));
+        Favorite favorite = favoriteRepository.save(new Favorite(favoriteRequest.getSource(), favoriteRequest.getTarget(), memberId));
 
         Station source = stationService.lookUp(favoriteRequest.getSource());
         Station target = stationService.lookUp(favoriteRequest.getTarget());
@@ -46,10 +44,8 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite.getId(), source, target);
     }
 
-    public List<FavoriteResponse> findFavorites(String memberEmail) {
-        Member member = memberService.findMemberByEmail(memberEmail);
-
-        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
         return createFavoriteResponses(favorites);
     }
 
@@ -60,9 +56,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long id, String memberEmail) {
-        Member member = memberService.findMemberByEmail(memberEmail);
-        favoriteRepository.findByIdAndMemberId(id, member.getId())
+    public void deleteFavorite(Long id, Long memberId) {
+        favoriteRepository.findByIdAndMemberId(id, memberId)
                 .orElseThrow(NotExistFavoriteException::new);
         favoriteRepository.deleteById(id);
     }

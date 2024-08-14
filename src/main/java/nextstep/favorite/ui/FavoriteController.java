@@ -21,21 +21,21 @@ public class FavoriteController {
 
     @PostMapping("/favorites")
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
-        favoriteService.createFavorite(loginMember.getEmail(), favoriteRequest);
-        return ResponseEntity
-                .created(URI.create("/favorites/" + 1L))
+        favoriteService.createFavorite(loginMember.getId(), favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + 1L))
                 .build();
     }
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok()
-                .body(favoriteService.findFavorites(loginMember.getEmail()));
+                .body(favoriteService.findFavorites(loginMember.getId()));
     }
 
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
-        favoriteService.deleteFavorite(id, loginMember.getEmail());
-        return ResponseEntity.noContent().build();
+        favoriteService.deleteFavorite(id, loginMember.getId());
+        return ResponseEntity.noContent()
+                .build();
     }
 }

@@ -58,7 +58,7 @@ public class FavoriteServiceTest {
         mockDependencies(favorite);
 
         // when
-        FavoriteResponse actual = favoriteService.createFavorite(member.getEmail(), favoriteRequest);
+        FavoriteResponse actual = favoriteService.createFavorite(member.getId(), favoriteRequest);
 
         // then
         assertThat(actual).isEqualTo(FavoriteResponse.of(favorite.getId(), 강남역, 양재역));
@@ -73,7 +73,7 @@ public class FavoriteServiceTest {
         mockDependencies(favorite);
 
         // when
-        favoriteService.createFavorite(member.getEmail(), favoriteRequest);
+        favoriteService.createFavorite(member.getId(), favoriteRequest);
 
         // then
         verify(pathService, times(1)).validatePaths(강남역.getId(), 양재역.getId());
@@ -83,7 +83,6 @@ public class FavoriteServiceTest {
         when(stationService.lookUp(강남역.getId())).thenReturn(강남역);
         when(stationService.lookUp(양재역.getId())).thenReturn(양재역);
         when(favoriteRepository.save(favorite)).thenReturn(favorite);
-        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
         doNothing().when(pathService).validatePaths(any(), any());
     }
 
@@ -99,11 +98,10 @@ public class FavoriteServiceTest {
         when(stationService.lookUp(양재역.getId())).thenReturn(양재역);
         when(stationService.lookUp(교대역.getId())).thenReturn(교대역);
         when(stationService.lookUp(홍대역.getId())).thenReturn(홍대역);
-        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
         when(favoriteRepository.findByMemberId(member.getId())).thenReturn(favorites);
 
         // when
-        List<FavoriteResponse> actual = favoriteService.findFavorites(member.getEmail());
+        List<FavoriteResponse> actual = favoriteService.findFavorites(member.getId());
 
         // then
         assertThat(actual).isEqualTo(예상_즐겨찾기_목록());
@@ -120,12 +118,11 @@ public class FavoriteServiceTest {
         // given
         final Long favoriteId = 1L;
 
-        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
         when(favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()))
                 .thenReturn(Optional.of(new Favorite(favoriteId, 강남역.getId(), 양재역.getId(), member.getId())));
 
         // when
-        favoriteService.deleteFavorite(favoriteId, member.getEmail());
+        favoriteService.deleteFavorite(favoriteId, member.getId());
 
         // then
         verify(favoriteRepository).deleteById(favoriteId);
@@ -135,11 +132,10 @@ public class FavoriteServiceTest {
     @Test
     void deleteFavoriteNotExistFavoriteExceptionTest() {
         // given
-        when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
         when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(Optional.empty());
 
         // when
-        ThrowingCallable actual = () -> favoriteService.deleteFavorite(1L, member.getEmail());
+        ThrowingCallable actual = () -> favoriteService.deleteFavorite(1L, member.getId());
 
         // then
         assertThatThrownBy(actual).isInstanceOf(NotExistFavoriteException.class);

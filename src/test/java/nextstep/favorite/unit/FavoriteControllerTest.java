@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FavoriteControllerTest {
 
     private static final String TEST_USER_EMAIL = "test@example.com";
+    private static final Long TEST_USER_ID = 1L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +51,7 @@ public class FavoriteControllerTest {
 
     @BeforeEach
     void setUp() {
-        token = String.format("Bearer %s", jwtTokenProvider.createToken(TEST_USER_EMAIL));
+        token = String.format("Bearer %s", jwtTokenProvider.createToken(TEST_USER_EMAIL, TEST_USER_ID));
     }
 
     // TODO: 추후 3단계 리팩터링 과정에서 권한 관련 테스트 쪽으로 이동 해야 할 것 같습니다.
@@ -78,7 +79,7 @@ public class FavoriteControllerTest {
     void addFavoritesServiceExceptionTest(Class<? extends Exception> exceptionClass) throws Exception {
         // given
         String jsonContent = 즐겨찾기에_추가할_경로("2");
-        when(favoriteService.createFavorite(anyString(), any())).thenThrow(exceptionClass);
+        when(favoriteService.createFavorite(any(), any())).thenThrow(exceptionClass);
 
         // when & then
         mockMvc.perform(post("/favorites")
