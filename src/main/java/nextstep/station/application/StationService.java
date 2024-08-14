@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class StationService {
     private final StationRepository stationRepository;
+    private final StationReader stationReader;
 
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository, StationReader stationReader) {
         this.stationRepository = stationRepository;
+        this.stationReader = stationReader;
     }
 
     @Transactional
@@ -42,7 +44,7 @@ public class StationService {
         );
     }
 
-    public Station findById(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(IllegalArgumentException::new);
+    public Station findById(Long id) {
+        return stationReader.findById(id);
     }
 }

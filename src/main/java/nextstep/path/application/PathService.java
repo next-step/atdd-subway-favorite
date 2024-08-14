@@ -3,6 +3,7 @@ package nextstep.path.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.line.infrastructure.SectionRepository;
+import nextstep.station.application.StationReader;
 import nextstep.station.domain.Station;
 import nextstep.line.domain.Section;
 import nextstep.path.domain.PathFinder;
@@ -16,16 +17,19 @@ public class PathService {
     private final PathFinder pathFinder;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
+    private final StationReader stationReader;
 
-    public PathService(PathFinder pathFinder, StationRepository stationRepository, SectionRepository sectionRepository) {
+    public PathService(PathFinder pathFinder, StationRepository stationRepository, SectionRepository sectionRepository,
+            StationReader stationReader) {
         this.pathFinder = pathFinder;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
+        this.stationReader = stationReader;
     }
 
     public List<Station> getPath(Long source, Long target) {
-        Pair<Station, Long> sourceAndTarget = fetchSourceAndTarget(source, target);
-        List<String> stationNames = pathFinder.getPath(findAllSections(), sourceAndTarget.getFirst(), sourceAndTarget.getSecond());
+        List<String> stationNames = pathFinder.getPath(findAllSections(), stationReader.findById(source),
+                stationReader.findById(target));
         List<Station> stations = stationRepository.findByNameIn(stationNames);
         return toOrderByNames(stationNames, stations);
     }
@@ -39,15 +43,11 @@ public class PathService {
     }
 
     public double getPathWeight(Long source, Long target) {
-        Pair<Station, Long> sourceAndTarget = fetchSourceAndTarget(source, target);
-        return pathFinder.getPathWeight(findAllSections(), sourceAndTarget.getFirst(), sourceAndTarget.getSecond());
+        return pathFinder.getPathWeight(findAllSections(), stationReader.findById(source),
+                stationReader.findById(target));
     }
 
     public List<Section> findAllSections() {
         return sectionRepository.findAll();
-    }
-
-    private Pair<Station, Long> fetchSourceAndTarget(Long source, Long target) {
-        return new Pair<>(source, target, stationRepository);
     }
 }

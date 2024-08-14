@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import nextstep.path.application.PathService;
 import nextstep.path.domain.PathFinder;
+import nextstep.station.application.StationReader;
 import nextstep.station.domain.Station;
 import nextstep.unit.fixture.SectionInMemoryJpaRepository;
 import nextstep.unit.fixture.StationInMemoryRepository;
@@ -28,7 +29,8 @@ public class PathServiceMockTest extends SectionInMemoryJpaRepository {
     @Test
     void getPath() {
         // given
-        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(), new SectionInMemoryJpaRepository());
+        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(),
+                new SectionInMemoryJpaRepository(), new StationReader(new StationInMemoryRepository()));
 
         // when
         List<Station> result = pathService.getPath(교대역_id, 양재역_id);
@@ -40,7 +42,8 @@ public class PathServiceMockTest extends SectionInMemoryJpaRepository {
     @Test
     void getPathWeight() {
         // given
-        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(), new SectionInMemoryJpaRepository());
+        pathService = new PathService(new PathFinder(), new StationInMemoryRepository(),
+                new SectionInMemoryJpaRepository(), new StationReader(new StationInMemoryRepository()));
 
         // when
         double weight = pathService.getPathWeight(교대역_id, 양재역_id);

@@ -5,6 +5,7 @@ import static nextstep.global.exception.ExceptionCode.NOT_FOUND_STATION;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.station.application.StationReader;
 import nextstep.station.domain.Station;
 import nextstep.station.infrastructure.StationJpaRepository;
 import nextstep.global.exception.CustomException;
@@ -27,24 +28,21 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final StationReader stationReader;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository, StationReader stationReader) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.stationReader = stationReader;
     }
 
     @Transactional
     public LineResponse saveLine(LineRequest lineRequest) {
         Line line = lineRepository.save(toEntity(lineRequest));
-        Pair<Station, Long> upAndDownStation = fetchUpAndDownStation(lineRequest.getUpStationId(), lineRequest.getDownStationId());
 
-        line.addSection(upAndDownStation.getFirst(), upAndDownStation.getSecond(), lineRequest.getDistance());
+        line.addSection(stationReader.findById(lineRequest.getUpStationId()), stationReader.findById(lineRequest.getDownStationId()), lineRequest.getDistance());
 
         return createLineResponse(line);
-    }
-
-    private Pair<Station, Long> fetchUpAndDownStation(Long upStationId, Long downStationId) {
-        return new Pair<>(upStationId, downStationId, stationRepository);
     }
 
     private LineResponse createLineResponse(Line line) {
@@ -106,10 +104,8 @@ public class LineService {
         Line line = this.lineRepository.findById(lineId)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_LINE));
 
-        Pair<Station, Long> upAndDownStation = fetchUpAndDownStation(sectionRequest.getUpStationId(),
-                sectionRequest.getDownStationId());
-
-        line.addSection(upAndDownStation.getFirst(), upAndDownStation.getSecond(), sectionRequest.getDistance());
+        line.addSection(stationReader.findById(sectionRequest.getUpStationId()),
+                stationReader.findById(sectionRequest.getDownStationId()), sectionRequest.getDistance());
     }
 
     @Transactional

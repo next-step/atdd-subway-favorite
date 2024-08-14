@@ -9,11 +9,14 @@ import nextstep.station.infrastructure.StationRepository;
 
 public class StationInMemoryRepository extends PathFixture implements StationRepository {
 
-    private final List<Station> stations;
+    private final List<Station> stations = new ArrayList<>();
 
     public StationInMemoryRepository() {
         setUp();
-        this.stations = new ArrayList<>();
+        stations.add(교대역);
+        stations.add(강남역);
+        stations.add(양재역);
+        stations.add(남부터미널역);
     }
 
     public List<Station> findAll() {
