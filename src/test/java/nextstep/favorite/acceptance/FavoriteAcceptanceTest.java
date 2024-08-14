@@ -75,7 +75,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void findFavoriteTest() {
         // given
-        favoriteRepository.save(new Favorite(강남역, 성수역, member));
+        favoriteRepository.save(new Favorite(강남역.getId(), 성수역.getId(), member.getId()));
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_조회_요청(token);
@@ -97,8 +97,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Station 교대역 = stationRepository.save(Station.from("교대역"));
         Station 홍대역 = stationRepository.save(Station.from("홍대역"));
         lineRepository.save(이호선(교대역, 홍대역));
-        Favorite 강남역_성수역 = favoriteRepository.save(new Favorite(강남역, 성수역, member));
-        favoriteRepository.save(new Favorite(교대역, 홍대역, member));
+        Favorite 강남역_성수역 = favoriteRepository.save(new Favorite(강남역.getId(), 성수역.getId(), member.getId()));
+        favoriteRepository.save(new Favorite(교대역.getId(), 홍대역.getId(), member.getId()));
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(token, 강남역_성수역.getId());

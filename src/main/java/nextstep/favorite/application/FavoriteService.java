@@ -36,12 +36,14 @@ public class FavoriteService {
     public FavoriteResponse createFavorite(String memberEmail, FavoriteRequest favoriteRequest) {
         pathService.validatePaths(favoriteRequest.getSource(), favoriteRequest.getTarget());
 
-        Station start = stationService.lookUp(favoriteRequest.getSource());
-        Station end = stationService.lookUp(favoriteRequest.getTarget());
-
         Member member = memberService.findMemberByEmail(memberEmail);
-        Favorite favorite = favoriteRepository.save(new Favorite(start, end, member));
-        return FavoriteResponse.from(favorite);
+
+        Favorite favorite = favoriteRepository.save(new Favorite(favoriteRequest.getSource(), favoriteRequest.getTarget(), member.getId()));
+
+        Station source = stationService.lookUp(favoriteRequest.getSource());
+        Station target = stationService.lookUp(favoriteRequest.getTarget());
+
+        return FavoriteResponse.of(favorite.getId(), source, target);
     }
 
     public List<FavoriteResponse> findFavorites(String memberEmail) {
@@ -53,7 +55,7 @@ public class FavoriteService {
 
     private List<FavoriteResponse> createFavoriteResponses(List<Favorite> favorites) {
         return favorites.stream()
-                .map(FavoriteResponse::from)
+                .map(it -> FavoriteResponse.of(it.getId(), stationService.lookUp(it.getSourceStationId()), stationService.lookUp(it.getTargetStationId())))
                 .collect(Collectors.toList());
     }
 

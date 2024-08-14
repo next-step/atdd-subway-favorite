@@ -1,7 +1,7 @@
 package nextstep.favorite.application.dto;
 
-import nextstep.favorite.domain.Favorite;
 import nextstep.station.application.dto.StationResponse;
+import nextstep.station.domain.Station;
 
 import java.util.Objects;
 
@@ -20,10 +20,10 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-    public static FavoriteResponse from(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(),
-                StationResponse.from(favorite.getSourceStation()),
-                StationResponse.from(favorite.getTargetStation()));
+    public static FavoriteResponse of(Long id, Station source, Station target) {
+        return new FavoriteResponse(id,
+                StationResponse.from(source),
+                StationResponse.from(target));
     }
 
     public Long getId() {

@@ -6,7 +6,6 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.line.domain.Section;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
 import nextstep.path.application.PathService;
@@ -21,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static nextstep.utils.UnitTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,13 +40,11 @@ public class FavoriteServiceTest {
     @Mock
     private PathService pathService;
 
-    private List<Section> 연결되지_않은_두_구간;
     private Member member;
     private FavoriteService favoriteService;
 
     @BeforeEach
     void setUp() {
-        연결되지_않은_두_구간 = List.of(강남역_양재역, 교대역_홍대역);
         member = new Member(1L, "admin@email.com", "password", 20);
         favoriteService = new FavoriteService(favoriteRepository, stationService, memberService, pathService);
     }
@@ -58,14 +54,14 @@ public class FavoriteServiceTest {
     void createFavoriteTest() {
         // given
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
-        Favorite favorite = new Favorite(강남역, 양재역, member);
+        Favorite favorite = new Favorite(강남역.getId(), 양재역.getId(), member.getId());
         mockDependencies(favorite);
 
         // when
         FavoriteResponse actual = favoriteService.createFavorite(member.getEmail(), favoriteRequest);
 
         // then
-        assertThat(actual).isEqualTo(FavoriteResponse.from(favorite));
+        assertThat(actual).isEqualTo(FavoriteResponse.of(favorite.getId(), 강남역, 양재역));
     }
 
     @DisplayName("즐겨찾기 추가 함수는, 정상적인 경로인지 확인하는 함수를 실행한다.")
@@ -73,7 +69,7 @@ public class FavoriteServiceTest {
     void createFavoriteNotConnectedStationsTest() {
         // given
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
-        Favorite favorite = new Favorite(강남역, 양재역, member);
+        Favorite favorite = new Favorite(강남역.getId(), 양재역.getId(), member.getId());
         mockDependencies(favorite);
 
         // when
@@ -95,10 +91,14 @@ public class FavoriteServiceTest {
     @Test
     void findFavoritesTest() {
         // given
-        Favorite favorite1 = new Favorite(1L, 강남역, 양재역, member);
-        Favorite favorite2 = new Favorite(2L, 교대역, 홍대역, member);
+        Favorite favorite1 = new Favorite(1L, 강남역.getId(), 양재역.getId(), member.getId());
+        Favorite favorite2 = new Favorite(2L, 교대역.getId(), 홍대역.getId(), member.getId());
         List<Favorite> favorites = List.of(favorite1, favorite2);
 
+        when(stationService.lookUp(강남역.getId())).thenReturn(강남역);
+        when(stationService.lookUp(양재역.getId())).thenReturn(양재역);
+        when(stationService.lookUp(교대역.getId())).thenReturn(교대역);
+        when(stationService.lookUp(홍대역.getId())).thenReturn(홍대역);
         when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
         when(favoriteRepository.findByMemberId(member.getId())).thenReturn(favorites);
 
@@ -106,13 +106,12 @@ public class FavoriteServiceTest {
         List<FavoriteResponse> actual = favoriteService.findFavorites(member.getEmail());
 
         // then
-        assertThat(actual).isEqualTo(createFavorites(favorites));
+        assertThat(actual).isEqualTo(예상_즐겨찾기_목록());
     }
 
-    private static List<FavoriteResponse> createFavorites(List<Favorite> favorites) {
-        return favorites.stream()
-                .map(FavoriteResponse::from)
-                .collect(Collectors.toList());
+    private static List<FavoriteResponse> 예상_즐겨찾기_목록() {
+        return List.of(FavoriteResponse.of(1L, 강남역, 양재역),
+                FavoriteResponse.of(2L, 교대역, 홍대역));
     }
 
     @DisplayName("즐겨찾기 삭제 함수는, favoriteRepository의 즐겨찾기 삭제 함수가 실행된다.")
@@ -123,7 +122,7 @@ public class FavoriteServiceTest {
 
         when(memberService.findMemberByEmail(member.getEmail())).thenReturn(member);
         when(favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()))
-                .thenReturn(Optional.of(new Favorite(favoriteId, 강남역, 양재역, member)));
+                .thenReturn(Optional.of(new Favorite(favoriteId, 강남역.getId(), 양재역.getId(), member.getId())));
 
         // when
         favoriteService.deleteFavorite(favoriteId, member.getEmail());
