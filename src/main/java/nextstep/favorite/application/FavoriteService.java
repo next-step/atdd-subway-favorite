@@ -33,7 +33,8 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원의 요청입니다."));
 
         Station sourceStation = stationService.findByStationId(request.getSource());
         Station targetStation = stationService.findByStationId(request.getTarget());
@@ -52,7 +53,8 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원의 요청입니다."));
         return favoriteRepository.findAllByMember(member).stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());

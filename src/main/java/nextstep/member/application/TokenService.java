@@ -16,7 +16,8 @@ public class TokenService {
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
+        Member member = memberService.findMemberByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원의 요청입니다."));
         if (!member.getPassword().equals(password)) {
             throw new AuthenticationException();
         }
