@@ -27,6 +27,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    /**
+     * Given: 일반 회원으로 가입한 유저가 있고
+     * When: 이메일과 비밀번호를 통해 로그인하면
+     * Then: 해당 회원에 대한 액세스 토큰이 발급되어 회원 정보를 조회할 수 있다.
+     */
     @Test
     void 기본_로그인_인증() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
@@ -54,6 +59,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
+    /**
+     * Given: 회원가입을 하지 않은 유저가 있고
+     * When: 깃허브 로그인을 하는 경우
+     * Then: 깃허브 로그인을 통해 전달 받은 회원 정보로 회원 가입을 수행하고, 액세스 토큰을 발급한다.
+     */
     @Test
     void 깃허브_로그인_인증() {
         GithubUser 사용자1 = GithubUser.사용자1;
