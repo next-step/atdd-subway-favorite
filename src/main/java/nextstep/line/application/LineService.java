@@ -18,7 +18,6 @@ import nextstep.line.presentation.dto.SectionRequest;
 import nextstep.line.presentation.dto.SectionResponse;
 import nextstep.line.presentation.dto.SectionsResponse;
 import nextstep.station.infrastructure.StationRepository;
-import nextstep.utils.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
