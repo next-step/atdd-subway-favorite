@@ -1,4 +1,4 @@
-package nextstep.member.ui;
+package nextstep.member.presentation;
 
 import nextstep.member.application.TokenService;
 import nextstep.member.application.dto.TokenRequest;
