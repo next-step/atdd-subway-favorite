@@ -41,8 +41,7 @@ public class FavoriteService {
         pathService.findPath(sourceStation.getId(), targetStation.getId());
 
         favoriteRepository.findAllByMember(member).stream()
-                .filter(favorite ->
-                    favorite.getSource().getId().equals(sourceStation.getId()) && favorite.getTarget().getId().equals(targetStation.getId()))
+                .filter(favorite -> favorite.isSamePath(sourceStation, targetStation))
                 .findAny()
                 .ifPresent(e -> {
                     throw new IllegalArgumentException("이미 등록된 즐겨찾기는 다시 등록할 수 없습니다.");

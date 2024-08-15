@@ -52,4 +52,8 @@ public class Favorite {
     public boolean isNotRegister(LoginMember loginMember) {
         return !this.member.getEmail().equals(loginMember.getEmail());
     }
+
+    public boolean isSamePath(Station source, Station target) {
+        return this.source.equals(source) && this.target.equals(target);
+    }
 }
