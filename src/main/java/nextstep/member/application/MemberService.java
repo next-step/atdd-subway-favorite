@@ -45,4 +45,9 @@ public class MemberService {
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
     }
+
+    public MemberResponse registerOAuthMember(String email) {
+        Member member = memberRepository.save(new Member(email, null, null));
+        return MemberResponse.of(member);
+    }
 }

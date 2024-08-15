@@ -1,7 +1,10 @@
 package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
+import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenResponse;
+import nextstep.member.domain.GithubClient;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +12,12 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
+    private GithubClient githubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.githubClient = githubClient;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -23,6 +28,19 @@ public class TokenService {
         }
 
         String token = jwtTokenProvider.createToken(member.getEmail());
+
+        return new TokenResponse(token);
+    }
+
+    public TokenResponse createTokenByGithubLogin(String code) {
+        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubClient.requestGithubToken(code).getAccessToken());
+
+        String token = memberService.findMemberByEmail(githubProfileResponse.getEmail())
+                .map(e -> jwtTokenProvider.createToken(e.getEmail()))
+                .orElseGet(() -> {
+                    MemberResponse memberResponse = memberService.registerOAuthMember(githubProfileResponse.getEmail());
+                    return jwtTokenProvider.createToken(memberResponse.getEmail());
+                });
 
         return new TokenResponse(token);
     }
