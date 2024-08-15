@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
+import nextstep.member.unit.GithubUser;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("토큰 인증 방식 테스트")
 class AuthAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "admin@email.com";
     public static final String PASSWORD = "password";
@@ -25,9 +27,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @DisplayName("Bearer Auth")
     @Test
-    void bearerAuth() {
+    void 기본_로그인_인증() {
         memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
 
         Map<String, String> params = new HashMap<>();
@@ -53,11 +54,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
-    @DisplayName("Github Auth")
     @Test
-    void githubAuth() {
+    void 깃허브_로그인_인증() {
+        GithubUser 사용자1 = GithubUser.사용자1;
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", 사용자1.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
