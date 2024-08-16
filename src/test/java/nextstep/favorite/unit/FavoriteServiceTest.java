@@ -93,7 +93,7 @@ public class FavoriteServiceTest {
         즐겨찾기_1 = favoriteRepository.save(new Favorite(교대역, 강남역, 회원_1));
     }
 
-    @DisplayName("즐겨찾기 생성 성공 케이스")
+    @DisplayName("즐겨찾기 기능 성공 케이스")
     @Nested
     class successCase {
 
@@ -142,7 +142,7 @@ public class FavoriteServiceTest {
         }
     }
 
-    @DisplayName("즐겨찾기 생성 실패 케이스")
+    @DisplayName("즐겨찾기 기능 실패 케이스")
     @Nested
     class failureCase {
 

@@ -33,15 +33,15 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원의 요청입니다."));
 
         Station sourceStation = stationService.findByStationId(request.getSource());
         Station targetStation = stationService.findByStationId(request.getTarget());
         pathService.findPath(sourceStation.getId(), targetStation.getId());
 
         favoriteRepository.findAllByMember(member).stream()
-                .filter(favorite ->
-                    favorite.getSource().getId().equals(sourceStation.getId()) && favorite.getTarget().getId().equals(targetStation.getId()))
+                .filter(favorite -> favorite.isSamePath(sourceStation, targetStation))
                 .findAny()
                 .ifPresent(e -> {
                     throw new IllegalArgumentException("이미 등록된 즐겨찾기는 다시 등록할 수 없습니다.");
@@ -52,7 +52,8 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = memberService.findMemberByEmail(loginMember.getEmail());
+        Member member = memberService.findMemberByEmail(loginMember.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원의 요청입니다."));
         return favoriteRepository.findAllByMember(member).stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
