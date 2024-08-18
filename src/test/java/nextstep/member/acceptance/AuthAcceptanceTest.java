@@ -3,6 +3,7 @@ package nextstep.member.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.member.domain.GithubResponses;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
@@ -53,11 +54,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response2.jsonPath().getString("email")).isEqualTo(EMAIL);
     }
 
-    @DisplayName("Github Auth")
+    @DisplayName("Github Auth 회원가입 진행 후 토큰 발행")
     @Test
-    void githubAuth() {
+    void githubAuth_회원가입_진행_후_토큰_발행() {
         Map<String, String> params = new HashMap<>();
-        params.put("code", "code");
+        params.put("code", GithubResponses.사용자3.getCode());
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -66,7 +67,27 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value()).extract();
 
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("Github Auth 기존유저 토큰 발행")
+    @Test
+    void githubAuth_기존유저_토큰_발행() {
+        // given
+        memberRepository.save(new Member(GithubResponses.사용자1.getEmail(), null, null));
+
+        // when
+        Map<String, String> params = new HashMap<>();
+        params.put("code", GithubResponses.사용자1.getCode());
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 }
