@@ -38,7 +38,7 @@ public class GithubClientTest {
         String accessToken = githubClient.requestGithubToken(사용자1.getCode());
 
         // then
-        assertThat(accessToken).isEqualTo("access_token");
+        assertThat(accessToken).isEqualTo(사용자1.getAccessToken());
     }
 
     @DisplayName("프로필 요청 함수는, 깃허브에서 발급받은 토큰을 입력하면 사용자 프로필을 반환한다.")
@@ -51,6 +51,6 @@ public class GithubClientTest {
         GithubProfileResponse actual = githubClient.requestGithubProfile(accessToken);
 
         // then
-        assertThat(actual).isEqualTo(new GithubProfileResponse("email@email.com", 20));
+        assertThat(actual).isEqualTo(new GithubProfileResponse(사용자1.getEmail(), 사용자1.getAge()));
     }
 }
