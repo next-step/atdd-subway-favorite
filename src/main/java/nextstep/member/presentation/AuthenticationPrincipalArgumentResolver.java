@@ -1,4 +1,4 @@
-package nextstep.member.ui;
+package nextstep.member.presentation;
 
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.JwtTokenProvider;

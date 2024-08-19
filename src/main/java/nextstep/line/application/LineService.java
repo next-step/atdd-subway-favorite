@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.station.application.StationReader;
 import nextstep.station.domain.Station;
-import nextstep.station.infrastructure.StationJpaRepository;
 import nextstep.global.exception.CustomException;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.Sections;
@@ -18,7 +17,6 @@ import nextstep.line.presentation.dto.SectionRequest;
 import nextstep.line.presentation.dto.SectionResponse;
 import nextstep.line.presentation.dto.SectionsResponse;
 import nextstep.station.infrastructure.StationRepository;
-import nextstep.utils.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

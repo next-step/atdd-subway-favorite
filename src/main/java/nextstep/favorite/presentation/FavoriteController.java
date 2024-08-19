@@ -1,11 +1,10 @@
-package nextstep.favorite.ui;
+package nextstep.favorite.presentation;
 
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
-import nextstep.global.exception.CustomException;
 import nextstep.member.domain.LoginMember;
-import nextstep.member.ui.AuthenticationPrincipal;
+import nextstep.member.presentation.AuthenticationPrincipal;
 import nextstep.path.application.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
