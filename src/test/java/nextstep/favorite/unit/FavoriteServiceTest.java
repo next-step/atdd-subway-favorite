@@ -36,8 +36,6 @@ public class FavoriteServiceTest {
     @Mock
     private StationService stationService;
     @Mock
-    private MemberService memberService;
-    @Mock
     private PathService pathService;
 
     private Member member;
@@ -46,7 +44,7 @@ public class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         member = new Member(1L, "admin@email.com", "password", 20);
-        favoriteService = new FavoriteService(favoriteRepository, stationService, memberService, pathService);
+        favoriteService = new FavoriteService(favoriteRepository, stationService, pathService);
     }
 
     @DisplayName("즐겨찾기 추가 함수는, 시작역과 종료역을 입력받아 즐겨찾기에 추가하고 추가된 즐겨찾기 정보를 반환한다.")

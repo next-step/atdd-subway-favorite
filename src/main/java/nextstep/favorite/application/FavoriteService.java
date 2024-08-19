@@ -22,13 +22,11 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
-    private final MemberService memberService;
     private final PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService, PathService pathService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
-        this.memberService = memberService;
         this.pathService = pathService;
     }
 
