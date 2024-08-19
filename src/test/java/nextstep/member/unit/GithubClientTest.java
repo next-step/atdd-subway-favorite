@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("GithubClient 관련 테스트")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
 @Transactional
-@ActiveProfiles({"test", "databaseCleanup"})
 public class GithubClientTest {
 
     @Autowired

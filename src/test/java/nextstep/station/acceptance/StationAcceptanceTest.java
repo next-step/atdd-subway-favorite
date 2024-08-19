@@ -21,8 +21,8 @@ import static nextstep.utils.AssertUtil.assertResponseCode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 인수 테스트")
-@ActiveProfiles("databaseCleanup")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
 public class StationAcceptanceTest {
 
     private static final String 강남역 = "강남역";
