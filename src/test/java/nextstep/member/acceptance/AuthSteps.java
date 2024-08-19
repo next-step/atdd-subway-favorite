@@ -1,17 +1,11 @@
 package nextstep.member.acceptance;
 
-import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
-import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.utils.AcceptanceTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -27,6 +21,25 @@ public class AuthSteps extends AcceptanceTest {
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 깃헙_로그인_요청(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("code", code);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/github")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 유저_정보_조회(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
     }
 }
