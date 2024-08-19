@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.station.application.StationReader;
 import nextstep.station.domain.Station;
-import nextstep.station.infrastructure.StationJpaRepository;
 import nextstep.global.exception.CustomException;
 import nextstep.line.domain.Line;
 import nextstep.line.domain.Sections;

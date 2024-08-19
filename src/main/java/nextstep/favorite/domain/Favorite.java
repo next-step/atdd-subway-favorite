@@ -4,8 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import nextstep.line.presentation.dto.SectionResponse;
-import nextstep.line.presentation.dto.SectionResponse.Builder;
 import nextstep.member.domain.Member;
 
 @Entity

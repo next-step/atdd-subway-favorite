@@ -2,10 +2,8 @@ package nextstep.member.presentation;
 
 import nextstep.member.application.TokenService;
 import nextstep.member.application.dto.LoginRequest;
-import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.dto.TokenRequest;
 import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.dto.GithubAccessTokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

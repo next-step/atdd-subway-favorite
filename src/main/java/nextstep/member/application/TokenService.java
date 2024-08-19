@@ -2,8 +2,6 @@ package nextstep.member.application;
 
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.domain.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenResponse;
 import nextstep.member.domain.GithubClient;
 import nextstep.member.domain.Member;
