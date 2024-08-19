@@ -16,10 +16,6 @@ import java.util.Map;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
 
-    public static final String EMAIL = "admin@email.com";
-    public static final String PASSWORD = "password";
-    public static final Integer AGE = 20;
-
     public static String 로그인(String email, String password) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

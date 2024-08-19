@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.favorite.acceptance.FavoriteAcceptanceTestFixture.*;
 import static nextstep.utils.AssertUtil.assertResponseCode;
+import static nextstep.utils.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 인수테스트")
@@ -43,7 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        member = memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        member = memberRepository.save(new Member(사용자1.getEmail(), 사용자1.getPassword(), 사용자1.getAge()));
         강남역 = stationRepository.save(Station.from("강남역"));
         성수역 = stationRepository.save(Station.from("성수역"));
         lineRepository.save(신분당선(강남역, 성수역));

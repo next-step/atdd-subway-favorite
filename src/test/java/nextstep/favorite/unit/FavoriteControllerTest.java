@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static nextstep.utils.GithubResponses.사용자1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -35,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class FavoriteControllerTest {
 
-    private static final String TEST_USER_EMAIL = "test@example.com";
     private static final Long TEST_USER_ID = 1L;
 
     @Autowired
@@ -51,7 +51,7 @@ public class FavoriteControllerTest {
 
     @BeforeEach
     void setUp() {
-        token = String.format("Bearer %s", jwtTokenProvider.createToken(TEST_USER_EMAIL, TEST_USER_ID));
+        token = String.format("Bearer %s", jwtTokenProvider.createToken(사용자1.getEmail(), TEST_USER_ID));
     }
 
     // TODO: 추후 3단계 리팩터링 과정에서 권한 관련 테스트 쪽으로 이동 해야 할 것 같습니다.
