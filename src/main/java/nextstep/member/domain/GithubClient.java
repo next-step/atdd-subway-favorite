@@ -4,13 +4,12 @@ package nextstep.member.domain;
 import nextstep.member.domain.dto.GithubAccessTokenRequest;
 import nextstep.member.domain.dto.GithubAccessTokenResponse;
 import nextstep.member.domain.dto.GithubProfileResponse;
+import nextstep.utils.RestTemplateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class GithubClient {
@@ -50,26 +49,18 @@ public class GithubClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity(
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(
                 githubAccessTokenRequest, headers);
-        RestTemplate restTemplate = new RestTemplate();
 
-        String url = tokenRequestUri; // github token request url
-        return restTemplate
-                .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-                .getBody()
-                .getAccessToken();
+        return RestTemplateUtils.post(httpEntity, tokenRequestUri, GithubAccessTokenResponse.class).getAccessToken();
     }
 
     public GithubProfileResponse requestProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 
-        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity(accessToken, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
 
-        return restTemplate
-                .exchange(profileUri, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
-                .getBody();
+        return RestTemplateUtils.getWithHeaders(httpEntity, profileUri, GithubProfileResponse.class);
     }
 }
