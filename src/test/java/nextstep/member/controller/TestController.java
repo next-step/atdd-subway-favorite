@@ -30,7 +30,6 @@ public class TestController {
     public ResponseEntity<GithubProfileResponse> user(
             @RequestHeader("Authorization") String authorization) {
         String accessToken = authorization.split(" ")[1];
-        System.out.println("accessToken = " + accessToken);
         GithubResponses githubResponses = GithubResponses.fromAccessCode(accessToken)
                 .orElseThrow(IllegalArgumentException::new);
         GithubProfileResponse response = new GithubProfileResponse(githubResponses.getEmail());
