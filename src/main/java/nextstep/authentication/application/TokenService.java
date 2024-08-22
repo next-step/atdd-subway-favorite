@@ -1,11 +1,9 @@
 package nextstep.authentication.application;
 
+import nextstep.authentication.application.dto.GithubProfileResponse;
+import nextstep.authentication.application.dto.TokenResponse;
 import nextstep.authentication.application.exception.AuthenticationException;
 import nextstep.member.application.MemberService;
-import nextstep.authentication.application.dto.GithubProfileResponse;
-import nextstep.member.application.dto.MemberRequest;
-import nextstep.authentication.application.dto.TokenResponse;
-import nextstep.member.application.exception.MemberNotFoundException;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +21,7 @@ public class TokenService {
 
     public TokenResponse createToken(String email, String password) {
         Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
+        if (!member.checkPassword(password)) {
             throw new AuthenticationException();
         }
 
@@ -36,20 +34,10 @@ public class TokenService {
         String githubToken = githubClient.requestGithubToken(code);
         GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubToken);
 
-        Member member = lookUpOrCreateMember(githubProfileResponse);
+        Member member = memberService.lookUpOrCreateMember(githubProfileResponse);
 
         String token = jwtTokenProvider.createToken(member.getEmail(), member.getId());
 
         return new TokenResponse(token);
-    }
-
-    private Member lookUpOrCreateMember(GithubProfileResponse githubProfileResponse) {
-        Member member;
-        try {
-            member = memberService.findMemberByEmail(githubProfileResponse.getEmail());
-        } catch (MemberNotFoundException exception) {
-            member = memberService.save(MemberRequest.of(githubProfileResponse.getEmail(), githubProfileResponse.getAge()));
-        }
-        return member;
     }
 }

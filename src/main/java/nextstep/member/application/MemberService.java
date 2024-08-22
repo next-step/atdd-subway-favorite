@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import nextstep.authentication.application.dto.GithubProfileResponse;
 import nextstep.member.application.dto.MemberRequest;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.member.application.exception.MemberNotFoundException;
@@ -47,5 +48,15 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(MemberResponse::of)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public Member lookUpOrCreateMember(GithubProfileResponse githubProfileResponse) {
+        Member member;
+        try {
+            member = findMemberByEmail(githubProfileResponse.getEmail());
+        } catch (MemberNotFoundException exception) {
+            member = save(MemberRequest.of(githubProfileResponse.getEmail(), githubProfileResponse.getAge()));
+        }
+        return member;
     }
 }
