@@ -1,10 +1,11 @@
-package nextstep.member.application;
+package nextstep.auth.application;
 
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.auth.AuthenticationException;
+import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
-import nextstep.member.application.dto.TokenResponse;
-import nextstep.member.domain.GithubClient;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubClient;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 

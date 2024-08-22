@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.auth.application.dto;
 
 public class GithubAccessTokenResponse {
 
