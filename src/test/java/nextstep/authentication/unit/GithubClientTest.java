@@ -1,7 +1,7 @@
-package nextstep.member.unit;
+package nextstep.authentication.unit;
 
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.authentication.application.GithubClient;
+import nextstep.authentication.application.dto.GithubProfileResponse;
 import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

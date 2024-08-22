@@ -3,7 +3,7 @@ package nextstep.favorite.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nextstep.favorite.application.FavoriteService;
 import nextstep.favorite.application.exception.NotExistFavoriteException;
-import nextstep.member.application.JwtTokenProvider;
+import nextstep.authentication.application.JwtTokenProvider;
 import nextstep.path.application.exception.NotAddedStationsToPathsException;
 import nextstep.path.application.exception.NotConnectedPathsException;
 import nextstep.path.ui.exception.SameSourceAndTargetException;
@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 
 import static nextstep.utils.GithubResponses.사용자1;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

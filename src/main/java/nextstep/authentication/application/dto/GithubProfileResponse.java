@@ -1,4 +1,4 @@
-package nextstep.member.application.dto;
+package nextstep.authentication.application.dto;
 
 import java.util.Objects;
 

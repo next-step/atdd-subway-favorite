@@ -1,8 +1,8 @@
-package nextstep.member;
+package nextstep.authentication.mock;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.authentication.application.dto.GithubAccessTokenRequest;
+import nextstep.authentication.application.dto.GithubAccessTokenResponse;
+import nextstep.authentication.application.dto.GithubProfileResponse;
 import nextstep.utils.GithubResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

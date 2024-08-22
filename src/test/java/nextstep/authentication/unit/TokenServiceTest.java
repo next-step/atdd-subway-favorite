@@ -1,9 +1,9 @@
-package nextstep.member.unit;
+package nextstep.authentication.unit;
 
 import nextstep.member.application.MemberService;
-import nextstep.member.application.TokenService;
+import nextstep.authentication.application.TokenService;
 import nextstep.member.application.dto.MemberRequest;
-import nextstep.member.application.dto.TokenResponse;
+import nextstep.authentication.application.dto.TokenResponse;
 import nextstep.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

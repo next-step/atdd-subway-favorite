@@ -1,6 +1,4 @@
-package nextstep.member.application.dto;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package nextstep.authentication.application.dto;
 
 public class GithubAccessTokenResponse {
 

@@ -1,4 +1,4 @@
-package nextstep.member.acceptance;
+package nextstep.authentication.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +20,8 @@ import java.util.Map;
 import static nextstep.utils.GithubResponses.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("토큰 인증 관련 인수 테스트")
-@ActiveProfiles("test")
-class AuthAcceptanceTest extends AcceptanceTest {
+@DisplayName("인증 관련 인수 테스트")
+public class AuthenticationAcceptanceTest extends AcceptanceTest {
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
@@ -37,9 +35,14 @@ class AuthAcceptanceTest extends AcceptanceTest {
         memberRepository.save(new Member(사용자1.getEmail(), 사용자1.getPassword(), 사용자1.getAge()));
     }
 
-    @DisplayName("Bearer Auth")
+    /**
+     * Given 이메일과 비밀번호를 입력하고,
+     * When 로그인을 요청하면,
+     * Then 접근 토큰이 발급된다.
+     */
+    @DisplayName("이메일과 비밀번호를 입력하고 요청하면 접근토큰이 발급된다.")
     @Test
-    void bearerAuth() {
+    void bearerAuthentication() {
         // given
         Map<String, String> params = new HashMap<>();
         params.put("email", 사용자1.getEmail());
@@ -54,23 +57,17 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         // then
-        String accessToken = response.jsonPath().getString("accessToken");
-        assertThat(accessToken).isNotBlank();
-
-        // when
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value()).extract();
-
-        // then
-        assertThat(response2.jsonPath().getString("email")).isEqualTo(사용자1.getEmail());
+        assertThat(getAccessToken(response)).isNotBlank();
     }
 
-    @DisplayName("Github Auth")
+    /**
+     * Given Github에서 발급받은 코드를 입력하고,
+     * When 로그인을 요청하면,
+     * Then 접근 토큰이 발급된다.
+     */
+    @DisplayName("Github에서 발급받은 코드를 입력하고 로그인 요청하면 접근토큰이 발급된다.")
     @Test
-    void githubAuth() {
+    void githubAuthentication() {
         // given
         Map<String, String> params = new HashMap<>();
         params.put("code", 사용자1.getCode());
@@ -84,6 +81,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value()).extract();
 
         // then
-        assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
+        assertThat(getAccessToken(response)).isNotBlank();
+    }
+
+    private static String getAccessToken(ExtractableResponse<Response> response) {
+        return response.jsonPath()
+                .getString("accessToken");
     }
 }

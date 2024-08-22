@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.authentication.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.authentication.application.dto.GithubAccessTokenRequest;
+import nextstep.authentication.application.dto.GithubAccessTokenResponse;
+import nextstep.authentication.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
