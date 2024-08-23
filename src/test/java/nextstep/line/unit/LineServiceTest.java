@@ -21,8 +21,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("테스트DB 사용한 지하철 노선 서비스 테스트")
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
-@ActiveProfiles("databaseCleanup")
 public class LineServiceTest {
 
     @Autowired

@@ -5,11 +5,9 @@ import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.line.domain.Section;
-import nextstep.line.domain.SectionRepository;
 import nextstep.member.application.MemberService;
 import nextstep.member.domain.Member;
-import nextstep.path.domain.ShortestPath;
+import nextstep.path.application.PathService;
 import nextstep.station.application.StationService;
 import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -23,50 +21,41 @@ import java.util.stream.Collectors;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final SectionRepository sectionRepository;
     private final StationService stationService;
-    private final MemberService memberService;
+    private final PathService pathService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, SectionRepository sectionRepository, StationService stationService, MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, PathService pathService) {
         this.favoriteRepository = favoriteRepository;
-        this.sectionRepository = sectionRepository;
         this.stationService = stationService;
-        this.memberService = memberService;
+        this.pathService = pathService;
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(String memberEmail, FavoriteRequest favoriteRequest) {
-        Station start = stationService.lookUp(favoriteRequest.getSource());
-        Station end = stationService.lookUp(favoriteRequest.getTarget());
+    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        pathService.validatePaths(favoriteRequest.getSource(), favoriteRequest.getTarget());
 
-        List<Section> sections = sectionRepository.findAll();
-        ShortestPath path = ShortestPath.from(sections);
+        Favorite favorite = favoriteRepository.save(new Favorite(favoriteRequest.getSource(), favoriteRequest.getTarget(), memberId));
 
-        path.validateContains(start, end);
-        path.validateConnected(start, end);
+        Station source = stationService.lookUp(favoriteRequest.getSource());
+        Station target = stationService.lookUp(favoriteRequest.getTarget());
 
-        Member member = memberService.findMemberByEmail(memberEmail);
-        Favorite favorite = favoriteRepository.save(new Favorite(start, end, member));
-        return FavoriteResponse.from(favorite);
+        return FavoriteResponse.of(favorite.getId(), source, target);
     }
 
-    public List<FavoriteResponse> findFavorites(String memberEmail) {
-        Member member = memberService.findMemberByEmail(memberEmail);
-
-        List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
         return createFavoriteResponses(favorites);
     }
 
     private List<FavoriteResponse> createFavoriteResponses(List<Favorite> favorites) {
         return favorites.stream()
-                .map(FavoriteResponse::from)
+                .map(it -> FavoriteResponse.of(it.getId(), stationService.lookUp(it.getSourceStationId()), stationService.lookUp(it.getTargetStationId())))
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteFavorite(Long id, String memberEmail) {
-        Member member = memberService.findMemberByEmail(memberEmail);
-        favoriteRepository.findByIdAndMemberId(id, member.getId())
+    public void deleteFavorite(Long id, Long memberId) {
+        favoriteRepository.findByIdAndMemberId(id, memberId)
                 .orElseThrow(NotExistFavoriteException::new);
         favoriteRepository.deleteById(id);
     }

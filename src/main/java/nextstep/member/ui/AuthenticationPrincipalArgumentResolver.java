@@ -28,7 +28,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         try {
             String email = jwtTokenProvider.getPrincipal(token);
-            return new LoginMember(email);
+            Long id = jwtTokenProvider.getId(token);
+            return new LoginMember(email, id);
         } catch (JwtException e) {
             throw new AuthenticationException();
         }

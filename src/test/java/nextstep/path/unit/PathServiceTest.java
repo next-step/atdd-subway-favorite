@@ -24,8 +24,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("테스트DB 사용한 지하철 경로 서비스 테스트")
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
-@ActiveProfiles("databaseCleanup")
 public class PathServiceTest {
 
     private static final long 구간에없는역_ID = -1L;

@@ -1,13 +1,12 @@
 package nextstep.path.application;
 
-import nextstep.path.domain.ShortestPath;
-import nextstep.path.application.dto.PathsResponse;
-import nextstep.line.domain.Section;
 import nextstep.line.domain.SectionRepository;
-import nextstep.station.domain.Station;
-import nextstep.station.domain.StationRepository;
+import nextstep.path.application.dto.PathsResponse;
+import nextstep.path.domain.ShortestPath;
+import nextstep.path.ui.exception.SameSourceAndTargetException;
+import nextstep.station.application.StationService;
 import nextstep.station.application.dto.StationResponse;
-import nextstep.station.application.exception.NotExistStationException;
+import nextstep.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,39 +16,43 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private StationRepository stationRepository;
 
     private SectionRepository sectionRepository;
+    private StationService stationService;
 
-    public PathService(SectionRepository sectionRepository, StationRepository stationRepository) {
+    public PathService(SectionRepository sectionRepository, StationService stationService) {
         this.sectionRepository = sectionRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
     public PathsResponse findShortestPaths(Long source, Long target) {
-        Station start = lookUpStationBy(source);
-        Station end = lookUpStationBy(target);
+        ShortestPath shortestPath = createShortestPath(source, target);
 
-        List<Section> sections = sectionRepository.findAll();
-        ShortestPath shortestPath = ShortestPath.from(sections);
+        Station start = stationService.lookUp(source);
+        Station end = stationService.lookUp(target);
 
         return new PathsResponse(shortestPath.getDistance(start, end), createStationResponses(shortestPath.getStations(start, end)));
     }
 
-    private Station lookUpStationBy(Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(NotExistStationException::new);
+    public void validatePaths(Long source, Long target) {
+        ShortestPath shortestPath = createShortestPath(source, target);
+
+        Station start = stationService.lookUp(source);
+        Station end = stationService.lookUp(target);
+
+        shortestPath.validateContains(start, end);
+        shortestPath.validateConnected(start, end);
     }
 
-    private static boolean containsStationToSections(List<Section> sections, Station station) {
-        return sections.stream()
-                .anyMatch(section -> containsStationToSection(station, section));
+    private ShortestPath createShortestPath(Long source, Long target) {
+        validateSameSourceAndTarget(source, target);
+        return ShortestPath.from(sectionRepository.findAll());
     }
 
-    private static boolean containsStationToSection(Station station, Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        return upStation.equals(station) || downStation.equals(station);
+    private static void validateSameSourceAndTarget(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new SameSourceAndTargetException();
+        }
     }
 
     private List<StationResponse> createStationResponses(List<Station> stations) {

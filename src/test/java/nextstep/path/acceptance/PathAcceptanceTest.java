@@ -21,8 +21,8 @@ import static nextstep.utils.AssertUtil.assertResponseCode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("경로 관련 인수 테스트")
-@ActiveProfiles("databaseCleanup")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
 public class PathAcceptanceTest {
 
     @Autowired

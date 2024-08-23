@@ -22,9 +22,13 @@ import static nextstep.utils.AssertUtil.assertResponseCode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("노선 관련 인수 테스트")
-@ActiveProfiles("databaseCleanup")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("test")
 public class LineAcceptanceTest {
+
+    private static final int LINE_CREATION_PARAMS_INDEX = 0;
+    private static final int SECTION_PARAMS_INDEX = 1;
+    private static final int EXPECTED_STATION_IDS_INDEX = 2;
 
     @Autowired
     private DatabaseCleanup databaseCleanup;
@@ -141,9 +145,9 @@ public class LineAcceptanceTest {
 
         for (Arguments arguments : fixtures){
             // given
-            ExtractableResponse<Response> createdLineResponse = createLine((Map<String, Object>) arguments.get()[0]);
-            Map<String, Object> sectionParams = (Map<String, Object>) arguments.get()[1];
-            List<Long> expectedStationIds = (List<Long>) arguments.get()[2];
+            ExtractableResponse<Response> createdLineResponse = createLine((Map<String, Object>) arguments.get()[LINE_CREATION_PARAMS_INDEX]);
+            Map<String, Object> sectionParams = (Map<String, Object>) arguments.get()[SECTION_PARAMS_INDEX];
+            List<Long> expectedStationIds = (List<Long>) arguments.get()[EXPECTED_STATION_IDS_INDEX];
 
             // when
             ExtractableResponse<Response> response = addSection(getId(createdLineResponse), sectionParams);
@@ -186,10 +190,10 @@ public class LineAcceptanceTest {
     @Test
     void notExistStationExceptionTest() {
         // given
-        ExtractableResponse<Response> createdLineResponse = createLine(신분당선_PARAM);
+        var createdLineResponse = createLine(신분당선_PARAM);
 
         // when
-        ExtractableResponse<Response> response = addSection(getId(createdLineResponse), 홍대역_서초역_구간_PARAM);
+        var response = addSection(getId(createdLineResponse), 홍대역_서초역_구간_PARAM);
 
         // then
         assertResponseCode(response, HttpStatus.NOT_FOUND);
@@ -207,13 +211,13 @@ public class LineAcceptanceTest {
 
         for (Arguments fixture : fixtures) {
             // given
-            ExtractableResponse<Response> createdLineResponse = createLine(신분당선_PARAM);
+            var createdLineResponse = createLine(신분당선_PARAM);
             addSection(getId(createdLineResponse), 홍대역_강남역_구간_PARAM);
             Long stationId = (Long) fixture.get()[0];
             List<Long> expectedStationIds = (List<Long>) fixture.get()[1];
 
             // when
-            ExtractableResponse<Response> response = deleteSection(getId(createdLineResponse), stationId);
+            var response = deleteSection(getId(createdLineResponse), stationId);
 
             // then
             assertResponseCode(response, HttpStatus.OK);
