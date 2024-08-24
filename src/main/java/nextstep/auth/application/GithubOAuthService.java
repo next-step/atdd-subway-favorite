@@ -1,20 +1,24 @@
-package nextstep.auth.domain;
+package nextstep.auth.application;
 
 import nextstep.auth.application.dto.GithubAccessTokenRequest;
 import nextstep.auth.application.dto.GithubAccessTokenResponse;
 import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.application.dto.TokenResponse;
+import nextstep.auth.domain.GithubOAuthUser;
+import nextstep.auth.domain.OAuthUser;
+import nextstep.member.application.MemberService;
+import nextstep.member.application.dto.MemberResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-
-@Component
-public class GithubClient {
+@Service
+public class GithubOAuthService implements OAuthService {
 
     @Value("${github.client.id}")
     private String clientId;
@@ -28,7 +32,14 @@ public class GithubClient {
     @Value("${github.url.profile}")
     private String requestProfileUrl;
 
-    public GithubAccessTokenResponse requestGithubToken(String code) {
+    @Override
+    public OAuthUser loadUserProfile(String code) {
+        GithubProfileResponse githubProfileResponse = requestUserProfile(requestAccessToken(code));
+
+        return new GithubOAuthUser(githubProfileResponse.getEmail());
+    }
+
+    public String requestAccessToken(String code) {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
                 code,
                 clientId,
@@ -45,10 +56,10 @@ public class GithubClient {
         String url = requestTokenUrl;
         return restTemplate
                 .exchange(url, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
-                .getBody();
+                .getBody().getAccessToken();
     }
 
-    public GithubProfileResponse requestGithubProfile(String accessToken) {
+    public GithubProfileResponse requestUserProfile(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 

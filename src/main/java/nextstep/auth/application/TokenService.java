@@ -2,10 +2,11 @@ package nextstep.auth.application;
 
 import nextstep.auth.AuthenticationException;
 import nextstep.auth.application.dto.GithubProfileResponse;
+import nextstep.auth.domain.OAuthProvider;
+import nextstep.auth.domain.OAuthUser;
 import nextstep.member.application.MemberService;
 import nextstep.member.application.dto.MemberResponse;
 import nextstep.auth.application.dto.TokenResponse;
-import nextstep.auth.domain.GithubClient;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
+    private GithubOAuthService githubOAuthService;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
+    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubOAuthService githubOAuthService) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.githubClient = githubClient;
+        this.githubOAuthService = githubOAuthService;
     }
 
     public TokenResponse createToken(String email, String password) {
@@ -33,13 +34,23 @@ public class TokenService {
         return new TokenResponse(token);
     }
 
-    public TokenResponse createTokenByGithubLogin(String code) {
-        GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubClient.requestGithubToken(code).getAccessToken());
+    public TokenResponse createTokenByOauthLogin(OAuthProvider oAuthProvider, String code) {
+        OAuthService oAuthService = null;
+        switch (oAuthProvider) {
+            case GITHUB:
+                oAuthService = githubOAuthService;
+        }
 
-        String token = memberService.findMemberByEmail(githubProfileResponse.getEmail())
+        if (oAuthService == null) {
+            throw new AuthenticationException();
+        }
+
+        OAuthUser oAuthUser = oAuthService.loadUserProfile(code);
+
+        String token = memberService.findMemberByEmail(oAuthUser.getEmail())
                 .map(e -> jwtTokenProvider.createToken(e.getEmail()))
                 .orElseGet(() -> {
-                    MemberResponse memberResponse = memberService.registerOAuthMember(githubProfileResponse.getEmail());
+                    MemberResponse memberResponse = memberService.registerOAuthMember(oAuthUser.getEmail());
                     return jwtTokenProvider.createToken(memberResponse.getEmail());
                 });
 
