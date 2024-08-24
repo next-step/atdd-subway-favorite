@@ -1,5 +1,6 @@
 package nextstep.member.unit;
 
+import nextstep.auth.application.GithubOAuthService;
 import nextstep.auth.domain.GithubClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,8 @@ public class GithubClientTest {
 
     @Autowired
     private GithubClient githubClient;
+    @Autowired
+    private GithubOAuthService githubOAuthService;
 
     @Test
     void 깃허브_토큰_요청() {
@@ -28,6 +31,31 @@ public class GithubClientTest {
 
         //then
         assertThat(깃허브_토큰).isEqualTo(사용자1.getAccessToken());
+    }
+
+    @Test
+    void OAuth_깃허브_토큰_요청() {
+        //given
+        GithubUser 사용자1 = GithubUser.사용자1;
+
+        //when
+        var 깃허브_토큰 = githubOAuthService.requestAccessToken(사용자1.getCode());
+
+        //then
+        assertThat(깃허브_토큰).isEqualTo(사용자1.getAccessToken());
+    }
+
+    @Test
+    void OAuth_깃허브_사용자_정보_요청() {
+        //given
+        var 사용자1 = GithubUser.사용자1;
+        var 깃허브_토큰 = githubOAuthService.requestAccessToken(사용자1.getCode());
+
+        //when
+        var 깃허브_사용자 = githubOAuthService.requestUserProfile(깃허브_토큰);
+
+        //then
+        assertThat(깃허브_사용자.getEmail()).isEqualTo(사용자1.getEmail());
     }
 
     @Test
