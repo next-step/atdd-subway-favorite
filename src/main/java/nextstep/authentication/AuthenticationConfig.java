@@ -8,10 +8,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
-public class AuthConfig implements WebMvcConfigurer {
+public class AuthenticationConfig implements WebMvcConfigurer {
+
     private JwtTokenProvider jwtTokenProvider;
 
-    public AuthConfig(JwtTokenProvider jwtTokenProvider) {
+    public AuthenticationConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 

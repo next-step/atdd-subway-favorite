@@ -4,7 +4,6 @@ import io.jsonwebtoken.JwtException;
 import nextstep.authentication.application.exception.AuthenticationException;
 import nextstep.authentication.application.JwtTokenProvider;
 import nextstep.authentication.domain.LoginMember;
-import nextstep.member.ui.AuthenticationPrincipal;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
