@@ -9,6 +9,7 @@ import nextstep.path.application.exception.NotConnectedPathsException;
 import nextstep.path.ui.exception.SameSourceAndTargetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,8 +27,7 @@ import static nextstep.utils.UserInformation.사용자1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("즐겨찾기 컨트롤러 테스트")
@@ -49,20 +49,6 @@ public class FavoriteControllerTest {
     @BeforeEach
     void setUp() {
         token = String.format("Bearer %s", jwtTokenProvider.createToken(사용자1.getEmail(), 사용자1.getId()));
-    }
-
-    // TODO: 추후 3단계 리팩터링 과정에서 권한 관련 테스트 쪽으로 이동 해야 할 것 같습니다.
-    @DisplayName("즐겨찾기 추가 함수는, 로그인하지 않은 경우 401 에러를 반환한다.")
-    @Test
-    void addFavoriteNotLoginTest() throws Exception {
-        // given
-        String jsonContent = 즐겨찾기에_추가할_경로("2");
-
-        // when & then
-        mockMvc.perform(post("/favorites")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent))
-                .andExpect(status().isUnauthorized());
     }
 
     private String mapToJson(Map<String, String> map) throws Exception {
@@ -121,5 +107,41 @@ public class FavoriteControllerTest {
 
     private String 즐겨찾기에_추가할_경로(String number) throws Exception {
         return mapToJson(Map.of("source", "1", "target", number));
+    }
+
+    @Nested
+    @DisplayName("인증되지 않은 사용자는 즐겨찾기 기능을 사용할 수 없다.")
+    class UnauthorizedTest {
+
+        @DisplayName("즐겨찾기 추가 함수는, 로그인하지 않은 경우 401 에러를 반환한다.")
+        @Test
+        void addFavoriteTest() throws Exception {
+            // given
+            String jsonContent = 즐겨찾기에_추가할_경로("2");
+
+            // when & then
+            mockMvc.perform(post("/favorites")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(jsonContent))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @DisplayName("즐겨찾기 조회 함수는, 로그인하지 않은 경우 401 에러를 반환한다.")
+        @Test
+        void findFavoriteTest() throws Exception {
+            // when & then
+            mockMvc.perform(get("/favorites")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @DisplayName("즐겨찾기 삭제 함수는, 로그인하지 않은 경우 401 에러를 반환한다.")
+        @Test
+        void deleteFavoriteTest() throws Exception {
+            // when & then
+            mockMvc.perform(delete("/favorites/1")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized());
+        }
     }
 }
