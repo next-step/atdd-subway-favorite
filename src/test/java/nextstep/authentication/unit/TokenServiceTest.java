@@ -1,55 +1,68 @@
 package nextstep.authentication.unit;
 
-import nextstep.member.application.MemberService;
+import nextstep.authentication.application.AuthenticationService;
+import nextstep.authentication.application.GithubClient;
+import nextstep.authentication.application.JwtTokenProvider;
 import nextstep.authentication.application.TokenService;
-import nextstep.member.application.dto.MemberRequest;
+import nextstep.authentication.domain.AuthenticationInformation;
+import nextstep.authentication.application.dto.GithubProfileResponse;
 import nextstep.authentication.application.dto.TokenResponse;
-import nextstep.utils.DatabaseCleanup;
+import nextstep.authentication.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static nextstep.utils.GithubResponses.사용자1;
+import static nextstep.utils.UserInformation.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @DisplayName("토큰 서비스 관련 테스트")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class TokenServiceTest {
 
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private MemberService memberService;
+    @Mock
+    private AuthenticationService authenticationService;
 
-    @Autowired
+    @Mock
+    private GithubClient githubClient;
+
     private TokenService tokenService;
 
     @BeforeEach
     public void setUp() {
-        databaseCleanup.execute(this);
+        tokenService = new TokenService(authenticationService, jwtTokenProvider, githubClient);
     }
 
-    @DisplayName("토큰 생성 함수는, 깃헙에서 발급된 코드를 입력받으면 지하철 서비스의 접근 토큰을 반환한다.")
+    @DisplayName("토큰 생성 함수는, 사용자의 이메일과 비밀번호를 입력받아 토큰을 반환하다.")
     @Test
     void createTokenTest() {
         // given
-        memberService.createMember(new MemberRequest(사용자1.getEmail(), 사용자1.getPassword(), 사용자1.getAge()));
+        when(authenticationService.findMemberByEmail(사용자1.getEmail())).thenReturn(new AuthenticationInformation(사용자1.getEmail(), 사용자1.getId(), 사용자1.getPassword()));
+        when(jwtTokenProvider.createToken(사용자1.getEmail(), 사용자1.getId())).thenReturn(사용자1.getAccessToken());
 
         // when
-        TokenResponse accessToken = tokenService.createToken(사용자1.getCode());
+        TokenResponse accessToken = tokenService.createToken(사용자1.getEmail(), 사용자1.getPassword());
 
         // then
         assertThat(accessToken.getAccessToken()).isNotBlank();
     }
 
-    @DisplayName("토큰 생성 함수는, 회원가입 되어 있지 않은 사용자의 코드를 입력받으면 회원가입 진행 후 토큰을 반환한다.")
+    @DisplayName("토큰 생성 함수는, 사용자의 코드를 입력받으면 토큰을 반환한다.")
     @Test
     void createTokenOfNotMemberTest() {
+        // given
+        when(githubClient.requestGithubToken(any())).thenReturn(사용자1.getAccessToken());
+        when(githubClient.requestGithubProfile(any())).thenReturn(new GithubProfileResponse(사용자1.getEmail(), 사용자1.getAge()));
+        when(authenticationService.lookUpOrCreateMember(any())).thenReturn(new LoginMember(사용자1.getEmail(), 사용자1.getId()));
+        when(jwtTokenProvider.createToken(사용자1.getEmail(), 사용자1.getId())).thenReturn(사용자1.getAccessToken());
+
         // when
         TokenResponse accessToken = tokenService.createToken(사용자1.getCode());
 

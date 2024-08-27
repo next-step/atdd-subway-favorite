@@ -1,42 +1,43 @@
 package nextstep.authentication.application;
 
+import nextstep.authentication.domain.AuthenticationInformation;
 import nextstep.authentication.application.dto.GithubProfileResponse;
 import nextstep.authentication.application.dto.TokenResponse;
-import nextstep.authentication.application.exception.AuthenticationException;
-import nextstep.member.application.MemberService;
-import nextstep.member.domain.Member;
+import nextstep.authentication.domain.LoginMember;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @Service
 public class TokenService {
-    private MemberService memberService;
+
+    private AuthenticationService authenticationService;
     private JwtTokenProvider jwtTokenProvider;
     private GithubClient githubClient;
 
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
-        this.memberService = memberService;
+    public TokenService(AuthenticationService authenticationService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
+        this.authenticationService = authenticationService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.githubClient = githubClient;
     }
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.checkPassword(password)) {
-            throw new AuthenticationException();
-        }
+        AuthenticationInformation authenticationInformation = authenticationService.findMemberByEmail(email);
+        authenticationInformation.verification(password);
 
-        String token = jwtTokenProvider.createToken(member.getEmail(), member.getId());
+        String token = jwtTokenProvider.createToken(authenticationInformation.getEmail(), authenticationInformation.getId());
 
         return new TokenResponse(token);
     }
 
+    @Transactional
     public TokenResponse createToken(String code) {
         String githubToken = githubClient.requestGithubToken(code);
         GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubToken);
 
-        Member member = memberService.lookUpOrCreateMember(githubProfileResponse);
+        LoginMember loginMember = authenticationService.lookUpOrCreateMember(githubProfileResponse);
 
-        String token = jwtTokenProvider.createToken(member.getEmail(), member.getId());
+        String token = jwtTokenProvider.createToken(loginMember.getEmail(), loginMember.getId());
 
         return new TokenResponse(token);
     }

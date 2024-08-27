@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import static nextstep.utils.GithubResponses.사용자1;
-import static nextstep.utils.GithubResponses.사용자2;
+import static nextstep.utils.UserInformation.사용자1;
+import static nextstep.utils.UserInformation.사용자2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -37,7 +37,7 @@ public class MemberServiceTest {
     @BeforeEach
     public void setUp() {
         databaseCleanup.execute(this);
-        회원1 = new Member(1L, 사용자1.getEmail(), 사용자1.getPassword(), 사용자1.getAge());
+        회원1 = new Member(사용자1.getId(), 사용자1.getEmail(), 사용자1.getPassword(), 사용자1.getAge());
         memberRepository.save(회원1);
     }
 

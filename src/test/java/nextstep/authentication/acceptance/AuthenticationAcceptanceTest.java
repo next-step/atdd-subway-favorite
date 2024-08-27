@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.utils.GithubResponses.사용자1;
+import static nextstep.utils.UserInformation.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("인증 관련 인수 테스트")

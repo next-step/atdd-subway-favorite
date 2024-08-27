@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import static nextstep.utils.GithubResponses.사용자1;
+import static nextstep.utils.UserInformation.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("GithubClient 관련 테스트")

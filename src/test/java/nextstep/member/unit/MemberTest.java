@@ -4,7 +4,7 @@ import nextstep.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.utils.GithubResponses.사용자1;
+import static nextstep.utils.UserInformation.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("회원 관련 테스트")
