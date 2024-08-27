@@ -8,7 +8,9 @@ import nextstep.authentication.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -17,11 +19,13 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = save(request);
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public Member save(MemberRequest request) {
         return memberRepository.save(request.toMember());
     }
@@ -31,11 +35,13 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
         member.update(param.toMember());
     }
 
+    @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
@@ -50,6 +56,7 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+    @Transactional
     public Member lookUpOrCreateMember(GithubProfileResponse githubProfileResponse) {
         Member member;
         try {

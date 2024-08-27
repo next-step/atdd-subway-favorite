@@ -6,7 +6,9 @@ import nextstep.authentication.application.dto.GithubProfileResponse;
 import nextstep.authentication.domain.LoginMember;
 import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional(readOnly = true)
 @Service
 public class MemberAuthenticationService implements AuthenticationService {
 
@@ -23,6 +25,7 @@ public class MemberAuthenticationService implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public LoginMember lookUpOrCreateMember(GithubProfileResponse profileResponse) {
         Member member = memberService.lookUpOrCreateMember(profileResponse);
         return new LoginMember(member.getEmail(), member.getId());
