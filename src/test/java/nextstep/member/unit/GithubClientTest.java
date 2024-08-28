@@ -20,7 +20,6 @@ public class GithubClientTest {
     @Autowired
     private GithubClient githubClient;
 
-    //어떤 기능을 / 어떤 조건에서 / 어떤 결과가 유추되는지
     @DisplayName("사용자의 코드로 깃헙 토큰을 요청했을 때 사용자 토큰이 리턴된다.")
     @Test
     void requestGithubAecessToken(){
