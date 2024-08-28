@@ -1,6 +1,6 @@
 package nextstep.favorite.domain;
 
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
 import nextstep.subway.domain.station.Station;
 

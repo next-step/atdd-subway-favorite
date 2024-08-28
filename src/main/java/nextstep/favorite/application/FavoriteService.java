@@ -4,18 +4,16 @@ import nextstep.favorite.application.dto.FavoriteRequest;
 import nextstep.favorite.application.dto.FavoriteResponse;
 import nextstep.favorite.domain.Favorite;
 import nextstep.favorite.domain.FavoriteRepository;
-import nextstep.member.AuthenticationException;
+import nextstep.auth.AuthenticationException;
 import nextstep.member.application.MemberService;
-import nextstep.member.domain.LoginMember;
+import nextstep.auth.domain.LoginMember;
 import nextstep.member.domain.Member;
-import nextstep.member.domain.MemberRepository;
 import nextstep.subway.domain.path.PathService;
 import nextstep.subway.domain.station.Station;
 import nextstep.subway.domain.station.StationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
