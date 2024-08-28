@@ -2,6 +2,8 @@ package nextstep.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nextstep.common.exception.MemberNotFoundException;
+import nextstep.common.response.ErrorCode;
 import nextstep.member.application.dto.GithubProfileResponse;
 
 import java.util.stream.Stream;
@@ -24,13 +26,13 @@ public enum GithubResponses {
         return Stream.of(values())
                 .filter(user -> code.equals(user.code))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(()->new MemberNotFoundException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
     public static GithubResponses getUserByToken(String accessToken) {
         return Stream.of(values())
                 .filter(user -> accessToken.equals(user.accessToken))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(()->new MemberNotFoundException(ErrorCode.NOT_FOUND_MEMBER));
     }
 }
