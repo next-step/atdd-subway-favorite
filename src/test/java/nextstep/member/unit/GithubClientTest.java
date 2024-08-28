@@ -1,15 +1,12 @@
 package nextstep.member.unit;
 
-import nextstep.common.exception.MemberNotFoundException;
-import nextstep.common.exception.PathNotFoundException;
 import nextstep.member.GithubResponses;
-import nextstep.member.application.GithubClient;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.TokenClient;
+import nextstep.member.application.dto.OAuthProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class GithubClientTest {
     @Autowired
-    private GithubClient githubClient;
+    private TokenClient githubClient;
 
     @DisplayName("사용자의 코드로 깃헙 토큰을 요청했을 때 사용자 토큰이 리턴된다.")
     @Test
     void requestGithubAecessToken(){
         String code = GithubResponses.사용자1.getCode();
-        String githubAccessToken = githubClient.requestGithubAeccessToken(code);
+        String githubAccessToken = githubClient.requestAccessToken(code);
 
         assertThat(githubAccessToken).isNotBlank();
         assertThat(githubAccessToken).isEqualTo(GithubResponses.사용자1.getAccessToken());
@@ -36,7 +33,7 @@ public class GithubClientTest {
         String code = "알수없는 코드";
 
         assertThrows(HttpClientErrorException.Unauthorized.class,
-                () -> githubClient.requestGithubAeccessToken(code));
+                () -> githubClient.requestAccessToken(code));
 
     }
 
@@ -44,9 +41,9 @@ public class GithubClientTest {
     @Test
     void requestGithubUser(){
         String code = GithubResponses.사용자2.getCode();
-        String githubAccessToken = githubClient.requestGithubAeccessToken(code);
+        String githubAccessToken = githubClient.requestAccessToken(code);
 
-        GithubProfileResponse githubProfileResponse = githubClient.requestGithubUser(githubAccessToken);
+        OAuthProfileResponse githubProfileResponse = githubClient.requestUserProfile(githubAccessToken);
 
         assertThat(githubProfileResponse.getEmail()).isEqualTo(GithubResponses.사용자2.getEmail());
         assertThat(githubProfileResponse.getAge()).isEqualTo(GithubResponses.사용자2.getAge());
@@ -59,7 +56,7 @@ public class GithubClientTest {
         String githubAccessToken = "알수없는 토큰";
 
         assertThrows(HttpClientErrorException.Unauthorized.class,
-                () -> githubClient.requestGithubUser(githubAccessToken));
+                () -> githubClient.requestUserProfile(githubAccessToken));
 
     }
 }

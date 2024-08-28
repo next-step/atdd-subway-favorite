@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nextstep.common.exception.MemberNotFoundException;
 import nextstep.common.response.ErrorCode;
-import nextstep.member.application.dto.GithubProfileResponse;
 
 import java.util.stream.Stream;
 
