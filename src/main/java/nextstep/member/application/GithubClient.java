@@ -1,8 +1,6 @@
 package nextstep.member.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.member.application.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Objects;
 
 @Component
-public class GithubClient {
+public class GithubClient implements TokenClient {
     @Value("${security.github.token.client-id}")
     private String clientId;
     @Value("${security.github.token.client-secret}")
@@ -25,8 +23,9 @@ public class GithubClient {
     @Value("${security.github.access-profile-uri}")
     private String profileURI;
 
-    public String requestGithubAeccessToken(String code) {
-        GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(
+    @Override
+    public String requestAccessToken(String code) {
+        OAuthAccessTokenRequest githubAccessTokenRequest = new OAuthAccessTokenRequest(
                 code, clientId, clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
@@ -34,26 +33,30 @@ public class GithubClient {
         RestTemplate restTemplate = new RestTemplate();
 
         return Objects.requireNonNull(restTemplate
-                        .exchange(accessTokenURI, HttpMethod.POST, httpEntity, GithubAccessTokenResponse.class)
+                        .exchange(accessTokenURI, HttpMethod.POST, httpEntity, TokenResponse.class)
                         .getBody())
                 .getAccessToken();
     }
 
-    public GithubProfileResponse requestGithubUser(String githubAccessToken) {
+    @Override
+    public OAuthProfileResponse requestUserProfile(String accessToken) {
         HttpHeaders headers = createHeader();
-        headers.add("Authorization", githubAccessToken);
+        headers.add("Authorization", accessToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity(
-                githubAccessToken, headers);
+                accessToken, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate
-                .exchange(profileURI, HttpMethod.GET, httpEntity, GithubProfileResponse.class)
+                .exchange(profileURI, HttpMethod.GET, httpEntity, OAuthProfileResponse.class)
                 .getBody();
     }
+
+
     public HttpHeaders createHeader(){
         HttpHeaders headers = new HttpHeaders();
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
         return headers;
     }
+
 }

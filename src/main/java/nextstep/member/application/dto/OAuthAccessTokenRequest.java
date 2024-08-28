@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class GithubProfileResponse {
-    private String email;
-    private int age;
+public class OAuthAccessTokenRequest {
+    private String code;
+    private String clientId;
+    private String clientSecret;
 }
