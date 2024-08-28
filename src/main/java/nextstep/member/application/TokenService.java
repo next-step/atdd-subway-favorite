@@ -1,5 +1,6 @@
 package nextstep.member.application;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.member.AuthenticationException;
 import nextstep.member.application.dto.GithubAccessTokenResponse;
 import nextstep.member.application.dto.TokenResponse;
@@ -7,30 +8,16 @@ import nextstep.member.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class TokenService {
-    private MemberService memberService;
-    private JwtTokenProvider jwtTokenProvider;
-    private GithubClient githubClient;
-
-    public TokenService(MemberService memberService, JwtTokenProvider jwtTokenProvider, GithubClient githubClient) {
-        this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.githubClient = githubClient;
-    }
+    private final TokenGenerator tokenGenerator;
+    private final TokenClient githubClient;
 
     public TokenResponse createToken(String email, String password) {
-        Member member = memberService.findMemberByEmail(email);
-        if (!member.getPassword().equals(password)) {
-            throw new AuthenticationException();
-        }
-
-        String token = jwtTokenProvider.createToken(member.getEmail());
-
-        return new TokenResponse(token);
+        return tokenGenerator.generateToken(email, password);
     }
-
-    public GithubAccessTokenResponse creteGithubAccessToken(String code) {
-        String token = githubClient.requestGithubAeccessToken(code);
-        return new GithubAccessTokenResponse(token);
+    public TokenResponse creteGithubAccessToken(String code) {
+        String token = githubClient.requestAccessToken(code);
+        return new TokenResponse(token);
     }
 }
