@@ -7,7 +7,6 @@ import nextstep.authentication.domain.LoginMember;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
 @Service
 public class TokenService {
 
@@ -21,6 +20,7 @@ public class TokenService {
         this.githubClient = githubClient;
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse createToken(String email, String password) {
         AuthenticationInformation authenticationInformation = authenticationService.findMemberByEmail(email);
         authenticationInformation.verification(password);
@@ -30,7 +30,6 @@ public class TokenService {
         return new TokenResponse(token);
     }
 
-    @Transactional
     public TokenResponse createToken(String code) {
         String githubToken = githubClient.requestGithubToken(code);
         GithubProfileResponse githubProfileResponse = githubClient.requestGithubProfile(githubToken);
