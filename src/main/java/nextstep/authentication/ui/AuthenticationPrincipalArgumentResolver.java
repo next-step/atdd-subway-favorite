@@ -1,9 +1,9 @@
-package nextstep.member.ui;
+package nextstep.authentication.ui;
 
 import io.jsonwebtoken.JwtException;
-import nextstep.member.AuthenticationException;
-import nextstep.member.application.JwtTokenProvider;
-import nextstep.member.domain.LoginMember;
+import nextstep.authentication.application.exception.AuthenticationException;
+import nextstep.authentication.application.JwtTokenProvider;
+import nextstep.authentication.domain.LoginMember;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -11,6 +11,13 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String SPACE = " ";
+    private static final String BEARER = "bearer";
+    private static final int TOKEN_INDEX = 1;
+    private static final int BEARER_INDEX = 0;
+
     private JwtTokenProvider jwtTokenProvider;
 
     public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider) {
@@ -36,15 +43,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     private String getToken(NativeWebRequest webRequest) {
-        String authorization = webRequest.getHeader("Authorization");
+        String authorization = webRequest.getHeader(AUTHORIZATION);
         if (isUnauthorized(authorization)) {
             throw new AuthenticationException();
         }
 
-        return authorization.split(" ")[1];
+        return authorization.split(SPACE)[TOKEN_INDEX];
     }
 
     private boolean isUnauthorized(String authorization) {
-        return authorization == null || !"bearer".equalsIgnoreCase(authorization.split(" ")[0]);
+        return authorization == null || !BEARER.equalsIgnoreCase(authorization.split(SPACE)[BEARER_INDEX]);
     }
 }

@@ -1,8 +1,8 @@
-package nextstep.member.application;
+package nextstep.authentication.application;
 
-import nextstep.member.application.dto.GithubAccessTokenRequest;
-import nextstep.member.application.dto.GithubAccessTokenResponse;
-import nextstep.member.application.dto.GithubProfileResponse;
+import nextstep.authentication.application.dto.GithubAccessTokenRequest;
+import nextstep.authentication.application.dto.GithubAccessTokenResponse;
+import nextstep.authentication.application.dto.GithubProfileResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +14,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class GithubClient {
+
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String ACCEPT = "Accept";
+    private static final String TOKEN_FORMAT = "Bearer %s";
 
     @Value("${github.token.url}")
     private String tokenUrl;
@@ -31,9 +35,9 @@ public class GithubClient {
         GithubAccessTokenRequest githubAccessTokenRequest = new GithubAccessTokenRequest(code, clientId, clientSecret);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity(githubAccessTokenRequest, headers);
+        HttpEntity<GithubAccessTokenRequest> httpEntity = new HttpEntity<>(githubAccessTokenRequest, headers);
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate
@@ -45,8 +49,8 @@ public class GithubClient {
     public GithubProfileResponse requestGithubProfile(String token) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", token));
-        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.add(AUTHORIZATION, String.format(TOKEN_FORMAT, token));
+        headers.add(ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();

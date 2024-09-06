@@ -18,7 +18,7 @@ import org.springframework.http.HttpStatus;
 
 import static nextstep.favorite.acceptance.FavoriteAcceptanceTestFixture.*;
 import static nextstep.utils.AssertUtil.assertResponseCode;
-import static nextstep.utils.GithubResponses.사용자1;
+import static nextstep.utils.UserInformation.사용자1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 인수테스트")

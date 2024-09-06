@@ -3,6 +3,7 @@ package nextstep.member.application.dto;
 import nextstep.member.domain.Member;
 
 public class MemberRequest {
+
     private String email;
     private String password;
     private Integer age;

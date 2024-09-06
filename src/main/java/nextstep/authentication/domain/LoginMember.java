@@ -1,6 +1,7 @@
-package nextstep.member.domain;
+package nextstep.authentication.domain;
 
 public class LoginMember {
+
     private String email;
     private Long id;
 

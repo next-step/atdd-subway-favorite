@@ -1,5 +1,6 @@
 package nextstep.handler;
 
+import nextstep.authentication.application.exception.AuthenticationException;
 import nextstep.favorite.application.exception.NotExistFavoriteException;
 import nextstep.line.application.exception.DuplicateStationException;
 import nextstep.line.application.exception.LastOneSectionException;
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<String> handleBadRequestException(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<String> handleUnauthorizedException(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(e.getMessage());
     }
 }
