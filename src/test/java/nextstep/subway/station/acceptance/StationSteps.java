@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 
 public class StationSteps {
 
-    public static Long createStation(String stationName) {
+    public static Long 역_생성_요청(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
 
@@ -23,7 +23,7 @@ public class StationSteps {
                 .response().jsonPath().getLong("id");
     }
 
-    public static List<String> getStations() {
+    public static List<String> 모든_역_조회_요청() {
         List<String> stationNames = RestAssured.given().log().all()
                 .when().get("/stations")
                 .then().log().all()
@@ -32,11 +32,11 @@ public class StationSteps {
         return stationNames;
     }
 
-    public static Long getStationId(ExtractableResponse<Response> station) {
+    public static Long 역_조회_요청(ExtractableResponse<Response> station) {
         return station.response().jsonPath().getLong("id");
     }
 
-    public static Response deleteStation(String id) {
+    public static Response 역_삭제_요청(String id) {
         return RestAssured.given().log().all()
                 .when().delete("/stations/" + id)
                 .then().log().all()

@@ -1,9 +1,9 @@
 package nextstep.subway.path.acceptance;
 
-import static nextstep.subway.line.acceptance.LineSteps.createLine;
+import static nextstep.subway.line.acceptance.LineSteps.노선_생성_요청;
 import static nextstep.subway.path.acceptance.PathSteps.지하철_경로_조회_요청;
-import static nextstep.subway.section.acceptance.SectionSteps.createSection;
-import static nextstep.subway.station.acceptance.StationSteps.createStation;
+import static nextstep.subway.section.acceptance.SectionSteps.구간_생성_요청;
+import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -29,14 +29,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        수서역 = createStation("수서역");
-        선릉역 = createStation("선릉역");
-        역삼역 = createStation("역삼역");
-        강남역 = createStation("강남역");
-        분당선 = createLine(new LineCreateRequest("분당선", "yellow", 수서역, 선릉역, 10));
-        이호선 = createLine(new LineCreateRequest("이호선", "green", 선릉역, 역삼역, 7));
+        수서역 = 역_생성_요청("수서역");
+        선릉역 = 역_생성_요청("선릉역");
+        역삼역 = 역_생성_요청("역삼역");
+        강남역 = 역_생성_요청("강남역");
+        분당선 = 노선_생성_요청(new LineCreateRequest("분당선", "yellow", 수서역, 선릉역, 10));
+        이호선 = 노선_생성_요청(new LineCreateRequest("이호선", "green", 선릉역, 역삼역, 7));
 
-        createSection(이호선, 역삼역, 강남역, 2);
+        구간_생성_요청(이호선, 역삼역, 강남역, 2);
     }
 
     /**
@@ -83,7 +83,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 출발역과_도착역이_연결되지_않으면_예외를_반환한다() {
         // given
-        Long 해운대역 = createStation("해운대역");
+        Long 해운대역 = 역_생성_요청("해운대역");
 
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(수서역, 해운대역);

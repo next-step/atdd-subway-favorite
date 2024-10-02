@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 public class LineSteps {
 
-    public static Long createLine(LineCreateRequest request) {
+    public static Long 노선_생성_요청(LineCreateRequest request) {
         return RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -19,7 +19,7 @@ public class LineSteps {
                 .response().jsonPath().getLong("id");
     }
 
-    public static ExtractableResponse<Response> getLines() {
+    public static ExtractableResponse<Response> 모든_노선_조회_요청() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when().get("/lines")
                 .then().log().all()
@@ -27,14 +27,14 @@ public class LineSteps {
         return response;
     }
 
-    public static ExtractableResponse<Response> getLine(Long lineId) {
+    public static ExtractableResponse<Response> 노선_조회_요청(Long lineId) {
         return RestAssured.given().log().all()
                 .when().get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> putLine(Long lineId, LineUpdateRequest request) {
+    public static ExtractableResponse<Response> 노선_수정_요청(Long lineId, LineUpdateRequest request) {
         return RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +43,7 @@ public class LineSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> deleteLine(Long lineId) {
+    public static ExtractableResponse<Response> 노선_삭제_요청(Long lineId) {
         return RestAssured.given().log().all()
                 .when().delete("/lines/" + lineId)
                 .then().log().all()

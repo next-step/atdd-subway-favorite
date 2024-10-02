@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 
 public class SectionSteps {
 
-    public static ExtractableResponse<Response> createSection(Long lineId, Long upStationId, Long downStationId, int distance) {
+    public static ExtractableResponse<Response> 구간_생성_요청(Long lineId, Long upStationId, Long downStationId, int distance) {
         Map<String, Object> params = new HashMap<>();
         params.put("downStationId", downStationId);
         params.put("upStationId", upStationId);
@@ -23,7 +23,7 @@ public class SectionSteps {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> deleteSection(Long lineId, Long stationId) {
+    public static ExtractableResponse<Response> 구간_삭제_요청(Long lineId, Long stationId) {
         return RestAssured
                 .given()
                 .queryParam("stationId", stationId)
