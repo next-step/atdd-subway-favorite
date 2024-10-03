@@ -5,7 +5,7 @@ import static nextstep.subway.line.acceptance.LineSteps.노선_삭제_요청;
 import static nextstep.subway.line.acceptance.LineSteps.노선_조회_요청;
 import static nextstep.subway.line.acceptance.LineSteps.모든_노선_조회_요청;
 import static nextstep.subway.line.acceptance.LineSteps.노선_수정_요청;
-import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청;
+import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청_후_id_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -30,8 +30,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void 지하철노선을_생성하고_조회한다() {
         // given
-        Long 건대입구_id = 역_생성_요청("건대입구");
-        Long 어린이대공원_id = 역_생성_요청("어린이대공원");
+        Long 건대입구_id = 역_생성_요청_후_id_반환("건대입구");
+        Long 어린이대공원_id = 역_생성_요청_후_id_반환("어린이대공원");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "신분당선",
@@ -60,9 +60,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void 생성한_지하철노선을_모두_조회한다() {
         // given
-        Long 건대입구_id = 역_생성_요청("건대입구");
-        Long 어린이대공원_id = 역_생성_요청("어린이대공원");
-        Long 군자_id = 역_생성_요청("군자");
+        Long 건대입구_id = 역_생성_요청_후_id_반환("건대입구");
+        Long 어린이대공원_id = 역_생성_요청_후_id_반환("어린이대공원");
+        Long 군자_id = 역_생성_요청_후_id_반환("군자");
 
         LineCreateRequest lineCreateRequest_1 = new LineCreateRequest(
                 "신분당선",
@@ -104,8 +104,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void 한개의_지하철_노선을_조회한다() {
         // given
-        Long 건대입구_id = 역_생성_요청("건대입구");
-        Long 어린이대공원_id = 역_생성_요청("어린이대공원");
+        Long 건대입구_id = 역_생성_요청_후_id_반환("건대입구");
+        Long 어린이대공원_id = 역_생성_요청_후_id_반환("어린이대공원");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "신분당선",
@@ -135,8 +135,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void 지하철노선_정보를_수정한다() {
         // given
-        Long 건대입구_id = 역_생성_요청("건대입구");
-        Long 어린이대공원_id = 역_생성_요청("어린이대공원");
+        Long 건대입구_id = 역_생성_요청_후_id_반환("건대입구");
+        Long 어린이대공원_id = 역_생성_요청_후_id_반환("어린이대공원");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "신분당선",
@@ -168,8 +168,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void 지하철노선을_삭제한다() {
         // given
-        Long 건대입구_id = 역_생성_요청("건대입구");
-        Long 어린이대공원_id = 역_생성_요청("어린이대공원");
+        Long 건대입구_id = 역_생성_요청_후_id_반환("건대입구");
+        Long 어린이대공원_id = 역_생성_요청_후_id_반환("어린이대공원");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "신분당선",

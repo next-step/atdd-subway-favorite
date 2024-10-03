@@ -1,8 +1,9 @@
 package nextstep.subway.station.acceptance;
 
+import static nextstep.subway.station.acceptance.StationSteps.모든_역_조회_요청_후_역이름_리스트_반환;
 import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청;
 import static nextstep.subway.station.acceptance.StationSteps.역_삭제_요청;
-import static nextstep.subway.station.acceptance.StationSteps.모든_역_조회_요청;
+import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청_후_id_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.Response;
@@ -27,7 +28,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         역_생성_요청("어린이대공원역");
 
         // when
-        List<String> stationNames = 모든_역_조회_요청();
+        List<String> stationNames = 모든_역_조회_요청_후_역이름_리스트_반환();
 
         // then
         assertThat(stationNames.size()).isEqualTo(2);
@@ -45,7 +46,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void test2() {
         // given
-        Long stationId = 역_생성_요청("건대입구역");
+        Long stationId = 역_생성_요청_후_id_반환("건대입구역");
         String id = String.valueOf(stationId);
 
         // when
@@ -64,7 +65,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void test3() {
         // given
-        Long stationId = 역_생성_요청("건대입구역");
+        Long stationId = 역_생성_요청_후_id_반환("건대입구역");
         String id = String.valueOf(stationId + 1);
 
         // when

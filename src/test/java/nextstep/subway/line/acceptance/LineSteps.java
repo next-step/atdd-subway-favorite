@@ -9,15 +9,20 @@ import org.springframework.http.MediaType;
 
 public class LineSteps {
 
-    public static Long 노선_생성_요청(LineCreateRequest request) {
+    public static ExtractableResponse<Response> 노선_생성_요청(LineCreateRequest request) {
         return RestAssured.given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines")
                 .then().log().all()
-                .extract()
-                .response().jsonPath().getLong("id");
+                .extract();
     }
+
+    public static Long 노선_생성_요청_후_id_반환(LineCreateRequest request) {
+        var extractableResponse = 노선_생성_요청(request);
+        return extractableResponse.response().jsonPath().getLong("id");
+    }
+
 
     public static ExtractableResponse<Response> 모든_노선_조회_요청() {
         ExtractableResponse<Response> response = RestAssured.given().log().all()

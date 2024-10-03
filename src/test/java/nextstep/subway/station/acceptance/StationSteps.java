@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 
 public class StationSteps {
 
-    public static Long 역_생성_요청(String stationName) {
+    public static ExtractableResponse<Response> 역_생성_요청(String stationName) {
         Map<String, String> params = new HashMap<>();
         params.put("name", stationName);
 
@@ -19,17 +19,24 @@ public class StationSteps {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/stations")
                 .then().log().all()
-                .extract()
-                .response().jsonPath().getLong("id");
+                .extract();
     }
 
-    public static List<String> 모든_역_조회_요청() {
-        List<String> stationNames = RestAssured.given().log().all()
+    public static Long 역_생성_요청_후_id_반환(String stationName) {
+        var extractableResponse = 역_생성_요청(stationName);
+        return extractableResponse.response().jsonPath().getLong("id");
+    }
+
+    public static ExtractableResponse<Response> 모든_역_조회_요청() {
+        return RestAssured.given().log().all()
                 .when().get("/stations")
                 .then().log().all()
-                .extract()
-                .response().jsonPath().getList("name", String.class);
-        return stationNames;
+                .extract();
+    }
+
+    public static List<String> 모든_역_조회_요청_후_역이름_리스트_반환() {
+        var extractableResponse = 모든_역_조회_요청();
+        return extractableResponse.response().jsonPath().getList("name", String.class);
     }
 
     public static Long 역_조회_요청(ExtractableResponse<Response> station) {

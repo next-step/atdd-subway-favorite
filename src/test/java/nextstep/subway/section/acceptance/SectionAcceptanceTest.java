@@ -1,17 +1,17 @@
 package nextstep.subway.section.acceptance;
 
 import static nextstep.common.AssertStep.에러코드400을_검증한다;
-import static nextstep.subway.line.acceptance.LineSteps.노선_생성_요청;
+import static nextstep.subway.line.acceptance.LineSteps.노선_생성_요청_후_id_반환;
 import static nextstep.subway.line.acceptance.LineSteps.노선_조회_요청;
 import static nextstep.subway.section.acceptance.SectionSteps.구간_생성_요청;
 import static nextstep.subway.section.acceptance.SectionSteps.구간_삭제_요청;
+import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청_후_id_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.global.exception.AlreadyRegisteredException;
 import nextstep.subway.line.presentation.request.LineCreateRequest;
-import nextstep.subway.station.acceptance.StationSteps;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,9 +27,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 구간을_생성하고_노선에_추가한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "2호선",
@@ -38,7 +38,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
 
         // when
         ExtractableResponse<Response> response = 구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
@@ -58,9 +58,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 추가하는_구간이_이미_노선에_존재하는_역이면_실패한다() {
         // given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "2호선",
@@ -69,7 +69,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
 
         // when
@@ -87,9 +87,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_마지막에_구간을_추가한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
 
         // when
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
@@ -99,7 +99,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
 
         ExtractableResponse<Response> response = 구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
 
@@ -117,10 +117,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_중간에_구간을_추가한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
-        Long 교대역_id = StationSteps.역_생성_요청("교대역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
+        Long 교대역_id = 역_생성_요청_후_id_반환("교대역");
 
         // when
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
@@ -130,7 +130,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 교대역_id, 30);
 
         ExtractableResponse<Response> response = 구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
@@ -150,10 +150,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_중간에_구간을_추가한다_2() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
-        Long 교대역_id = StationSteps.역_생성_요청("교대역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
+        Long 교대역_id = 역_생성_요청_후_id_반환("교대역");
 
         // when
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
@@ -163,7 +163,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 교대역_id, 30);
 
         ExtractableResponse<Response> response = 구간_생성_요청(이호선_id, 강남역_id, 교대역_id, 10);
@@ -183,10 +183,10 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 이미_등록된_구간을_추가하면_실패한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
-        Long 교대역_id = StationSteps.역_생성_요청("교대역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
+        Long 교대역_id = 역_생성_요청_후_id_반환("교대역");
 
         // when
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
@@ -196,7 +196,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 교대역_id, 30);
 
         ExtractableResponse<Response> response = 구간_생성_요청(이호선_id, 역삼역_id, 교대역_id, 30);
@@ -208,9 +208,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_시작역을_제거한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "2호선",
@@ -219,7 +219,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
 
         // when
@@ -238,9 +238,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_중간역을_제거한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "2호선",
@@ -249,7 +249,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
 
         // when
@@ -273,9 +273,9 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_마지막역을_제거한다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
-        Long 강남역_id = StationSteps.역_생성_요청("강남역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
+        Long 강남역_id = 역_생성_요청_후_id_반환("강남역");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "2호선",
@@ -284,7 +284,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_생성_요청(이호선_id, 역삼역_id, 강남역_id, 20);
 
         // when
@@ -303,8 +303,8 @@ public class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void 노선의_마지막_구간에_포함된_역을_제거할수있다() {
         //given
-        Long 선릉역_id = StationSteps.역_생성_요청("선릉역");
-        Long 역삼역_id = StationSteps.역_생성_요청("역삼역");
+        Long 선릉역_id = 역_생성_요청_후_id_반환("선릉역");
+        Long 역삼역_id = 역_생성_요청_후_id_반환("역삼역");
 
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
                 "2호선",
@@ -313,7 +313,7 @@ public class SectionAcceptanceTest extends AcceptanceTest {
                 역삼역_id,
                 10
         );
-        Long 이호선_id = 노선_생성_요청(lineCreateRequest);
+        Long 이호선_id = 노선_생성_요청_후_id_반환(lineCreateRequest);
         구간_삭제_요청(이호선_id, 역삼역_id);
 
         // when
