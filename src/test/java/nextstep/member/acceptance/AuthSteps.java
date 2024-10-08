@@ -21,4 +21,8 @@ public class AuthSteps {
                 .then().log().all()
                 .extract();
     }
+
+    public static String 로그인_토큰발급_요청_후_토큰_반환(String email, String password) {
+        return 로그인_토큰발급_요청(email, password).jsonPath().getString("accessToken");
+    }
 }

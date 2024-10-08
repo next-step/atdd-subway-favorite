@@ -3,7 +3,7 @@ package nextstep.favorite.acceptance;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_삭제_요청;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회_요청;
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
-import static nextstep.member.acceptance.AuthSteps.로그인_토큰밝급_요청_후_토큰_반환;
+import static nextstep.member.acceptance.AuthSteps.로그인_토큰발급_요청_후_토큰_반환;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
 import static nextstep.subway.line.acceptance.LineSteps.노선_생성_요청;
 import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청_후_id_반환;
@@ -34,7 +34,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         선릉역 = 역_생성_요청_후_id_반환("선릉역");
         제주도역 = 역_생성_요청_후_id_반환("제주도역");
         회원_생성_요청("abc@gmail.com", "1234", 20);
-        accessToken = 로그인_토큰밝급_요청_후_토큰_반환("abc@gmail.com", "1234");
+        accessToken = 로그인_토큰발급_요청_후_토큰_반환("abc@gmail.com", "1234");
         노선_생성_요청(new LineCreateRequest("2호선", "blue", 강남역, 선릉역, 10));
     }
 
