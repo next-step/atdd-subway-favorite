@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import nextstep.global.exception.AlreadyRegisteredException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.repository.LineRepository;
-import nextstep.subway.path.domain.PathEvent;
 import nextstep.subway.section.SectionRepository;
 import nextstep.subway.section.api.response.SectionResponse;
 import nextstep.subway.section.domain.Section;
 import nextstep.subway.section.presentation.request.SectionCreateRequest;
 import nextstep.subway.station.StationRepository;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +21,9 @@ public class SectionService {
     private final SectionRepository sectionRepository;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public SectionResponse create(Long lineId, SectionCreateRequest request, PathEvent event) {
-        eventPublisher.publishEvent(event);
-
+    public SectionResponse create(Long lineId, SectionCreateRequest request) {
         Line line = getLine(lineId);
 
         if (line.getSections().getStations().contains(request.getUpStationId()) && line.getSections().getStations().contains(request.getDownStationId())) {
@@ -45,9 +40,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void delete(Long lineId, Long stationId, PathEvent event) {
-        eventPublisher.publishEvent(event);
-
+    public void delete(Long lineId, Long stationId) {
         Line line = getLine(lineId);
 
         // 찾는 역이 존재하지 않으면 예외

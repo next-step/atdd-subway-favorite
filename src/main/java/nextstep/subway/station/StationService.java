@@ -1,8 +1,6 @@
 package nextstep.subway.station;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.path.domain.PathEvent;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +13,10 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class StationService {
     private final StationRepository stationRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
 
     @Transactional
-    public StationResponse saveStation(StationRequest stationRequest, PathEvent event) {
-        eventPublisher.publishEvent(event);
-
+    public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationRepository.save(new Station(stationRequest.getName()));
         return createStationResponse(station);
     }
@@ -33,9 +28,7 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStationById(Long id, PathEvent event) {
-        eventPublisher.publishEvent(event);
-
+    public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
