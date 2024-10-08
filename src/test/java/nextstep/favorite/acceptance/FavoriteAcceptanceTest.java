@@ -5,11 +5,13 @@ import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_조회_요
 import static nextstep.favorite.acceptance.FavoriteSteps.즐겨찾기_생성_요청;
 import static nextstep.member.acceptance.AuthSteps.로그인_토큰밝급_요청_후_토큰_반환;
 import static nextstep.member.acceptance.MemberSteps.회원_생성_요청;
+import static nextstep.subway.line.acceptance.LineSteps.노선_생성_요청;
 import static nextstep.subway.station.acceptance.StationSteps.역_생성_요청_후_id_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.line.presentation.request.LineCreateRequest;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +22,8 @@ import org.springframework.http.HttpStatus;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 강남역;
-    private Long 역삼역;
     private Long 선릉역;
+    private Long 제주도역;
     private String accessToken;
 
     @BeforeEach
@@ -29,10 +31,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         강남역 = 역_생성_요청_후_id_반환("강남역");
-        역삼역 = 역_생성_요청_후_id_반환("역삼역");
         선릉역 = 역_생성_요청_후_id_반환("선릉역");
+        제주도역 = 역_생성_요청_후_id_반환("제주도역");
         회원_생성_요청("abc@gmail.com", "1234", 20);
         accessToken = 로그인_토큰밝급_요청_후_토큰_반환("abc@gmail.com", "1234");
+        노선_생성_요청(new LineCreateRequest("2호선", "blue", 강남역, 선릉역, 10));
     }
 
     /**
