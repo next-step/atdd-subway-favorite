@@ -57,10 +57,6 @@ public class PathService {
             throw new IllegalArgumentException("출발역과 종착역이 연결되어 있지 않습니다.");
         }
 
-        if (shortestPath == null) {
-            throw new IllegalArgumentException("출발역과 종착역이 연결되어 있지 않습니다.");
-        }
-
         if (shortestPath.getWeight() == 0) {
             throw new IllegalArgumentException("출발역과 종착역이 같습니다.");
         }
