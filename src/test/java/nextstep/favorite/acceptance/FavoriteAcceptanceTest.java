@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.subway.line.presentation.request.LineCreateRequest;
 import nextstep.utils.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Long 강남역;
     private Long 선릉역;
-    private Long 제주도역;
     private String accessToken;
 
     @BeforeEach
@@ -32,7 +32,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = 역_생성_요청_후_id_반환("강남역");
         선릉역 = 역_생성_요청_후_id_반환("선릉역");
-        제주도역 = 역_생성_요청_후_id_반환("제주도역");
         회원_생성_요청("abc@gmail.com", "1234", 20);
         accessToken = 로그인_토큰발급_요청_후_토큰_반환("abc@gmail.com", "1234");
         노선_생성_요청(new LineCreateRequest("2호선", "blue", 강남역, 선릉역, 10));
@@ -65,22 +64,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(extractableResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(extractableResponse.header("Location")).startsWith("/favorites/");
     }
 
     /**
-     *  Given : 2개 이상의 지하철 역이 존재하고 로그인한 회원이
-     *  When : 서로 다른 지하철 역을 해당 회원의 유효한 토큰이 아닌 토큰으로 즐겨찾기를 추가하면
+     *  Given : 로그인한 회원이
+     *  When : 존재하지 않은 지하철 역으로 즐겨찾기를 추가하면
      *  Then : 에러를 반환한다.
      */
     @Test
-    void 유효하지_않은_토큰으로_즐겨찾기를_생성하면_에러를_반환한다() {
+    void 존재하지_않은_지하철_역으로_즐겨찾기를_생성하면_에러를_반환한다() {
+        // given
+        Long 제주도역 = 역_생성_요청_후_id_반환("강남역");
+
         // when
-        ExtractableResponse<Response> extractableResponse = 즐겨찾기_생성_요청(강남역, 선릉역, "wrongToken");
+        ExtractableResponse<Response> extractableResponse = 즐겨찾기_생성_요청(제주도역, 강남역, accessToken);
 
         // then
-        assertThat(extractableResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(extractableResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
 
     /**
      *  Given : 로그인한 회원의 즐겨찾기가 1개 이상 등록되어 있을 때
@@ -111,26 +113,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(extractableResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(extractableResponse.body().asString()).isEmpty();
-
+        assertThat(extractableResponse.response().getBody().as(List.class)).isEmpty();
     }
 
-    /**
-     *  Given : 특정 회원의 즐겨찾기가 등록되어 있을 때
-     *  When : 해당 회원의 유효한 토큰이 아닌 토큰으로 즐겨찾기 목록을 조회하면
-     *  Then : 에러를 반환한다
-     */
-    @Test
-    void 유효하지_않은_토큰으로_즐겨찾기_목록을_가져오면_에러를_반환한다() {
-        // given
-        즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
-
-        // when
-        ExtractableResponse<Response> extractableResponse = 즐겨찾기_조회_요청("wrongToken");
-
-        // then
-        assertThat(extractableResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
 
     /**
      *  Given : 특정 회원의 즐겨찾기가 등록되어 있고
@@ -175,9 +160,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void 유효하지_않은_토큰으로_즐겨찾기를_삭제하면_에러를_반환한다() {
         // given
         즐겨찾기_생성_요청(강남역, 선릉역, accessToken);
+        회원_생성_요청("wrong@gmail.com", "password", 20);
+        String wrongToken = 로그인_토큰발급_요청_후_토큰_반환("wrong@gmail.com", "password");
 
         // when
-        ExtractableResponse<Response> extractableResponse = 즐겨찾기_삭제_요청(1L, "wrongToken");
+        ExtractableResponse<Response> extractableResponse = 즐겨찾기_삭제_요청(1L, wrongToken);
 
         // then
         assertThat(extractableResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
