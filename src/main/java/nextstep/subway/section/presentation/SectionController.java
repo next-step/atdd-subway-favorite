@@ -1,7 +1,6 @@
 package nextstep.subway.section.presentation;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.path.api.PathService;
 import nextstep.subway.section.api.SectionService;
 import nextstep.subway.section.api.response.SectionResponse;
 import nextstep.subway.section.presentation.request.SectionCreateRequest;
@@ -15,7 +14,6 @@ import java.net.URI;
 public class SectionController {
 
     private final SectionService sectionService;
-    private final PathService pathService;
 
     @PostMapping("/lines/{lineId}/sections")
     public ResponseEntity<SectionResponse> createSection(@PathVariable Long lineId, @RequestBody SectionCreateRequest request) {

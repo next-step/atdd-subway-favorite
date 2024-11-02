@@ -5,13 +5,12 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.path.api.response.PathResponse;
 import nextstep.subway.path.domain.SubwayGraph;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.section.SectionRepository;
 import nextstep.subway.section.domain.Section;
 import nextstep.subway.station.Station;
 import nextstep.subway.station.StationRepository;
 import nextstep.subway.station.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -48,20 +47,9 @@ public class PathService {
     public PathResponse findPath(Long sourceId, Long targetId) {
         List<Section> sections = sectionRepository.findAll();
         SubwayGraph subwayGraph = new SubwayGraph(sections);
-        DijkstraShortestPath dijkstraShortestPath = subwayGraph.getShortestPath();
-        GraphPath shortestPath = null;
+        ShortestPath shortestPath = new ShortestPath(subwayGraph.getDijkstraShortestPath(), sourceId, targetId);
 
-        try {
-            shortestPath = dijkstraShortestPath.getPath(sourceId, targetId);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("출발역과 종착역이 연결되어 있지 않습니다.");
-        }
-
-        if (shortestPath.getWeight() == 0) {
-            throw new IllegalArgumentException("출발역과 종착역이 같습니다.");
-        }
-
-        return PathResponse.of(convertToStationResponses(shortestPath.getVertexList()), (int) shortestPath.getWeight());
+        return PathResponse.of(convertToStationResponses(shortestPath.getVertexList()), shortestPath.getWeight());
     }
 
     private List<StationResponse> convertToStationResponses(List<Long> stationIds) {

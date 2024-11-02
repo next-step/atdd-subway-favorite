@@ -14,7 +14,7 @@ public class SubwayGraph {
         this.graph = createGraph(sections);
     }
 
-    public DijkstraShortestPath getShortestPath() {
+    public DijkstraShortestPath getDijkstraShortestPath() {
         return new DijkstraShortestPath(graph);
     }
 

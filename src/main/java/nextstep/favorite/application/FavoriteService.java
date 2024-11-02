@@ -67,7 +67,7 @@ public class FavoriteService {
 
         List<Section> sections = sectionRepository.findAll();
         SubwayGraph subwayGraph = new SubwayGraph(sections);
-        DijkstraShortestPath shortestPath = subwayGraph.getShortestPath();
+        DijkstraShortestPath shortestPath = subwayGraph.getDijkstraShortestPath();
         try {
             shortestPath.getPath(sourceId, targetId);
         } catch (IllegalArgumentException e) {

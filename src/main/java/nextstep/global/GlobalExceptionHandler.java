@@ -1,6 +1,7 @@
 package nextstep.global;
 
 import nextstep.global.exception.AlreadyRegisteredException;
+import nextstep.global.exception.GithubConnectionFailException;
 import nextstep.global.exception.InsufficientStationException;
 import nextstep.global.exception.SectionMismatchException;
 import nextstep.global.exception.StationNotMatchException;
@@ -17,7 +18,8 @@ public class GlobalExceptionHandler {
             AlreadyRegisteredException.class,
             InsufficientStationException.class,
             StationNotMatchException.class,
-            IllegalArgumentException.class
+            IllegalArgumentException.class,
+            GithubConnectionFailException.class
     })
     public ResponseEntity<ErrorResponse> handleBadRequestException(RuntimeException e) {
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);

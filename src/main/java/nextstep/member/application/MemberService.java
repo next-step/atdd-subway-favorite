@@ -20,6 +20,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member createMember(String email, String password, Integer age) {
+        return memberRepository.save(new Member(email, password, age));
+    }
+
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -42,5 +46,12 @@ public class MemberService {
         return memberRepository.findByEmail(loginMember.getEmail())
                 .map(it -> MemberResponse.of(it))
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Member findMemberByEmailOrCreate(String email, Integer age) {
+        String defaultPassword = "password";
+
+        return memberRepository.findByEmail(email)
+                .orElseGet(() -> createMember(email, defaultPassword, age));
     }
 }
